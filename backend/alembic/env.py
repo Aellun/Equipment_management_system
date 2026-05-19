@@ -19,7 +19,11 @@ target_metadata = Base.metadata
 
 
 def get_url() -> str:
-    url = os.environ.get("DATABASE_URL", config.get_main_option("sqlalchemy.url", ""))
+    url = os.environ.get("DATABASE_URL") or config.get_main_option("sqlalchemy.url")
+    if not url:
+        raise RuntimeError(
+            "DATABASE_URL must be set for Alembic migrations. Render cannot use the Compose hostname 'db'."
+        )
     # Alembic uses the sync psycopg2 driver; swap asyncpg if present
     return url.replace("postgresql+asyncpg://", "postgresql://")
 
