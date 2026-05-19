@@ -1,0 +1,72 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+---
+
+## [Unreleased]
+
+---
+
+## [0.2.1] - 2026-05-14
+
+### Fixed
+- **Backend container permission denied**: `ENTRYPOINT` changed from `["./entrypoint.sh"]` to `["/bin/bash", "entrypoint.sh"]` so that the host bind-mount (`./backend:/app`) no longer silently strips the execute bit set during the Docker build.
+
+### Changed
+- **Next.js upgraded 14.2.3 → 15.x**: resolves flagged security vulnerabilities; `eslint-config-next` bumped to match. No code changes required — no dynamic route params or other 15.x breaking-change APIs are used.
+
+---
+
+## [0.2.0] - 2026-05-14
+
+### Added — Phase 3: Condition Monitoring & UI Polish
+
+#### Frontend
+- **Dashboard visualisations**: SVG utilisation progress ring showing % of gear currently out; colour-coded stacked inventory distribution bar (Available / Out / Maintenance)
+- **Maintenance Watchlist**: dedicated table on the dashboard listing all items currently in `Maintenance` status with red accent border
+- **Recent Returns**: dashboard section showing the last 5 returned transactions with condition badges
+- **Equipment search & filter**: live text search (name, serial, category) + status filter pills (All / Available / Out / Maintenance) on the Equipment page
+- **Client search**: live text search (name, email, phone) on the Clients page
+- **Transaction tabs + search**: All / Active / Returned tab switcher with active-count badge, plus free-text search (equipment name, client name, staff) on the Transactions page
+- `TransactionList` Client Component: consolidates checkout form + checkin modals + tabs + search into one interactive component, receiving data from the Server Component page
+- `EquipmentList` Client Component: search + filter wrapper for equipment table
+- `ClientList` Client Component: search wrapper for clients table
+
+#### Infrastructure
+- Fixed frontend `Dockerfile`: switched from `npm ci` (requires lock file) to `npm install`
+
+---
+
+## [0.1.0] - 2026-05-14
+
+### Added — Phase 1 & 2: Foundation + Transaction Logic
+
+#### Infrastructure
+- `docker-compose.yml`: PostgreSQL 16, FastAPI backend, Next.js frontend services with healthcheck dependency chain
+- Backend `Dockerfile` + `entrypoint.sh`: runs Alembic migrations on container startup before serving
+- Frontend `Dockerfile`: Node 20 Alpine for lean image size
+- `INTERNAL_API_URL` / `NEXT_PUBLIC_API_URL` split to support Server Component vs. Client Component fetching
+
+#### Backend — FastAPI + PostgreSQL
+- Modular project structure: `app/api/`, `app/models/`, `app/schemas/`, `app/crud/`
+- SQLAlchemy 2.0 async engine (`asyncpg` driver) with `async_sessionmaker`
+- Pydantic v2 schemas with `from_attributes = True` for ORM serialisation
+- Alembic migration setup with `psycopg2-binary` sync driver for migration runs
+- **Initial migration** `001_initial`: creates `equipment`, `clients`, `transactions`, `audit_logs` tables with PostgreSQL enums
+- `GET/POST/PATCH/DELETE /equipment` — full CRUD for inventory items
+- `GET/POST/PATCH/DELETE /clients` — full CRUD for clients
+- `GET /clients/{id}/history` — per-client transaction history
+- `POST /transactions/checkout` — validates `Available` status, atomically sets status to `Out`
+- `PATCH /transactions/checkin/{id}` — mandatory inspection payload; routes `Damaged`/`Needs Repair` to `Maintenance`, `Good` back to `Available`
+- CORS middleware configured for `http://localhost:3000`
+- `/health` endpoint
+
+#### Frontend — Next.js 14 + Tailwind CSS
+- App Router (`app/` directory) with dark-themed sidebar navigation
+- **Dashboard** (Server Component): inventory stats (Available / Out / Maintenance counts) + active transactions table
+- **Equipment page** (Server Component list + Client Component form): inventory table with colour-coded status badges, add-equipment modal
+- **Clients page** (Server Component list + Client Component form): client list, add-client form
+- **Transactions page** (Server Component list + Client Component forms): full transaction history, checkout form, inline check-in modal with condition selector
+- TypeScript types (`types/index.ts`) mirroring all API response shapes
