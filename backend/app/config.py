@@ -3,13 +3,11 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    database_url: str = Field(
-        default="postgresql+asyncpg://ahadi:ahadi_secret@db:5432/event_tracking",
-        env="DATABASE_URL",
-    )
+    database_url: str = Field(..., env="DATABASE_URL")
 
     class Config:
         env_file = ".env"
+        env_file_encoding = "utf-8"
 
 
 settings = Settings()
