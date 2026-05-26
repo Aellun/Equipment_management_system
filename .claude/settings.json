@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wait)",
+      "Bash(npm install *)"
+    ]
+  }
+}
