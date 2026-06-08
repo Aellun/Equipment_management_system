@@ -58,11 +58,14 @@ function LoginPage() {
             { top: "65%", left: "6%", size: 20, opacity: 0.06, rotate: 10 },
             { bottom: "20%", right: "8%", size: 26, opacity: 0.07, rotate: -10 },
             { top: "45%", left: "16%", size: 18, opacity: 0.05, rotate: 5 },
-          ].map((s, i) => (
-            <div key={i} className="absolute text-indigo-400" style={{ ...s, width: s.size, height: s.size, transform: `rotate(${s.rotate}deg)`, opacity: s.opacity }}>
-              <SpotlightIcon className="w-full h-full" />
-            </div>
-          ))}
+          ].map((s, i) => {
+            const { size, rotate, ...pos } = s;
+            return (
+              <div key={i} className="absolute text-indigo-400" style={{ ...pos, width: size, height: size, transform: `rotate(${rotate}deg)` }}>
+                <SpotlightIcon className="w-full h-full" />
+              </div>
+            );
+          })}
         </div>
 
         {/* Content */}

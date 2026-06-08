@@ -100,21 +100,35 @@ event-equipment-tracking/
    ```
 
 2. **Start the application**
+
+   **Production mode (default — fast, mirrors deployment):**
    ```bash
-   docker compose up --build
+   docker compose up --build -d
    ```
+   The frontend is built and served with `next start` (standalone output); the
+   backend runs uvicorn with 2 workers. Pages serve in ~150–250 ms.
+
+   **Development mode (hot-reload while coding):**
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+   ```
+   This swaps in `next dev` + uvicorn `--reload` with source bind-mounts so code
+   changes appear live. It is noticeably slower per page (~1.5 s) — that's the dev
+   compiler, not the app, and does not reflect production performance.
 
 3. **Access the application**
-   - Frontend: `http://localhost:3000`
-   - Backend API: `http://localhost:8000/docs` (Swagger UI)
-   - Nginx: `http://localhost:80`
+   - App (everything via nginx): `http://localhost`
+   - Storefront: `http://localhost/store`
+   - Admin: `http://localhost/` (login `admin@fabent.com` / `Admin2024`)
+   - In **dev mode only**, the backend is also exposed directly at
+     `http://localhost:8002/docs` (Swagger UI).
 
-### Initial Setup
+### Database migrations
 
-After the containers are running for the first time:
+Migrations run automatically on backend startup (via `entrypoint.sh`). To run them
+manually:
 
 ```bash
-# Run database migrations
 docker compose exec backend alembic upgrade head
 ```
 

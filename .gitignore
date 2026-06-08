@@ -6,6 +6,9 @@ frontend/.env.local
 frontend/.env.*.local
 
 # Backend (Python)
+__pycache__/
+*.py[cod]
+*$py.class
 backend/__pycache__/
 backend/*.py[cod]
 backend/*$py.class
@@ -23,6 +26,7 @@ backend/htmlcov/
 backend/.mypy_cache/
 backend/.dmypy.json
 backend/dmypy.json
+backend/uploads/
 
 # IDEs
 .vscode/

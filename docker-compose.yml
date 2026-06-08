@@ -1,5 +1,9 @@
 version: '3.9'
 
+# Production-ready stack. Run with:  docker compose up --build -d
+# For local development with hot-reload, add the dev override:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+
 services:
   db:
     image: postgres:16-alpine
@@ -16,32 +20,38 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   backend:
     build: ./backend
-    ports:
-      - "8000:8000"
+    # No host port needed in production — nginx reaches the backend internally at
+    # backend:8000. To expose it for local API debugging, add the dev override
+    # (docker-compose.dev.yml) which maps a host port.
+    expose:
+      - "8000"
     environment:
       DATABASE_URL: postgresql+asyncpg://ahadi:ahadi_secret@db:5432/event_tracking
+      UVICORN_WORKERS: 2
     depends_on:
       db:
         condition: service_healthy
     volumes:
-      - ./backend:/app
+      - uploads_data:/app/uploads
+    restart: unless-stopped
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     expose:
       - "3000"
     environment:
       NEXT_PUBLIC_API_URL: /api
       INTERNAL_API_URL: http://backend:8000
+      NODE_ENV: production
     depends_on:
       - backend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-      - /app/.next
+    restart: unless-stopped
 
   nginx:
     image: nginx:alpine
@@ -56,3 +66,4 @@ services:
 
 volumes:
   postgres_data:
+  uploads_data:

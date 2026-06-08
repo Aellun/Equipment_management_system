@@ -1,0 +1,24 @@
+# Development override — restores hot-reload for active coding.
+# Usage:  docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+services:
+  backend:
+    ports:
+      - "8002:8000"   # host port for direct API debugging in dev
+    environment:
+      UVICORN_WORKERS: 1
+    volumes:
+      - ./backend:/app
+      - uploads_data:/app/uploads
+    # Reload on code changes in dev
+    entrypoint: ["/bin/bash", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
