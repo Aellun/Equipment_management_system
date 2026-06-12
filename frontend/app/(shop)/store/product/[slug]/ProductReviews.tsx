@@ -64,7 +64,7 @@ export default function ProductReviews({ productId }: { productId: number }) {
     <div className="mt-12 border-t border-slate-200 dark:border-slate-800 pt-8">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-lg font-bold text-slate-900 dark:text-white">Customer Reviews</h2>
-        <button onClick={() => setShowForm((v) => !v)} className="text-sm font-semibold text-indigo-600 hover:text-indigo-500">
+        <button onClick={() => setShowForm((v) => !v)} className="text-sm font-semibold text-orange-600 hover:text-orange-500">
           {showForm ? "Cancel" : "Write a review"}
         </button>
       </div>
@@ -106,7 +106,7 @@ export default function ProductReviews({ productId }: { productId: number }) {
           </div>
           <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title (optional)" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm" />
           <textarea rows={3} value={body} onChange={(e) => setBody(e.target.value)} placeholder="Share your experience…" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm resize-none" />
-          <button type="submit" disabled={busy} className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl disabled:opacity-50">{busy ? "Submitting…" : "Submit review"}</button>
+          <button type="submit" disabled={busy} className="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white text-sm font-semibold rounded-xl disabled:opacity-50">{busy ? "Submitting…" : "Submit review"}</button>
         </form>
       )}
 

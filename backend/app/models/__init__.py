@@ -15,6 +15,8 @@ from app.models.review import Review, ReviewType
 from app.models.delivery import DeliveryZone
 from app.models.tracking import TrackingEvent
 from app.models.return_request import ReturnRequest, ReturnStatus
+from app.models.maintenance import MaintenanceLog
+from app.models.reservation import Reservation
 
 __all__ = [
     "Equipment", "EquipmentStatus", "Client", "Transaction", "AuditLog", "ConditionOnReturn",
@@ -23,4 +25,5 @@ __all__ = [
     "Cart", "CartItem", "Order", "OrderItem", "OrderStatus", "PaymentStatus",
     "Department", "StoreSetting", "Review", "ReviewType", "DeliveryZone",
     "TrackingEvent", "ReturnRequest", "ReturnStatus",
+    "MaintenanceLog", "Reservation",
 ]

@@ -1,4 +1,4 @@
-export type EquipmentStatus = "Available" | "Out" | "Maintenance";
+export type EquipmentStatus = "Available" | "Out" | "Maintenance" | "Retired";
 export type ConditionOnReturn = "Good" | "Damaged" | "Needs Repair";
 
 export interface User {
@@ -22,7 +22,46 @@ export interface Equipment {
   category: string;
   status: EquipmentStatus;
   last_inspected: string | null;
+  location: string | null;
+  purchase_date: string | null;
+  purchase_cost: string | null;
+  supplier: string | null;
+  warranty_expiry: string | null;
+  notes: string | null;
   created_at: string;
+}
+
+export type MaintenanceStatus = "Open" | "In Progress" | "Completed" | "Cancelled";
+
+export interface MaintenanceLog {
+  id: number;
+  equipment_id: number;
+  title: string;
+  description: string | null;
+  status: MaintenanceStatus;
+  cost: string | null;
+  reported_at: string;
+  completed_at: string | null;
+  resolution_notes: string | null;
+  equipment_name: string | null;
+  equipment_serial: string | null;
+  equipment_status: string | null;
+}
+
+export type ReservationStatus = "Upcoming" | "Fulfilled" | "Cancelled";
+
+export interface Reservation {
+  id: number;
+  equipment_id: number;
+  client_id: number;
+  start_date: string;
+  end_date: string;
+  status: ReservationStatus;
+  notes: string | null;
+  created_at: string;
+  equipment_name: string | null;
+  equipment_serial: string | null;
+  client_name: string | null;
 }
 
 export interface Client {
@@ -61,6 +100,7 @@ export interface ShopCategory {
   name: string;
   slug: string;
   description: string | null;
+  is_active: boolean;
   created_at: string;
 }
 

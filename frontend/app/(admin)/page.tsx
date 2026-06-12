@@ -1,4 +1,8 @@
 import { Equipment, Transaction } from "@/types";
+import {
+  ActivityChart, CategoryBreakdown, TopClients,
+  DayActivity, CategoryRow, ClientRow,
+} from "./DashboardCharts";
 
 const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 
@@ -100,17 +104,63 @@ function SectionHeader({ title, count }: { title: string; count?: number }) {
 export default async function DashboardPage() {
   const [equipment, transactions] = await Promise.all([getEquipment(), getTransactions()]);
 
-  const total = equipment.length;
+  // Retired assets are kept for records but excluded from operational metrics
+  const fleet = equipment.filter((e) => e.status !== "Retired");
+  const total = fleet.length;
   const counts = {
-    Available: equipment.filter((e) => e.status === "Available").length,
-    Out: equipment.filter((e) => e.status === "Out").length,
-    Maintenance: equipment.filter((e) => e.status === "Maintenance").length,
+    Available: fleet.filter((e) => e.status === "Available").length,
+    Out: fleet.filter((e) => e.status === "Out").length,
+    Maintenance: fleet.filter((e) => e.status === "Maintenance").length,
   };
   const utilPct = total > 0 ? Math.round((counts.Out / total) * 100) : 0;
 
   const active = transactions.filter((t) => !t.audit_log);
   const maintenanceItems = equipment.filter((e) => e.status === "Maintenance");
-  const overdueCount = active.filter((t) => new Date(t.due_date) < new Date()).length;
+  const now = new Date();
+  const overdueCount = active.filter((t) => new Date(t.due_date) < now).length;
+  const dueSoon = active.filter((t) => {
+    const due = new Date(t.due_date);
+    return due >= now && due.getTime() - now.getTime() <= 48 * 3600 * 1000;
+  });
+
+  // ---- Chart data ----
+  const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+  const days: (DayActivity & { key: string })[] = Array.from({ length: 14 }, (_, i) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - (13 - i));
+    return { key: dayKey(d), label: d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }), checkouts: 0, returns: 0 };
+  });
+  const dayIndex = new Map(days.map((d, i) => [d.key, i]));
+  for (const t of transactions) {
+    const outIdx = dayIndex.get(dayKey(new Date(t.out_timestamp)));
+    if (outIdx !== undefined) days[outIdx].checkouts++;
+    if (t.audit_log) {
+      const retIdx = dayIndex.get(dayKey(new Date(t.audit_log.return_timestamp)));
+      if (retIdx !== undefined) days[retIdx].returns++;
+    }
+  }
+
+  const catMap = new Map<string, CategoryRow>();
+  for (const e of fleet) {
+    const row = catMap.get(e.category) ?? { name: e.category, available: 0, out: 0, maintenance: 0 };
+    if (e.status === "Available") row.available++;
+    else if (e.status === "Out") row.out++;
+    else row.maintenance++;
+    catMap.set(e.category, row);
+  }
+  const categoryRows = [...catMap.values()].sort(
+    (a, b) => b.available + b.out + b.maintenance - (a.available + a.out + a.maintenance),
+  );
+
+  const clientCounts = new Map<string, number>();
+  for (const t of transactions) {
+    const name = t.client?.name ?? `Client #${t.client_id}`;
+    clientCounts.set(name, (clientCounts.get(name) ?? 0) + 1);
+  }
+  const topClients: ClientRow[] = [...clientCounts.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
   const recentReturns = transactions
     .filter((t) => t.audit_log)
     .sort((a, b) =>
@@ -193,46 +243,29 @@ export default async function DashboardPage() {
         <UtilisationRing percent={utilPct} />
       </div>
 
-      {/* Distribution bar */}
-      {total > 0 && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
-          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">
-            Inventory Distribution
-          </p>
-          <div className="flex h-2.5 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 gap-0.5">
-            {counts.Available > 0 && (
-              <div
-                style={{ width: `${(counts.Available / total) * 100}%` }}
-                className="bg-emerald-500 rounded-l-full"
-                title={`Available: ${counts.Available}`}
-              />
-            )}
-            {counts.Out > 0 && (
-              <div
-                style={{ width: `${(counts.Out / total) * 100}%` }}
-                className="bg-amber-500"
-                title={`Out: ${counts.Out}`}
-              />
-            )}
-            {counts.Maintenance > 0 && (
-              <div
-                style={{ width: `${(counts.Maintenance / total) * 100}%` }}
-                className="bg-red-500 rounded-r-full"
-                title={`Maintenance: ${counts.Maintenance}`}
-              />
-            )}
+      {/* Analytics */}
+      <ActivityChart data={days.map(({ label, checkouts, returns }) => ({ label, checkouts, returns }))} />
+      <div className="grid lg:grid-cols-2 gap-4">
+        <CategoryBreakdown data={categoryRows} />
+        <TopClients data={topClients} />
+      </div>
+
+      {/* Due within 48 hours */}
+      {dueSoon.length > 0 && (
+        <div className="flex items-center gap-3 px-4 py-3.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/40 rounded-2xl">
+          <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center shrink-0">
+            <svg className="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          <div className="flex gap-5 mt-3">
-            {(["Available", "Out", "Maintenance"] as const).map((s) => {
-              const dotColor = { Available: "bg-emerald-500", Out: "bg-amber-500", Maintenance: "bg-red-500" }[s];
-              const pct = total > 0 ? Math.round((counts[s] / total) * 100) : 0;
-              return (
-                <span key={s} className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                  <span className={`w-2.5 h-2.5 rounded-full ${dotColor} shrink-0`} />
-                  {s} <span className="font-semibold text-slate-700 dark:text-slate-300">{pct}%</span>
-                </span>
-              );
-            })}
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">
+              {dueSoon.length} return{dueSoon.length !== 1 ? "s" : ""} due within 48 hours
+            </p>
+            <p className="text-xs text-amber-600/80 dark:text-amber-500 mt-0.5 truncate">
+              {dueSoon.slice(0, 3).map((t) => `${t.equipment?.name ?? `#${t.equipment_id}`} (${t.client?.name ?? "client"})`).join(" · ")}
+              {dueSoon.length > 3 ? " …" : ""}
+            </p>
           </div>
         </div>
       )}

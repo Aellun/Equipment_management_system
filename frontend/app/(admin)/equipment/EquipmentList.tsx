@@ -1,13 +1,40 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Fragment } from "react";
+import Link from "next/link";
 import { Equipment, Category } from "@/types";
 import Pagination from "@/app/components/Pagination";
 import EquipmentEditModal, { EquipmentGroup } from "./EquipmentEditModal";
 
 const ALL = "All" as const;
-type Filter = "Available" | "Out" | "Maintenance" | typeof ALL;
+type Filter = "Available" | "Out" | "Maintenance" | "Retired" | typeof ALL;
 const PAGE_SIZE = 15;
+
+const unitBadge: Record<string, string> = {
+  Available: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
+  Out: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
+  Maintenance: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
+  Retired: "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
+};
+
+function AvailabilityBar({ g }: { g: EquipmentGroup }) {
+  return (
+    <div className="min-w-[120px] max-w-[180px]">
+      <div className="flex h-1.5 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+        {g.available > 0 && <div className="bg-emerald-500" style={{ width: `${(g.available / g.total) * 100}%` }} />}
+        {g.out > 0 && <div className="bg-amber-500" style={{ width: `${(g.out / g.total) * 100}%` }} />}
+        {g.maintenance > 0 && <div className="bg-red-500" style={{ width: `${(g.maintenance / g.total) * 100}%` }} />}
+        {g.retired > 0 && <div className="bg-slate-400" style={{ width: `${(g.retired / g.total) * 100}%` }} />}
+      </div>
+      <p className="text-[11px] text-slate-400 mt-1">
+        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{g.available}</span> available
+        {g.out > 0 && <> · <span className="text-amber-600 dark:text-amber-400 font-semibold">{g.out}</span> out</>}
+        {g.maintenance > 0 && <> · <span className="text-red-600 dark:text-red-400 font-semibold">{g.maintenance}</span> maint</>}
+        {g.retired > 0 && <> · <span className="text-slate-500 font-semibold">{g.retired}</span> retired</>}
+      </p>
+    </div>
+  );
+}
 
 export default function EquipmentList({
   equipment,
@@ -23,19 +50,21 @@ export default function EquipmentList({
   const [catFilter, setCatFilter] = useState("");
   const [page, setPage] = useState(1);
   const [editGroup, setEditGroup] = useState<EquipmentGroup | null>(null);
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   const groups = useMemo<EquipmentGroup[]>(() => {
     const map = new Map<string, EquipmentGroup>();
     for (const e of equipment) {
       const key = e.name;
       if (!map.has(key)) {
-        map.set(key, { name: e.name, category: e.category, total: 0, available: 0, out: 0, maintenance: 0, items: [] });
+        map.set(key, { name: e.name, category: e.category, total: 0, available: 0, out: 0, maintenance: 0, retired: 0, items: [] });
       }
       const g = map.get(key)!;
       g.total++;
       g.items.push(e);
       if (e.status === "Available") g.available++;
       else if (e.status === "Out") g.out++;
+      else if (e.status === "Retired") g.retired++;
       else g.maintenance++;
     }
     return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
@@ -45,12 +74,17 @@ export default function EquipmentList({
     return groups.filter((g) => {
       const matchCat = !catFilter || g.category === catFilter;
       const q = query.toLowerCase();
-      const matchQuery = !q || g.name.toLowerCase().includes(q) || g.category.toLowerCase().includes(q);
+      const matchQuery =
+        !q ||
+        g.name.toLowerCase().includes(q) ||
+        g.category.toLowerCase().includes(q) ||
+        g.items.some((i) => i.serial_number.toLowerCase().includes(q) || (i.location ?? "").toLowerCase().includes(q));
       const matchStatus =
         filter === ALL ||
         (filter === "Available" && g.available > 0) ||
         (filter === "Out" && g.out > 0) ||
-        (filter === "Maintenance" && g.maintenance > 0);
+        (filter === "Maintenance" && g.maintenance > 0) ||
+        (filter === "Retired" && g.retired > 0);
       return matchCat && matchQuery && matchStatus;
     });
   }, [groups, query, filter, catFilter]);
@@ -59,114 +93,168 @@ export default function EquipmentList({
   const safePage = Math.min(page, totalPages);
   const pageItems = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
+  const statusCount: Record<Exclude<Filter, typeof ALL>, number> = {
+    Available: groups.filter((g) => g.available > 0).length,
+    Out: groups.filter((g) => g.out > 0).length,
+    Maintenance: groups.filter((g) => g.maintenance > 0).length,
+    Retired: groups.filter((g) => g.retired > 0).length,
+  };
+
   return (
     <>
       <div className="space-y-4">
-        {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-2">
+        {/* Toolbar */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 flex flex-col lg:flex-row gap-3 lg:items-center">
           <div className="relative flex-1 min-w-0">
             <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
               type="text"
-              placeholder="Search by name or category…"
+              placeholder="Search name, category, serial number or location…"
               value={query}
               onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-              className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
             />
           </div>
+
+          {/* Status segmented control */}
+          <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl gap-0.5 shrink-0 overflow-x-auto">
+            {([ALL, "Available", "Out", "Maintenance", "Retired"] as Filter[]).map((f) => (
+              <button
+                key={f}
+                onClick={() => { setFilter(f); setPage(1); }}
+                className={`px-3 py-1.5 text-xs rounded-lg transition-all font-semibold whitespace-nowrap ${
+                  filter === f
+                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                }`}
+              >
+                {f}
+                {f !== ALL && (
+                  <span className="ml-1.5 text-[10px] text-slate-400">{statusCount[f]}</span>
+                )}
+              </button>
+            ))}
+          </div>
+
           <select
             value={catFilter}
             onChange={(e) => { setCatFilter(e.target.value); setPage(1); }}
-            className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 sm:w-48 transition-all"
+            className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 lg:w-44 transition-all shrink-0"
           >
             <option value="">All categories</option>
             {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
           </select>
         </div>
 
-        {/* Status pills */}
-        <div className="flex gap-1.5 flex-wrap">
-          {([ALL, "Available", "Out", "Maintenance"] as Filter[]).map((f) => (
-            <button
-              key={f}
-              onClick={() => { setFilter(f); setPage(1); }}
-              className={`px-3.5 py-1.5 text-xs rounded-lg transition-colors font-semibold ${filter === f ? "bg-indigo-600 text-white shadow-sm" : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300"}`}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
-
-        {/* Table */}
+        {/* Asset register table */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-[480px]">
+            <table className="w-full text-sm min-w-[640px]">
               <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800">
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Name</th>
+                <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
+                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Asset</th>
                   <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden md:table-cell">Category</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Count</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden sm:table-cell">Availability</th>
+                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Availability</th>
                   <th className="px-4 py-3.5 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {pageItems.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-12 text-center text-slate-400 dark:text-slate-600">
+                    <td colSpan={4} className="px-4 py-12 text-center text-slate-400 dark:text-slate-600">
                       {equipment.length === 0 ? "No equipment yet. Add your first item above." : "No items match your filters."}
                     </td>
                   </tr>
                 ) : (
                   pageItems.map((g) => (
-                    <tr key={g.name} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                      <td className="px-4 py-3.5">
-                        <div className="font-medium text-slate-900 dark:text-white">{g.name}</div>
-                        <div className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 md:hidden">{g.category}</div>
-                      </td>
-                      <td className="px-4 py-3.5 hidden md:table-cell">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                          {g.category}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 text-sm font-bold">
-                          {g.total}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3.5 hidden sm:table-cell">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          {g.available > 0 && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
-                              {g.available} avail
-                            </span>
-                          )}
-                          {g.out > 0 && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
-                              {g.out} out
-                            </span>
-                          )}
-                          {g.maintenance > 0 && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400">
-                              {g.maintenance} maint
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3.5 text-right">
-                        <button
-                          onClick={() => setEditGroup(g)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
-                          Edit
-                        </button>
-                      </td>
-                    </tr>
+                    <Fragment key={g.name}>
+                      <tr
+                        className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                        onClick={() => setExpanded((cur) => (cur === g.name ? null : g.name))}
+                      >
+                        <td className="px-4 py-3.5">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/40 flex items-center justify-center shrink-0">
+                              <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                              </svg>
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-semibold text-slate-900 dark:text-white truncate">{g.name}</p>
+                              <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+                                {g.total} unit{g.total !== 1 ? "s" : ""}
+                                <span className="md:hidden"> · {g.category}</span>
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3.5 hidden md:table-cell">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                            {g.category}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3.5">
+                          <AvailabilityBar g={g} />
+                        </td>
+                        <td className="px-4 py-3.5 text-right whitespace-nowrap">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setExpanded((cur) => (cur === g.name ? null : g.name)); }}
+                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors mr-1.5 ${
+                              expanded === g.name
+                                ? "bg-indigo-600 text-white"
+                                : "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/40"
+                            }`}
+                          >
+                            Units
+                            <svg className={`w-3 h-3 transition-transform ${expanded === g.name ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
+                          </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setEditGroup(g); }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                      {expanded === g.name && (
+                        <tr className="bg-slate-50/70 dark:bg-slate-800/30">
+                          <td colSpan={4} className="px-4 py-3">
+                            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                              Individual units — click one to open its asset profile
+                            </p>
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
+                              {g.items.map((item) => (
+                                <Link
+                                  key={item.id}
+                                  href={`/equipment/${item.id}`}
+                                  className="flex items-center justify-between gap-2 px-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-indigo-400 dark:hover:border-indigo-600 hover:shadow-sm transition-all group/unit"
+                                >
+                                  <div className="min-w-0">
+                                    <p className="text-xs font-mono text-slate-600 dark:text-slate-300 truncate group-hover/unit:text-indigo-600 dark:group-hover/unit:text-indigo-400 transition-colors">
+                                      {item.serial_number}
+                                    </p>
+                                    <p className="text-[10px] text-slate-400 truncate">
+                                      {item.location ?? "View asset profile"}
+                                    </p>
+                                  </div>
+                                  <div className="flex items-center gap-1.5 shrink-0">
+                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${unitBadge[item.status]}`}>
+                                      {item.status}
+                                    </span>
+                                    <svg className="w-3 h-3 text-slate-300 group-hover/unit:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                                  </div>
+                                </Link>
+                              ))}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
                   ))
                 )}
               </tbody>

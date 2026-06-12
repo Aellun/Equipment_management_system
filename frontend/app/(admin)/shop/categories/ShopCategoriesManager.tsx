@@ -3,14 +3,17 @@
 import { useState } from "react";
 import { ShopCategory } from "@/types";
 import { useToast } from "@/app/components/Toast";
+import ToggleSwitch from "@/app/components/ToggleSwitch";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "/api";
 
 export default function ShopCategoriesManager({
   categories,
+  productCounts = {},
   onRefresh,
 }: {
   categories: ShopCategory[];
+  productCounts?: Record<number, number>;
   onRefresh: () => void;
 }) {
   const { toast } = useToast();
@@ -18,6 +21,33 @@ export default function ShopCategoriesManager({
   const [editTarget, setEditTarget] = useState<ShopCategory | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ShopCategory | null>(null);
   const [loading, setLoading] = useState(false);
+  const [togglingId, setTogglingId] = useState<number | null>(null);
+
+  async function toggleActive(cat: ShopCategory, next: boolean) {
+    setTogglingId(cat.id);
+    try {
+      const res = await fetch(`${API}/shop-categories/${cat.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ is_active: next }),
+      });
+      if (!res.ok) {
+        toast.error("Could not update visibility.", "Error");
+        return;
+      }
+      toast.success(
+        next
+          ? `"${cat.name}" is now visible in the storefront.`
+          : `"${cat.name}" and its products are now hidden from the storefront.`,
+        next ? "Category shown" : "Category hidden",
+      );
+      onRefresh();
+    } catch {
+      toast.error("Could not reach the server.", "Network error");
+    } finally {
+      setTogglingId(null);
+    }
+  }
 
   async function handleCreate(name: string, description: string) {
     setLoading(true);
@@ -111,16 +141,28 @@ export default function ShopCategoriesManager({
           {categories.map((cat) => (
             <div
               key={cat.id}
-              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 flex items-start justify-between gap-3 group hover:border-indigo-300 dark:hover:border-indigo-700 transition-all"
+              className={`bg-white dark:bg-slate-900 border rounded-2xl p-5 flex items-start justify-between gap-3 group transition-all ${cat.is_active ? "border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700" : "border-dashed border-slate-300 dark:border-slate-700 opacity-75"}`}
             >
               <div className="min-w-0 flex-1">
-                <p className="font-semibold text-slate-900 dark:text-white truncate">{cat.name}</p>
-                <p className="text-xs text-slate-400 dark:text-slate-600 mt-0.5">/{cat.slug}</p>
+                <p className="font-semibold text-slate-900 dark:text-white truncate flex items-center gap-2">
+                  {cat.name}
+                  {!cat.is_active && <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 shrink-0">Hidden</span>}
+                </p>
+                <p className="text-xs text-slate-400 dark:text-slate-600 mt-0.5">
+                  /{cat.slug} · {productCounts[cat.id] ?? 0} product{(productCounts[cat.id] ?? 0) !== 1 ? "s" : ""}
+                </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 min-h-[2.5rem]">
                   {cat.description || <span className="italic text-slate-400 dark:text-slate-600">No description</span>}
                 </p>
               </div>
-              <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex flex-col items-end gap-2 shrink-0">
+                <ToggleSwitch
+                  checked={cat.is_active}
+                  disabled={togglingId === cat.id}
+                  onChange={(next) => toggleActive(cat, next)}
+                  label={cat.is_active ? "Visible in storefront — click to hide" : "Hidden — click to show in storefront"}
+                />
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button onClick={() => setEditTarget(cat)} className="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 dark:hover:text-indigo-400 transition-colors" title="Edit">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -131,6 +173,7 @@ export default function ShopCategoriesManager({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
+                </div>
               </div>
             </div>
           ))}

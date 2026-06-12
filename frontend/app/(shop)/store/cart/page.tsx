@@ -22,7 +22,7 @@ export default function CartPage() {
         </div>
         <h1 className="text-xl font-bold text-slate-900 dark:text-white">Your cart is empty</h1>
         <p className="text-sm text-slate-500 mt-1">Browse our kitchenware and add something you love.</p>
-        <Link href="/store" className="inline-block mt-6 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-colors">
+        <Link href="/store" className="inline-block mt-6 px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white text-sm font-semibold rounded-xl transition-colors">
           Continue shopping
         </Link>
       </div>
@@ -47,7 +47,7 @@ export default function CartPage() {
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-slate-900 dark:text-white">{item.product_name}</p>
                 <p className="text-xs text-slate-400">{item.variant?.variant_name}</p>
-                <p className="text-sm text-indigo-600 dark:text-indigo-400 font-semibold mt-1">
+                <p className="text-sm text-orange-600 dark:text-orange-400 font-semibold mt-1">
                   KSh {Number(item.variant?.price ?? 0).toLocaleString()}
                 </p>
                 <div className="flex items-center gap-3 mt-2">
@@ -81,10 +81,10 @@ export default function CartPage() {
               <span>Total</span>
               <span>KSh {subtotal.toLocaleString()}</span>
             </div>
-            <Link href="/store/checkout" className="block text-center mt-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-colors">
+            <Link href="/store/checkout" className="block text-center mt-5 py-3 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-xl transition-colors">
               Proceed to checkout
             </Link>
-            <Link href="/store" className="block text-center mt-2 py-2 text-sm text-slate-500 hover:text-indigo-600">
+            <Link href="/store" className="block text-center mt-2 py-2 text-sm text-slate-500 hover:text-orange-600">
               Continue shopping
             </Link>
           </div>

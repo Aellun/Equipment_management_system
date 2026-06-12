@@ -1,4 +1,4 @@
-import { ShopCategory } from "@/types";
+import { ShopCategory, Product } from "@/types";
 import { revalidatePath } from "next/cache";
 import ShopCategoriesManager from "./ShopCategoriesManager";
 
@@ -6,10 +6,16 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 
 async function getData() {
   try {
-    const res = await fetch(`${API}/shop-categories/`, { cache: "no-store" });
-    return (res.ok ? await res.json() : []) as ShopCategory[];
+    const [catRes, prodRes] = await Promise.all([
+      fetch(`${API}/shop-categories/`, { cache: "no-store" }),
+      fetch(`${API}/products/`, { cache: "no-store" }),
+    ]);
+    return {
+      categories: (catRes.ok ? await catRes.json() : []) as ShopCategory[],
+      products: (prodRes.ok ? await prodRes.json() : []) as Product[],
+    };
   } catch {
-    return [];
+    return { categories: [], products: [] };
   }
 }
 
@@ -19,16 +25,25 @@ async function refresh() {
 }
 
 export default async function ShopCategoriesPage() {
-  const categories = await getData();
+  const { categories, products } = await getData();
+
+  const productCounts: Record<number, number> = {};
+  for (const p of products) {
+    if (p.shop_category_id != null) {
+      productCounts[p.shop_category_id] = (productCounts[p.shop_category_id] ?? 0) + 1;
+    }
+  }
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Shop Categories</h1>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Organise your store products into browsable categories
+          Organise products into browsable categories. Use the switch to show or hide a category —
+          hiding it removes it and its products from the storefront until you turn it back on.
         </p>
       </div>
-      <ShopCategoriesManager categories={categories} onRefresh={refresh} />
+      <ShopCategoriesManager categories={categories} productCounts={productCounts} onRefresh={refresh} />
     </div>
   );
 }

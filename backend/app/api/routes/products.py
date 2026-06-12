@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db
@@ -8,8 +9,23 @@ from app.schemas.product import (
     ProductCreate, ProductUpdate, ProductOut,
     VariantCreate, VariantUpdate, VariantOut, ImageOut,
 )
+from app.services.link_import import import_from_url, LinkImportError
 
 router = APIRouter(prefix="/products", tags=["Products"])
+
+
+class ImportFromUrlRequest(BaseModel):
+    url: str
+    mirror_images: bool = True
+
+
+@router.post("/import-from-url")
+async def import_product_from_url(payload: ImportFromUrlRequest):
+    """Scrape a product page (JSON-LD / Open Graph) and return a pre-filled draft."""
+    try:
+        return await import_from_url(payload.url, mirror=payload.mirror_images)
+    except LinkImportError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
 
 
 # ---- Admin product management ----

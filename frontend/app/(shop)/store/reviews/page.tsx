@@ -74,7 +74,7 @@ export default function StoreReviewsPage() {
         </div>
         <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title (optional)" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm" />
         <textarea rows={3} value={body} onChange={(e) => setBody(e.target.value)} placeholder="Tell others about your experience…" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm resize-none" />
-        <button type="submit" disabled={busy} className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl disabled:opacity-50">{busy ? "Submitting…" : "Submit review"}</button>
+        <button type="submit" disabled={busy} className="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white text-sm font-semibold rounded-xl disabled:opacity-50">{busy ? "Submitting…" : "Submit review"}</button>
       </form>
 
       <div className="mt-8 space-y-4">
@@ -99,7 +99,7 @@ export default function StoreReviewsPage() {
       </div>
 
       <p className="text-center text-sm text-slate-400 mt-8">
-        Need to return something? <Link href="/store/track" className="text-indigo-600 font-medium">Track your order</Link> to request a return.
+        Need to return something? <Link href="/store/track" className="text-orange-600 font-medium">Track your order</Link> to request a return.
       </p>
     </div>
   );

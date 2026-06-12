@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "./AuthProvider";
 import AppNav from "../AppNav";
+import GlobalSearch from "./GlobalSearch";
 
 function SpotlightIcon({ className }: { className?: string }) {
   return (
@@ -214,6 +215,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden">
       <AppNav />
+      <GlobalSearch />
       <main className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950 p-4 md:p-8 min-w-0">
         {children}
       </main>

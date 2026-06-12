@@ -13,6 +13,7 @@ export interface EquipmentGroup {
   available: number;
   out: number;
   maintenance: number;
+  retired: number;
   items: Equipment[];
 }
 
@@ -235,9 +236,14 @@ export default function EquipmentEditModal({
               {/* Individual units list */}
               <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {group.items.map((item) => (
-                  <div key={item.id} className="px-6 py-3 flex items-center justify-between">
+                  <a
+                    key={item.id}
+                    href={`/equipment/${item.id}`}
+                    className="px-6 py-3 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group/unit"
+                  >
                     <div>
-                      <span className="text-xs font-mono text-slate-500 dark:text-slate-400">{item.serial_number}</span>
+                      <span className="text-xs font-mono text-slate-500 dark:text-slate-400 group-hover/unit:text-indigo-600 dark:group-hover/unit:text-indigo-400 transition-colors">{item.serial_number}</span>
+                      <span className="block text-[10px] text-slate-400 mt-0.5">View asset profile →</span>
                     </div>
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
                       item.status === "Available" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400" :
@@ -246,7 +252,7 @@ export default function EquipmentEditModal({
                     }`}>
                       {item.status}
                     </span>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>

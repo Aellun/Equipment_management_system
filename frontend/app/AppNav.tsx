@@ -39,6 +39,27 @@ const navItems = [
     ),
   },
   {
+    href: "/maintenance",
+    label: "Maintenance",
+    adminOnly: false,
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    ),
+  },
+  {
+    href: "/reservations",
+    label: "Reservations",
+    adminOnly: false,
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+    ),
+  },
+  {
     href: "/categories",
     label: "Categories",
     adminOnly: false,
@@ -91,6 +112,16 @@ const navItems = [
 ];
 
 const storeNavItems = [
+  {
+    href: "/shop",
+    label: "Store Overview",
+    adminOnly: false,
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V5a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+    ),
+  },
   {
     href: "/shop/products",
     label: "Products",
@@ -224,10 +255,20 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const visibleStore = storeNavItems.filter((item) => !item.adminOnly || isAdmin);
 
   const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+    href === "/" || href === "/shop" ? pathname === href : pathname.startsWith(href);
 
   return (
     <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+      <button
+        onClick={() => window.dispatchEvent(new CustomEvent("open-global-search"))}
+        className="w-full flex items-center gap-3 px-3 py-2.5 mb-2 rounded-xl text-sm font-medium text-slate-400 bg-slate-900 border border-slate-800 hover:border-slate-700 hover:text-white transition-all group"
+      >
+        <svg className="w-4 h-4 text-slate-500 group-hover:text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <span className="flex-1 text-left">Search…</span>
+        <kbd className="text-[10px] font-semibold text-slate-600 bg-slate-800 border border-slate-700 rounded px-1.5 py-0.5">Ctrl K</kbd>
+      </button>
       <p className="px-3 pt-1 pb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-600">Operations</p>
       {visibleItems.map(({ href, label, icon }) => (
         <NavItem key={href} href={href} label={label} icon={icon} active={isActive(href)} onNavigate={onNavigate} />

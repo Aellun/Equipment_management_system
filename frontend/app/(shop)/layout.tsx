@@ -1,18 +1,37 @@
 import StoreProvider from "./store/StoreProvider";
 import StoreHeader from "./store/StoreHeader";
+import StoreFooter from "./store/StoreFooter";
+import { Department, ShopCategory } from "@/types";
 
-export default function ShopLayout({ children }: { children: React.ReactNode }) {
+const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
+
+async function getChrome() {
+  try {
+    const [setRes, deptRes, catRes] = await Promise.all([
+      fetch(`${API}/shop/settings`, { next: { revalidate: 60 } }),
+      fetch(`${API}/shop/departments`, { next: { revalidate: 60 } }),
+      fetch(`${API}/shop/categories`, { next: { revalidate: 60 } }),
+    ]);
+    return {
+      settings: (setRes.ok ? await setRes.json() : {}) as Record<string, string>,
+      departments: (deptRes.ok ? await deptRes.json() : []) as Department[],
+      categories: (catRes.ok ? await catRes.json() : []) as ShopCategory[],
+    };
+  } catch {
+    return { settings: {}, departments: [], categories: [] };
+  }
+}
+
+export default async function ShopLayout({ children }: { children: React.ReactNode }) {
+  const { settings, departments, categories } = await getChrome();
+  const storeName = settings.store_name || "Ahadi Store";
+
   return (
     <StoreProvider>
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col">
-        <StoreHeader />
+      <div className="min-h-screen bg-slate-100 dark:bg-slate-950 flex flex-col">
+        <StoreHeader storeName={storeName} departments={departments} categories={categories} />
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-slate-200 dark:border-slate-800 py-8 mt-12">
-          <div className="max-w-6xl mx-auto px-4 text-center text-sm text-slate-400">
-            <p>© {new Date().getFullYear()} Fab Kitchenware. All rights reserved.</p>
-            <p className="mt-1 text-xs">Pay on delivery · Quality guaranteed</p>
-          </div>
-        </footer>
+        <StoreFooter storeName={storeName} departments={departments} />
       </div>
     </StoreProvider>
   );

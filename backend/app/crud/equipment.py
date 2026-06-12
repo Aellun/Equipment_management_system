@@ -29,6 +29,12 @@ async def create(db: AsyncSession, payload: EquipmentCreate) -> list[Equipment]:
             name=payload.name,
             category=payload.category,
             serial_number=_generate_serial(payload.name, payload.category),
+            location=payload.location,
+            purchase_date=payload.purchase_date,
+            purchase_cost=payload.purchase_cost,
+            supplier=payload.supplier,
+            warranty_expiry=payload.warranty_expiry,
+            notes=payload.notes,
         )
         db.add(item)
         items.append(item)

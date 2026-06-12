@@ -6,8 +6,11 @@ from app.schemas.shop_category import ShopCategoryCreate, ShopCategoryUpdate
 from app.crud.slug import unique_slug
 
 
-async def get_all(db: AsyncSession) -> list[ShopCategory]:
-    result = await db.execute(select(ShopCategory).order_by(ShopCategory.name))
+async def get_all(db: AsyncSession, active_only: bool = False) -> list[ShopCategory]:
+    stmt = select(ShopCategory).order_by(ShopCategory.name)
+    if active_only:
+        stmt = stmt.where(ShopCategory.is_active.is_(True))
+    result = await db.execute(stmt)
     return list(result.scalars().all())
 
 

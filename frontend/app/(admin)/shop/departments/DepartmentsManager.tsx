@@ -3,14 +3,17 @@
 import { useState } from "react";
 import { Department } from "@/types";
 import { useToast } from "@/app/components/Toast";
+import ToggleSwitch from "@/app/components/ToggleSwitch";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "/api";
 
 export default function DepartmentsManager({
   departments,
+  productCounts = {},
   onRefresh,
 }: {
   departments: Department[];
+  productCounts?: Record<number, number>;
   onRefresh: () => void;
 }) {
   const { toast } = useToast();
@@ -18,6 +21,33 @@ export default function DepartmentsManager({
   const [editTarget, setEditTarget] = useState<Department | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Department | null>(null);
   const [loading, setLoading] = useState(false);
+  const [togglingId, setTogglingId] = useState<number | null>(null);
+
+  async function toggleActive(d: Department, next: boolean) {
+    setTogglingId(d.id);
+    try {
+      const res = await fetch(`${API}/departments/${d.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ is_active: next }),
+      });
+      if (!res.ok) {
+        toast.error("Could not update visibility.", "Error");
+        return;
+      }
+      toast.success(
+        next
+          ? `"${d.name}" is now visible in the storefront.`
+          : `"${d.name}" and its products are now hidden from the storefront.`,
+        next ? "Department shown" : "Department hidden",
+      );
+      onRefresh();
+    } catch {
+      toast.error("Could not reach the server.", "Network error");
+    } finally {
+      setTogglingId(null);
+    }
+  }
 
   async function save(body: Record<string, unknown>, id?: number) {
     setLoading(true);
@@ -69,22 +99,33 @@ export default function DepartmentsManager({
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {departments.map((d) => (
-            <div key={d.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 group">
+            <div key={d.id} className={`bg-white dark:bg-slate-900 border rounded-2xl p-5 group transition-colors ${d.is_active ? "border-slate-200 dark:border-slate-800" : "border-dashed border-slate-300 dark:border-slate-700 opacity-75"}`}>
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                     {d.icon && <span className="text-lg">{d.icon}</span>}{d.name}
-                    {!d.is_active && <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-500">Hidden</span>}
+                    {!d.is_active && <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400">Hidden from store</span>}
                   </p>
                   {d.tagline && <p className="text-xs text-slate-500 mt-0.5">{d.tagline}</p>}
+                  <p className="text-xs text-slate-400 mt-1">
+                    {productCounts[d.id] ?? 0} product{(productCounts[d.id] ?? 0) !== 1 ? "s" : ""}
+                  </p>
                 </div>
-                <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => setEditTarget(d)} className="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20" title="Edit">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                  </button>
-                  <button onClick={() => setDeleteTarget(d)} className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" title="Delete">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                  </button>
+                <div className="flex items-center gap-2 shrink-0">
+                  <ToggleSwitch
+                    checked={d.is_active}
+                    disabled={togglingId === d.id}
+                    onChange={(next) => toggleActive(d, next)}
+                    label={d.is_active ? "Visible in storefront — click to hide" : "Hidden — click to show in storefront"}
+                  />
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => setEditTarget(d)} className="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20" title="Edit">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                    </button>
+                    <button onClick={() => setDeleteTarget(d)} className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" title="Delete">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                  </div>
                 </div>
               </div>
               {d.attribute_labels && d.attribute_labels.length > 0 && (

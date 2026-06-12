@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import (
     equipment, clients, transactions, categories, users, auth, activity_logs,
+    maintenance, reservations,
     shop_categories, products, shop, cart, orders, customers, uploads,
     departments, reviews, delivery, returns,
 )
@@ -37,6 +38,8 @@ app.include_router(categories.router)
 app.include_router(users.router)
 app.include_router(auth.router)
 app.include_router(activity_logs.router)
+app.include_router(maintenance.router)
+app.include_router(reservations.router)
 
 # E-commerce
 app.include_router(shop_categories.router)

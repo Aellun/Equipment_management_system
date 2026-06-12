@@ -16,10 +16,14 @@ export default function AddEquipmentForm({
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ name: "", category: "", quantity: 1 });
+  const [asset, setAsset] = useState({ location: "", purchase_date: "", purchase_cost: "", supplier: "", warranty_expiry: "", notes: "" });
+  const [showAsset, setShowAsset] = useState(false);
   const [loading, setLoading] = useState(false);
 
   function resetAndClose() {
     setForm({ name: "", category: "", quantity: 1 });
+    setAsset({ location: "", purchase_date: "", purchase_cost: "", supplier: "", warranty_expiry: "", notes: "" });
+    setShowAsset(false);
     setOpen(false);
   }
 
@@ -30,7 +34,15 @@ export default function AddEquipmentForm({
       const res = await fetch(`${API}/equipment/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          location: asset.location || null,
+          purchase_date: asset.purchase_date || null,
+          purchase_cost: asset.purchase_cost ? Number(asset.purchase_cost) : null,
+          supplier: asset.supplier || null,
+          warranty_expiry: asset.warranty_expiry || null,
+          notes: asset.notes || null,
+        }),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -157,6 +169,84 @@ export default function AddEquipmentForm({
                       {form.quantity === 1 ? "item" : "items"} will be created
                     </span>
                   </div>
+                </div>
+
+                {/* Asset register (optional) */}
+                <div className="border-t border-slate-100 dark:border-slate-800 pt-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowAsset((s) => !s)}
+                    className="flex items-center gap-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500"
+                  >
+                    <svg className={`w-3.5 h-3.5 transition-transform ${showAsset ? "rotate-90" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                    Asset details (location, purchase info) — optional
+                  </button>
+                  {showAsset && (
+                    <div className="mt-3 space-y-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Storage location</label>
+                          <input
+                            value={asset.location}
+                            onChange={(e) => setAsset({ ...asset, location: e.target.value })}
+                            placeholder="e.g. Store Room B, Shelf 3"
+                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Purchase date</label>
+                          <input
+                            type="date"
+                            value={asset.purchase_date}
+                            onChange={(e) => setAsset({ ...asset, purchase_date: e.target.value })}
+                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Supplier</label>
+                          <input
+                            value={asset.supplier}
+                            onChange={(e) => setAsset({ ...asset, supplier: e.target.value })}
+                            placeholder="e.g. SoundHub Ltd"
+                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Warranty until</label>
+                          <input
+                            type="date"
+                            value={asset.warranty_expiry}
+                            onChange={(e) => setAsset({ ...asset, warranty_expiry: e.target.value })}
+                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Purchase cost per unit (KSh)</label>
+                        <input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={asset.purchase_cost}
+                          onChange={(e) => setAsset({ ...asset, purchase_cost: e.target.value })}
+                          placeholder="e.g. 12500"
+                          className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Notes</label>
+                        <textarea
+                          rows={2}
+                          value={asset.notes}
+                          onChange={(e) => setAsset({ ...asset, notes: e.target.value })}
+                          placeholder="Supplier, warranty, condition remarks…"
+                          className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white resize-none focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

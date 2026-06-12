@@ -28,7 +28,23 @@ def _attach_aggregates(product, aggregates: dict) -> ProductOut:
 
 @router.get("/categories", response_model=list[ShopCategoryOut])
 async def list_categories(db: AsyncSession = Depends(get_db)):
-    return await category_crud.get_all(db)
+    return await category_crud.get_all(db, active_only=True)
+
+
+async def _visible_id_sets(db: AsyncSession) -> tuple[set[int], set[int]]:
+    """IDs of departments/categories currently visible in the storefront."""
+    depts = await department_crud.get_all(db, active_only=True)
+    cats = await category_crud.get_all(db, active_only=True)
+    return {d.id for d in depts}, {c.id for c in cats}
+
+
+def _is_visible(product, visible_depts: set[int], visible_cats: set[int]) -> bool:
+    """Hidden department or category hides its products; unassigned products stay visible."""
+    if product.department_id is not None and product.department_id not in visible_depts:
+        return False
+    if product.shop_category_id is not None and product.shop_category_id not in visible_cats:
+        return False
+    return True
 
 
 @router.get("/departments", response_model=list[DepartmentOut])
@@ -54,6 +70,8 @@ async def list_products(
     db: AsyncSession = Depends(get_db),
 ):
     products = await product_crud.get_all(db, active_only=True)
+    visible_depts, visible_cats = await _visible_id_sets(db)
+    products = [p for p in products if _is_visible(p, visible_depts, visible_cats)]
     if department:
         depts = await department_crud.get_all(db)
         dept_id = next((d.id for d in depts if d.slug == department), -1)
@@ -74,6 +92,9 @@ async def list_products(
 async def get_product(slug: str, db: AsyncSession = Depends(get_db)):
     product = await product_crud.get_by_slug(db, slug)
     if not product or not product.is_active:
+        raise HTTPException(status_code=404, detail="Product not found")
+    visible_depts, visible_cats = await _visible_id_sets(db)
+    if not _is_visible(product, visible_depts, visible_cats):
         raise HTTPException(status_code=404, detail="Product not found")
     summary = await review_crud.summary_for_product(db, product.id)
     out = ProductOut.model_validate(product)

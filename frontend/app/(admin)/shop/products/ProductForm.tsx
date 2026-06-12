@@ -61,6 +61,46 @@ export default function ProductForm({
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // --- Import from link ---
+  const [importUrl, setImportUrl] = useState("");
+  const [importing, setImporting] = useState(false);
+
+  async function importFromLink() {
+    if (!importUrl.trim()) {
+      toast.error("Paste a product page link first.", "No link");
+      return;
+    }
+    setImporting(true);
+    try {
+      const res = await fetch(`${API}/products/import-from-url`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: importUrl.trim(), mirror_images: true }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        toast.error(data.detail ?? "Could not read that page.", "Import failed");
+        return;
+      }
+      if (data.name && !name) setName(data.name);
+      else if (data.name) setName(data.name);
+      if (data.description) setDescription(data.description);
+      if (data.brand) setBrand(data.brand);
+      if (data.price) setDefaultPrice(String(data.price));
+      if (Array.isArray(data.images) && data.images.length) {
+        setImageUrls((urls) => [...urls, ...data.images.filter((u: string) => !urls.includes(u))]);
+      }
+      toast.success(
+        `Pre-filled from link${data.images?.length ? ` with ${data.images.length} image(s)` : ""}. Review, set stock, then save.`,
+        "Product imported",
+      );
+    } catch {
+      toast.error("Could not reach the server.", "Network error");
+    } finally {
+      setImporting(false);
+    }
+  }
+
   const selectedDept = departments.find((d) => String(d.id) === departmentId);
   const deptLabels = selectedDept?.attribute_labels?.length ? selectedDept.attribute_labels : ["Size", "Colour"];
 
@@ -250,6 +290,40 @@ export default function ProductForm({
         </div>
 
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-5">
+          {!isEdit && (
+            <div className="bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 rounded-xl p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <svg className="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Import from a link</p>
+                <span className="text-[10px] font-semibold uppercase tracking-wide bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 px-1.5 py-0.5 rounded">Optional</span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={importUrl}
+                  onChange={(e) => setImportUrl(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); importFromLink(); } }}
+                  placeholder="Paste a product page URL (e.g. from a supplier site)…"
+                  className="flex-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={importFromLink}
+                  disabled={importing}
+                  className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-colors shrink-0 flex items-center gap-2"
+                >
+                  {importing && (
+                    <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  )}
+                  {importing ? "Fetching…" : "Import"}
+                </button>
+              </div>
+              <p className="text-[11px] text-slate-400 mt-1.5">
+                Fetches the name, description, brand, price and photos automatically. Images are copied to your store so they never break.
+              </p>
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Product Name <span className="text-red-500">*</span></label>
             <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Non-stick Frying Pan" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" />

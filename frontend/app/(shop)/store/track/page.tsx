@@ -50,7 +50,7 @@ function ReturnRequestBox({ orderNumber }: { orderNumber: string }) {
   return (
     <div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-4">
       {!open ? (
-        <button onClick={() => setOpen(true)} className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+        <button onClick={() => setOpen(true)} className="text-sm font-medium text-orange-600 hover:text-orange-500">
           Request a return or refund
         </button>
       ) : (
@@ -62,7 +62,7 @@ function ReturnRequestBox({ orderNumber }: { orderNumber: string }) {
           </select>
           <textarea rows={2} value={details} onChange={(e) => setDetails(e.target.value)} placeholder="Tell us more (optional)…" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm resize-none" />
           <div className="flex gap-2">
-            <button type="submit" disabled={busy} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl disabled:opacity-50">{busy ? "Submitting…" : "Submit request"}</button>
+            <button type="submit" disabled={busy} className="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white text-sm font-semibold rounded-xl disabled:opacity-50">{busy ? "Submitting…" : "Submit request"}</button>
             <button type="button" onClick={() => setOpen(false)} className="px-4 py-2 text-sm text-slate-500">Cancel</button>
           </div>
         </form>
@@ -120,8 +120,8 @@ function TrackInner() {
       <p className="text-sm text-slate-500 mt-1">Enter the order code you received at checkout (e.g. ORD-20260607-ABC123).</p>
 
       <form onSubmit={(e) => { e.preventDefault(); lookup(code); }} className="flex gap-3 mt-5">
-        <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Enter order code" className="flex-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-mono focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20" />
-        <button type="submit" disabled={busy} className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl disabled:opacity-50">{busy ? "…" : "Track"}</button>
+        <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Enter order code" className="flex-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm font-mono focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" />
+        <button type="submit" disabled={busy} className="px-6 py-3 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-xl disabled:opacity-50">{busy ? "…" : "Track"}</button>
       </form>
 
       {error && (
@@ -135,7 +135,7 @@ function TrackInner() {
               <p className="font-mono font-bold text-slate-900 dark:text-white">{order.order_number}</p>
               <p className="text-xs text-slate-400 mt-0.5">Placed {new Date(order.created_at).toLocaleString()} · {order.delivery_method === "pickup" ? "Pickup" : "Door delivery"}{order.delivery_zone_name ? ` · ${order.delivery_zone_name}` : ""}</p>
             </div>
-            <span className={`text-xs font-semibold uppercase px-3 py-1 rounded-full ${cancelled ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" : "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400"}`}>{order.status}</span>
+            <span className={`text-xs font-semibold uppercase px-3 py-1 rounded-full ${cancelled ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" : "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"}`}>{order.status}</span>
           </div>
 
           {/* Progress bar */}
@@ -144,13 +144,13 @@ function TrackInner() {
               {STAGES.map((stage, i) => (
                 <div key={stage} className="flex-1 flex items-center last:flex-none">
                   <div className="flex flex-col items-center">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${i <= currentStage ? "bg-indigo-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-400"}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${i <= currentStage ? "bg-orange-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-400"}`}>
                       {i < currentStage ? "✓" : i + 1}
                     </div>
                     <span className={`text-[10px] mt-1.5 ${i <= currentStage ? "text-slate-700 dark:text-slate-300 font-medium" : "text-slate-400"}`}>{stage}</span>
                   </div>
                   {i < STAGES.length - 1 && (
-                    <div className={`flex-1 h-0.5 mx-1 -mt-4 ${i < currentStage ? "bg-indigo-600" : "bg-slate-200 dark:bg-slate-700"}`} />
+                    <div className={`flex-1 h-0.5 mx-1 -mt-4 ${i < currentStage ? "bg-orange-600" : "bg-slate-200 dark:bg-slate-700"}`} />
                   )}
                 </div>
               ))}
@@ -166,7 +166,7 @@ function TrackInner() {
               <ol className="relative border-l border-slate-200 dark:border-slate-700 ml-2">
                 {order.tracking_events.map((ev) => (
                   <li key={ev.id} className="ml-4 pb-4 last:pb-0">
-                    <div className="absolute -left-1.5 w-3 h-3 rounded-full bg-indigo-600" />
+                    <div className="absolute -left-1.5 w-3 h-3 rounded-full bg-orange-600" />
                     <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{ev.status}</p>
                     {ev.note && <p className="text-xs text-slate-500">{ev.note}</p>}
                     <p className="text-[11px] text-slate-400 mt-0.5">{new Date(ev.created_at).toLocaleString()}</p>

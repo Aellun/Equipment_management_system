@@ -63,7 +63,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
   return (
     <div>
-      <Link href="/store" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-indigo-600 mb-6 transition-colors">
+      <Link href="/store" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-orange-600 mb-6 transition-colors">
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
         Back to shop
       </Link>
@@ -82,7 +82,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           {product.images.length > 1 && (
             <div className="flex gap-2 mt-3">
               {product.images.map((img, i) => (
-                <button key={img.id} onClick={() => setActiveImg(i)} className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-colors ${i === activeImg ? "border-indigo-500" : "border-slate-200 dark:border-slate-800"}`}>
+                <button key={img.id} onClick={() => setActiveImg(i)} className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-colors ${i === activeImg ? "border-orange-500" : "border-slate-200 dark:border-slate-800"}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={imgSrc(img.url)} alt="" className="w-full h-full object-cover" />
                 </button>
@@ -93,7 +93,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
         {/* Details */}
         <div>
-          {product.brand && <p className="text-xs font-semibold uppercase tracking-wide text-indigo-500 mb-1">{product.brand}</p>}
+          {product.brand && <p className="text-xs font-semibold uppercase tracking-wide text-orange-500 mb-1">{product.brand}</p>}
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{product.name}</h1>
 
           {/* Rating summary */}
@@ -105,7 +105,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           )}
 
           {variant && (
-            <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mt-3">
+            <p className="text-2xl font-bold text-orange-600 dark:text-orange-400 mt-3">
               KSh {Number(variant.price).toLocaleString()}
             </p>
           )}
@@ -137,10 +137,10 @@ export default function ProductDetail({ product }: { product: Product }) {
                     disabled={oos}
                     className={`px-4 py-2 rounded-xl text-sm font-medium border transition-colors ${
                       selected
-                        ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300"
+                        ? "border-orange-600 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300"
                         : oos
                         ? "border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-600 line-through cursor-not-allowed"
-                        : "border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-400"
+                        : "border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-orange-400"
                     }`}
                   >
                     {v.variant_name}
@@ -166,10 +166,10 @@ export default function ProductDetail({ product }: { product: Product }) {
             </div>
 
             <div className="flex gap-3 mt-4">
-              <button onClick={() => handleAdd(false)} disabled={!inStock || adding} className="flex-1 py-3 bg-white dark:bg-slate-900 border-2 border-indigo-600 text-indigo-600 dark:text-indigo-400 font-semibold rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 disabled:opacity-50 transition-colors">
+              <button onClick={() => handleAdd(false)} disabled={!inStock || adding} className="flex-1 py-3 bg-white dark:bg-slate-900 border-2 border-orange-600 text-orange-600 dark:text-orange-400 font-semibold rounded-xl hover:bg-orange-50 dark:hover:bg-orange-900/20 disabled:opacity-50 transition-colors">
                 {adding ? "Adding…" : "Add to cart"}
               </button>
-              <button onClick={() => handleAdd(true)} disabled={!inStock || adding} className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl disabled:opacity-50 transition-colors">
+              <button onClick={() => handleAdd(true)} disabled={!inStock || adding} className="flex-1 py-3 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-xl disabled:opacity-50 transition-colors">
                 Buy now
               </button>
             </div>
@@ -193,7 +193,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           {product.usage_guide && (
             <div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-4">
               <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
                 How to use &amp; care
               </p>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-line">{product.usage_guide}</p>
