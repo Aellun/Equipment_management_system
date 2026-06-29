@@ -10,7 +10,7 @@ services:
       - ./backend:/app
       - uploads_data:/app/uploads
     # Reload on code changes in dev
-    entrypoint: ["/bin/bash", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"]
+    entrypoint: ["/bin/bash", "-c", "alembic upgrade head && (python -m app.seed_shop || true) && (python -m app.errands.seed || true) && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"]
 
   frontend:
     build:

@@ -1,8 +1,21 @@
 version: '3.9'
 
-# Production-ready stack. Run with:  docker compose up --build -d
+# Dyzah umbrella stack — Equipment · Store · Errands · Hygiene.
+# Production-ready. Run with:  docker compose up --build -d
 # For local development with hot-reload, add the dev override:
 #   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+# Shared env for the FastAPI backend and the Celery worker (same image).
+x-backend-env: &backend-env
+  DATABASE_URL: postgresql+asyncpg://ahadi:ahadi_secret@db:5432/event_tracking
+  # Errands/Hygiene domain — sync (psycopg) URL to the SAME database.
+  ERRANDS_DATABASE_URL: postgresql+psycopg://ahadi:ahadi_secret@db:5432/event_tracking
+  REDIS_URL: redis://redis:6379/0
+  SECRET_KEY: ${SECRET_KEY:-dyzah-dev-secret-change-me}
+  ERRANDS_MEDIA_DIR: /app/errands_media
+  # M-Pesa (mock by default; set real Daraja creds + MPESA_MOCK=false for live)
+  MPESA_MOCK: ${MPESA_MOCK:-true}
+  MPESA_CALLBACK_URL: ${MPESA_CALLBACK_URL:-http://localhost/api/errands/payments/mpesa/callback}
 
 services:
   db:
@@ -22,6 +35,17 @@ services:
       retries: 5
     restart: unless-stopped
 
+  redis:
+    image: redis:7-alpine
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
   backend:
     build: ./backend
     # No host port needed in production — nginx reaches the backend internally at
@@ -30,13 +54,30 @@ services:
     expose:
       - "8000"
     environment:
-      DATABASE_URL: postgresql+asyncpg://ahadi:ahadi_secret@db:5432/event_tracking
+      <<: *backend-env
       UVICORN_WORKERS: 2
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
       - uploads_data:/app/uploads
+      - errands_media:/app/errands_media
+    restart: unless-stopped
+
+  # Celery worker for errands/hygiene notifications & deferred work.
+  # Override the image entrypoint (which launches uvicorn) so the worker runs Celery.
+  worker:
+    build: ./backend
+    entrypoint: ["celery", "-A", "app.errands.core.celery_app.celery", "worker", "--loglevel=info"]
+    environment:
+      <<: *backend-env
+    depends_on:
+      - backend
+      - redis
+    volumes:
+      - errands_media:/app/errands_media
     restart: unless-stopped
 
   frontend:
@@ -67,3 +108,4 @@ services:
 volumes:
   postgres_data:
   uploads_data:
+  errands_media:
