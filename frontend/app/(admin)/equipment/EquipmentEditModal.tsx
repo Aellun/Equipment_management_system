@@ -131,7 +131,7 @@ export default function EquipmentEditModal({
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors capitalize ${tab === t ? "border-indigo-600 text-indigo-600 dark:text-indigo-400" : "border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors capitalize ${tab === t ? "border-brand-600 text-brand-600 dark:text-brand-400" : "border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
             >
               {t === "details" ? "Edit Details" : `Units (${group.total})`}
             </button>
@@ -150,7 +150,7 @@ export default function EquipmentEditModal({
                     required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
                   />
                 </div>
                 <div>
@@ -162,7 +162,7 @@ export default function EquipmentEditModal({
                       required
                       value={form.category}
                       onChange={(e) => setForm({ ...form, category: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
                     >
                       {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
                     </select>
@@ -171,7 +171,7 @@ export default function EquipmentEditModal({
                       required
                       value={form.category}
                       onChange={(e) => setForm({ ...form, category: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
                     />
                   )}
                 </div>
@@ -207,7 +207,7 @@ export default function EquipmentEditModal({
               </div>
               <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 rounded-b-2xl shrink-0">
                 <div className="flex gap-3">
-                  <button type="submit" disabled={loading} className="flex-1 py-2.5 text-sm bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl transition-colors font-semibold">
+                  <button type="submit" disabled={loading} className="flex-1 py-2.5 text-sm bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-xl transition-colors font-semibold">
                     {loading ? "Saving…" : "Save Changes"}
                   </button>
                   <button type="button" onClick={onDone} className="flex-1 py-2.5 text-sm bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-colors font-medium">
@@ -225,9 +225,9 @@ export default function EquipmentEditModal({
                 <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Add more units</p>
                 <div className="flex items-center gap-3">
                   <button type="button" onClick={() => setAddQty(q => Math.max(1, q - 1))} className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-lg font-bold flex items-center justify-center transition-colors">−</button>
-                  <input type="number" min={1} max={200} value={addQty} onChange={e => setAddQty(Math.max(1, parseInt(e.target.value) || 1))} className="w-16 text-center bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                  <input type="number" min={1} max={200} value={addQty} onChange={e => setAddQty(Math.max(1, parseInt(e.target.value) || 1))} className="w-16 text-center bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500" />
                   <button type="button" onClick={() => setAddQty(q => Math.min(200, q + 1))} className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-lg font-bold flex items-center justify-center transition-colors">+</button>
-                  <button type="submit" disabled={loading} className="flex-1 py-2 text-sm bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl transition-colors font-semibold">
+                  <button type="submit" disabled={loading} className="flex-1 py-2 text-sm bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-xl transition-colors font-semibold">
                     {loading ? "Adding…" : `Add ${addQty} unit${addQty > 1 ? "s" : ""}`}
                   </button>
                 </div>
@@ -242,7 +242,7 @@ export default function EquipmentEditModal({
                     className="px-6 py-3 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group/unit"
                   >
                     <div>
-                      <span className="text-xs font-mono text-slate-500 dark:text-slate-400 group-hover/unit:text-indigo-600 dark:group-hover/unit:text-indigo-400 transition-colors">{item.serial_number}</span>
+                      <span className="text-xs font-mono text-slate-500 dark:text-slate-400 group-hover/unit:text-brand-600 dark:group-hover/unit:text-brand-400 transition-colors">{item.serial_number}</span>
                       <span className="block text-[10px] text-slate-400 mt-0.5">View asset profile →</span>
                     </div>
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${

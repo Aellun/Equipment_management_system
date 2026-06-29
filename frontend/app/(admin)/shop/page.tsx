@@ -37,7 +37,7 @@ function StatCard({
   return (
     <Link
       href={href}
-      className={`bg-white dark:bg-slate-900 border rounded-2xl p-5 block hover:shadow-md transition-all ${alert ? "border-amber-300 dark:border-amber-800" : "border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700"}`}
+      className={`bg-white dark:bg-slate-900 border rounded-2xl p-5 block hover:shadow-md transition-all ${alert ? "border-amber-300 dark:border-amber-800" : "border-slate-200 dark:border-slate-800 hover:border-brand-300 dark:hover:border-brand-700"}`}
     >
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{label}</p>
@@ -87,8 +87,8 @@ export default async function StoreOverviewPage() {
   const statusBadge: Record<string, string> = {
     Pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
     Confirmed: "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-400",
-    Processing: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400",
-    Shipped: "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400",
+    Processing: "bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-400",
+    Shipped: "bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-400",
     Delivered: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
     Cancelled: "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
   };
@@ -132,7 +132,7 @@ export default async function StoreOverviewPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Pending Orders" value={pendingOrders} sublabel={`${todayOrders} placed today`} href="/shop/orders" accent="bg-amber-500" alert={pendingOrders > 0} />
-        <StatCard label="In Fulfilment" value={inFlight} sublabel={`${delivered} delivered all-time`} href="/shop/orders" accent="bg-indigo-500" />
+        <StatCard label="In Fulfilment" value={inFlight} sublabel={`${delivered} delivered all-time`} href="/shop/orders" accent="bg-brand-500" />
         <StatCard label="Revenue (Paid)" value={`KSh ${revenue.toLocaleString()}`} sublabel={`${orders.length} orders all-time`} href="/shop/orders" accent="bg-emerald-500" />
         <StatCard
           label="Catalog"
@@ -148,7 +148,7 @@ export default async function StoreOverviewPage() {
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
             <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Low Stock (≤ {LOW_STOCK_AT})</p>
-            <Link href="/shop/products" className="text-xs font-semibold text-indigo-600 hover:text-indigo-500">Manage products →</Link>
+            <Link href="/shop/products" className="text-xs font-semibold text-brand-600 hover:text-brand-500">Manage products →</Link>
           </div>
           {lowStock.length === 0 ? (
             <p className="text-sm text-slate-400 text-center py-10">All variants are sufficiently stocked 🎉</p>
@@ -176,7 +176,7 @@ export default async function StoreOverviewPage() {
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
             <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Recent Orders</p>
-            <Link href="/shop/orders" className="text-xs font-semibold text-indigo-600 hover:text-indigo-500">All orders →</Link>
+            <Link href="/shop/orders" className="text-xs font-semibold text-brand-600 hover:text-brand-500">All orders →</Link>
           </div>
           {recentOrders.length === 0 ? (
             <p className="text-sm text-slate-400 text-center py-10">No orders yet</p>
@@ -208,7 +208,7 @@ export default async function StoreOverviewPage() {
           { label: "Categories", sub: "Show / hide categories", href: "/shop/categories" },
           { label: "Delivery zones", sub: "Fees & coverage", href: "/shop/delivery" },
         ].map((a) => (
-          <Link key={a.href + a.label} href={a.href} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-sm transition-all">
+          <Link key={a.href + a.label} href={a.href} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 hover:border-brand-300 dark:hover:border-brand-700 hover:shadow-sm transition-all">
             <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{a.label}</p>
             <p className="text-xs text-slate-400 mt-0.5">{a.sub}</p>
           </Link>

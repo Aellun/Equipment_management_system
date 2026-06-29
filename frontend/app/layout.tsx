@@ -4,8 +4,8 @@ import ThemeProvider from "./ThemeProvider";
 import { ToastProvider } from "./components/Toast";
 
 export const metadata: Metadata = {
-  title: "Fab — Equipment & Kitchenware Store",
-  description: "Equipment management and online kitchenware store for Fab",
+  title: "Dyzah — Store · Errands · Hygiene · Equipment",
+  description: "Dyzah umbrella platform: online store, errand services, hygiene services and equipment management.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

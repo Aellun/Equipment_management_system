@@ -291,11 +291,11 @@ export default function ProductForm({
 
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-5">
           {!isEdit && (
-            <div className="bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 rounded-xl p-4">
+            <div className="bg-brand-50/60 dark:bg-brand-950/30 border border-brand-100 dark:border-brand-900/40 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
-                <svg className="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                <svg className="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
                 <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Import from a link</p>
-                <span className="text-[10px] font-semibold uppercase tracking-wide bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 px-1.5 py-0.5 rounded">Optional</span>
+                <span className="text-[10px] font-semibold uppercase tracking-wide bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-300 px-1.5 py-0.5 rounded">Optional</span>
               </div>
               <div className="flex gap-2">
                 <input
@@ -304,13 +304,13 @@ export default function ProductForm({
                   onChange={(e) => setImportUrl(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); importFromLink(); } }}
                   placeholder="Paste a product page URL (e.g. from a supplier site)…"
-                  className="flex-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                  className="flex-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
                 />
                 <button
                   type="button"
                   onClick={importFromLink}
                   disabled={importing}
-                  className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-colors shrink-0 flex items-center gap-2"
+                  className="px-4 py-2.5 bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-colors shrink-0 flex items-center gap-2"
                 >
                   {importing && (
                     <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
@@ -326,34 +326,34 @@ export default function ProductForm({
 
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Product Name <span className="text-red-500">*</span></label>
-            <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Non-stick Frying Pan" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" />
+            <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Non-stick Frying Pan" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" />
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Department</label>
-              <select value={departmentId} onChange={(e) => setDepartmentId(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+              <select value={departmentId} onChange={(e) => setDepartmentId(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
                 <option value="">— None —</option>
                 {departments.map((d) => <option key={d.id} value={d.id}>{d.icon ? `${d.icon} ` : ""}{d.name}</option>)}
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Brand</label>
-              <input value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="e.g. Tefal (optional)" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" />
+              <input value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="e.g. Tefal (optional)" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" />
             </div>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Category</label>
-              <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+              <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
                 <option value="">— None —</option>
                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div className="flex items-end gap-4">
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer py-2.5">
-                <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+                <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} className="w-4 h-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500" />
                 Active
               </label>
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer py-2.5">
@@ -365,12 +365,12 @@ export default function ProductForm({
 
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Description</label>
-            <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe the product…" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white resize-none focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" />
+            <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe the product…" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white resize-none focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">How to use &amp; care</label>
-            <textarea rows={3} value={usageGuide} onChange={(e) => setUsageGuide(e.target.value)} placeholder="How customers should use / care for this product…" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white resize-none focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" />
+            <textarea rows={3} value={usageGuide} onChange={(e) => setUsageGuide(e.target.value)} placeholder="How customers should use / care for this product…" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white resize-none focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" />
           </div>
 
           {/* Images — multi-upload + reorder */}
@@ -385,7 +385,7 @@ export default function ProductForm({
                 <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 group">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={imgSrc(url)} alt="" className="w-full h-full object-cover" />
-                  {i === 0 && <span className="absolute top-0 left-0 bg-indigo-600 text-white text-[9px] px-1 rounded-br">Main</span>}
+                  {i === 0 && <span className="absolute top-0 left-0 bg-brand-600 text-white text-[9px] px-1 rounded-br">Main</span>}
                   <div className="absolute inset-x-0 bottom-0 flex justify-between bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button type="button" onClick={() => moveImage(i, i - 1)} className="text-white text-xs px-1" title="Move left">‹</button>
                     <button type="button" onClick={() => removeImage(i)} className="text-white text-xs px-1" title="Remove">✕</button>
@@ -393,7 +393,7 @@ export default function ProductForm({
                   </div>
                 </div>
               ))}
-              <label className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:border-indigo-400 transition-colors text-slate-400 text-center">
+              <label className="w-20 h-20 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer hover:border-brand-400 transition-colors text-slate-400 text-center">
                 {uploading ? (
                   <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
                 ) : (
@@ -426,7 +426,7 @@ export default function ProductForm({
                     </div>
                   ))}
                 </div>
-                <button type="button" onClick={() => setOptions((os) => [...os, { name: deptLabels[os.length] ?? "", values: "" }])} className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 mt-2">+ Add option</button>
+                <button type="button" onClick={() => setOptions((os) => [...os, { name: deptLabels[os.length] ?? "", values: "" }])} className="text-xs font-semibold text-brand-600 hover:text-brand-500 mt-2">+ Add option</button>
               </div>
 
               <div className="grid grid-cols-12 gap-2 items-end">
@@ -474,7 +474,7 @@ export default function ProductForm({
           )}
 
           <div className="flex gap-3 pt-1">
-            <button type="submit" disabled={loading} className="flex-1 py-2.5 text-sm bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl transition-colors font-semibold">{loading ? "Saving…" : "Save Product"}</button>
+            <button type="submit" disabled={loading} className="flex-1 py-2.5 text-sm bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-xl transition-colors font-semibold">{loading ? "Saving…" : "Save Product"}</button>
             <button type="button" onClick={onClose} className="flex-1 py-2.5 text-sm bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-colors font-medium">Cancel</button>
           </div>
         </form>

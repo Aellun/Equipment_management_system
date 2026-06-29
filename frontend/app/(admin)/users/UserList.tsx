@@ -51,7 +51,7 @@ export default function UserList({
           placeholder="Search users…"
           value={query}
           onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-          className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+          className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
         />
       </div>
 
@@ -82,14 +82,14 @@ export default function UserList({
                         <div className="font-medium text-slate-900 dark:text-white flex items-center gap-2">
                           {u.name}
                           {isSelf && (
-                            <span className="text-xs bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-400 px-1.5 py-0.5 rounded-md font-medium">You</span>
+                            <span className="text-xs bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-400 px-1.5 py-0.5 rounded-md font-medium">You</span>
                           )}
                         </div>
                         <div className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 sm:hidden">{u.role}</div>
                       </td>
                       <td className="px-4 py-3.5 text-slate-600 dark:text-slate-300 text-sm truncate max-w-[180px]">{u.email}</td>
                       <td className="px-4 py-3.5 hidden sm:table-cell">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${u.role === "Administrator" ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"}`}>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${u.role === "Administrator" ? "bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-400" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"}`}>
                           {u.role}
                         </span>
                       </td>

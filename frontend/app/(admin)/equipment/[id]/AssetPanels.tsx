@@ -106,11 +106,11 @@ export function MaintenancePanel({ equipment, logs }: { equipment: Equipment; lo
           Maintenance ({openLogs.length} open)
         </p>
         <div className="flex items-center gap-3">
-          <Link href="/maintenance" className="text-xs font-semibold text-slate-400 hover:text-indigo-500">All logs →</Link>
+          <Link href="/maintenance" className="text-xs font-semibold text-slate-400 hover:text-brand-500">All logs →</Link>
           {equipment.status !== "Retired" && equipment.status !== "Out" && (
             <button
               onClick={() => setShowForm((s) => !s)}
-              className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500"
+              className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-500"
             >
               {showForm ? "Close" : "+ Open work log"}
             </button>
@@ -125,15 +125,15 @@ export function MaintenancePanel({ equipment, logs }: { equipment: Equipment; lo
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="What needs doing? e.g. Replace power cable"
-            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
           />
           <input
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Details (optional)"
-            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
           />
-          <button type="submit" disabled={loading} className="px-4 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg transition-colors">
+          <button type="submit" disabled={loading} className="px-4 py-2 text-xs font-semibold bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-lg transition-colors">
             {loading ? "Opening…" : "Open work log (takes unit out of service)"}
           </button>
         </form>
@@ -192,7 +192,7 @@ export function ReservationsPanel({ equipment, reservations }: { equipment: Equi
         <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
           Reservations ({upcoming.length} upcoming)
         </p>
-        <Link href="/reservations" className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500">
+        <Link href="/reservations" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-500">
           {equipment.status === "Retired" ? "View all →" : "+ Reserve this unit"}
         </Link>
       </div>

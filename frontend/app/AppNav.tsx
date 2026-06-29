@@ -19,7 +19,7 @@ function SpotlightIcon({ className }: { className?: string }) {
 
 const navItems = [
   {
-    href: "/",
+    href: "/admin",
     label: "Dashboard",
     adminOnly: false,
     icon: (
@@ -205,6 +205,20 @@ const storeNavItems = [
   },
 ];
 
+const servicesNavItems = [
+  {
+    href: "/ops/services",
+    label: "Services Ops",
+    adminOnly: false,
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M5 17a2 2 0 104 0 2 2 0 00-4 0zm10 0a2 2 0 104 0 2 2 0 00-4 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 17h4l2-9h3M9 17l-2-7H4" />
+      </svg>
+    ),
+  },
+];
+
 function ThemeToggle() {
   const { theme, toggle } = useTheme();
   return (
@@ -235,7 +249,7 @@ function NavItem({
       onClick={onNavigate}
       className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group ${
         active
-          ? "bg-indigo-600 text-white shadow-sm"
+          ? "bg-brand-500 text-white shadow-sm"
           : "text-slate-400 hover:text-white hover:bg-slate-800"
       }`}
     >
@@ -247,18 +261,55 @@ function NavItem({
   );
 }
 
+type NavEntry = { href: string; label: string; icon: React.ReactNode; adminOnly: boolean };
+
+function NavSection({
+  title, items, isActive, onNavigate, external,
+}: {
+  title: string;
+  items: NavEntry[];
+  isActive: (href: string) => boolean;
+  onNavigate?: () => void;
+  external?: { href: string; label: string };
+}) {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className="pt-3">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-300 transition-colors"
+      >
+        <span>{title}</span>
+        <svg className={`w-3.5 h-3.5 transition-transform ${open ? "" : "-rotate-90"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="space-y-0.5 mt-1">
+          {items.map(({ href, label, icon }) => (
+            <NavItem key={href} href={href} label={label} icon={icon} active={isActive(href)} onNavigate={onNavigate} />
+          ))}
+          {external && <ExternalNavLink href={external.href} label={external.label} />}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { user } = useAuth();
   const isAdmin = user?.role === "Administrator";
   const visibleItems = navItems.filter((item) => !item.adminOnly || isAdmin);
   const visibleStore = storeNavItems.filter((item) => !item.adminOnly || isAdmin);
+  const visibleServices = servicesNavItems.filter((item) => !item.adminOnly || isAdmin);
 
+  const exact = new Set(["/admin", "/shop"]);
   const isActive = (href: string) =>
-    href === "/" || href === "/shop" ? pathname === href : pathname.startsWith(href);
+    exact.has(href) ? pathname === href : pathname.startsWith(href);
 
   return (
-    <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+    <nav className="flex-1 px-3 py-4 overflow-y-auto">
       <button
         onClick={() => window.dispatchEvent(new CustomEvent("open-global-search"))}
         className="w-full flex items-center gap-3 px-3 py-2.5 mb-2 rounded-xl text-sm font-medium text-slate-400 bg-slate-900 border border-slate-800 hover:border-slate-700 hover:text-white transition-all group"
@@ -269,30 +320,33 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
         <span className="flex-1 text-left">Search…</span>
         <kbd className="text-[10px] font-semibold text-slate-600 bg-slate-800 border border-slate-700 rounded px-1.5 py-0.5">Ctrl K</kbd>
       </button>
-      <p className="px-3 pt-1 pb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-600">Operations</p>
-      {visibleItems.map(({ href, label, icon }) => (
-        <NavItem key={href} href={href} label={label} icon={icon} active={isActive(href)} onNavigate={onNavigate} />
-      ))}
 
-      <p className="px-3 pt-5 pb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-600">Store</p>
-      {visibleStore.map(({ href, label, icon }) => (
-        <NavItem key={href} href={href} label={label} icon={icon} active={isActive(href)} onNavigate={onNavigate} />
-      ))}
+      <NavSection title="Equipment" items={visibleItems} isActive={isActive} onNavigate={onNavigate} />
+      <NavSection title="Store" items={visibleStore} isActive={isActive} onNavigate={onNavigate} external={{ href: "/store", label: "View storefront" }} />
+      <NavSection title="Services" items={visibleServices} isActive={isActive} onNavigate={onNavigate} external={{ href: "/services", label: "View services site" }} />
 
-      <a
-        href="/store"
-        target="_blank"
-        rel="noreferrer"
-        className="flex items-center gap-3 px-3 py-2.5 mt-1 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all group"
-      >
-        <span className="text-slate-500 group-hover:text-slate-300">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-          </svg>
-        </span>
-        View storefront
-      </a>
+      <div className="pt-3">
+        <ExternalNavLink href="/home" label="Dyzah Home" />
+      </div>
     </nav>
+  );
+}
+
+function ExternalNavLink({ href, label }: { href: string; label: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="flex items-center gap-3 px-3 py-2.5 mt-1 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all group"
+    >
+      <span className="text-slate-500 group-hover:text-slate-300">
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </span>
+      {label}
+    </a>
   );
 }
 
@@ -304,12 +358,12 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       {/* Logo */}
       <div className="px-5 py-5 flex items-center justify-between border-b border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shrink-0 shadow-sm">
+          <div className="w-9 h-9 bg-brand-500 rounded-xl flex items-center justify-center shrink-0 shadow-sm">
             <SpotlightIcon className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-white font-semibold text-sm leading-tight">Fab Entertainment</p>
-            <p className="text-slate-500 text-xs mt-0.5">Inventory Portal</p>
+            <p className="text-white font-semibold text-sm leading-tight">Dyzah</p>
+            <p className="text-slate-500 text-xs mt-0.5">Admin Console</p>
           </div>
         </div>
         {onClose && (
@@ -331,8 +385,8 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
           <span className="text-xs text-slate-600 font-medium">Toggle theme</span>
         </div>
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl">
-          <div className="w-8 h-8 bg-indigo-600/15 border border-indigo-500/20 rounded-full flex items-center justify-center shrink-0">
-            <span className="text-indigo-400 text-xs font-bold">
+          <div className="w-8 h-8 bg-brand-500/15 border border-brand-500/20 rounded-full flex items-center justify-center shrink-0">
+            <span className="text-brand-400 text-xs font-bold">
               {user?.name?.charAt(0)?.toUpperCase() ?? "A"}
             </span>
           </div>
@@ -370,10 +424,10 @@ export default function AppNav() {
       {/* Mobile top bar */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-slate-950 border-b border-slate-800 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center">
+          <div className="w-8 h-8 bg-brand-500 rounded-xl flex items-center justify-center">
             <SpotlightIcon className="w-5 h-5 text-white" />
           </div>
-          <span className="text-white font-semibold text-sm">Fab Entertainment</span>
+          <span className="text-white font-semibold text-sm">Dyzah</span>
         </div>
         <button
           onClick={() => setMobileOpen(true)}

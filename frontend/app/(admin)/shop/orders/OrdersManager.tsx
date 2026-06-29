@@ -12,8 +12,8 @@ const PAYMENT_OPTIONS: PaymentStatus[] = ["Unpaid", "Paid", "Refunded"];
 const statusColor: Record<OrderStatus, string> = {
   Pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
   Confirmed: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  Processing: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400",
-  Shipped: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+  Processing: "bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400",
+  Shipped: "bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400",
   Delivered: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
   Cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 };
@@ -51,7 +51,7 @@ export default function OrdersManager({ orders, onRefresh }: { orders: Order[]; 
     <div className="space-y-4">
       <div className="flex gap-2 flex-wrap">
         {(["All", ...STATUS_OPTIONS] as const).map((s) => (
-          <button key={s} onClick={() => setFilter(s)} className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${filter === s ? "bg-indigo-600 text-white" : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-indigo-300"}`}>
+          <button key={s} onClick={() => setFilter(s)} className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${filter === s ? "bg-brand-600 text-white" : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-brand-300"}`}>
             {s}
           </button>
         ))}

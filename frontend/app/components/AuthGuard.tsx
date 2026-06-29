@@ -48,8 +48,8 @@ function LoginPage() {
       {/* Left panel — branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-slate-950 relative overflow-hidden flex-col items-center justify-center p-12">
         {/* Ambient glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-500/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-brand-400/15 rounded-full blur-3xl pointer-events-none" />
 
         {/* Floating icons in background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -62,7 +62,7 @@ function LoginPage() {
           ].map((s, i) => {
             const { size, rotate, ...pos } = s;
             return (
-              <div key={i} className="absolute text-indigo-400" style={{ ...pos, width: size, height: size, transform: `rotate(${rotate}deg)` }}>
+              <div key={i} className="absolute text-brand-400" style={{ ...pos, width: size, height: size, transform: `rotate(${rotate}deg)` }}>
                 <SpotlightIcon className="w-full h-full" />
               </div>
             );
@@ -72,12 +72,12 @@ function LoginPage() {
         {/* Content */}
         <div className="relative z-10 text-center">
           <div className="flex items-center justify-center mb-8">
-            <div className="w-20 h-20 bg-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-indigo-900/60">
+            <div className="w-20 h-20 bg-brand-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-brand-900/60">
               <SpotlightIcon className="w-10 h-10 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-white tracking-tight mb-3">Fab Entertainment</h1>
-          <p className="text-indigo-300 text-lg font-medium mb-6">Equipment Management Portal</p>
+          <h1 className="text-4xl font-bold text-white tracking-tight mb-3">Dyzah</h1>
+          <p className="text-brand-300 text-lg font-medium mb-6">Admin Console</p>
           <p className="text-slate-500 text-sm max-w-xs mx-auto leading-relaxed">
             Track your AV gear, manage loans, and keep your inventory performance-ready.
           </p>
@@ -90,7 +90,7 @@ function LoginPage() {
               { label: "Mobile-ready" },
             ].map((s) => (
               <div key={s.label} className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                <div className="w-1.5 h-1.5 rounded-full bg-brand-500" />
                 <span className="text-xs text-slate-500">{s.label}</span>
               </div>
             ))}
@@ -104,11 +104,11 @@ function LoginPage() {
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 bg-slate-50 dark:bg-slate-950 relative">
         {/* Mobile brand */}
         <div className="lg:hidden text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-indigo-600 rounded-2xl mb-4 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/50">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-500 rounded-2xl mb-4 shadow-lg shadow-brand-200 dark:shadow-brand-900/50">
             <SpotlightIcon className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white">Fab Entertainment</h1>
-          <p className="text-slate-500 text-sm mt-1">Equipment Portal</p>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white">Dyzah</h1>
+          <p className="text-slate-500 text-sm mt-1">Admin Console</p>
         </div>
 
         <div className="w-full max-w-sm">
@@ -128,7 +128,7 @@ function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@fabent.com"
-                className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-sm"
+                className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all shadow-sm"
               />
             </div>
 
@@ -142,7 +142,7 @@ function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 pr-11 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-sm"
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 pr-11 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all shadow-sm"
                 />
                 <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
                   {showPassword ? (
@@ -171,7 +171,7 @@ function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl py-3 text-sm transition-colors shadow-sm shadow-indigo-200 dark:shadow-indigo-900/40 mt-2"
+              className="w-full bg-brand-500 hover:bg-brand-500 active:bg-brand-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl py-3 text-sm transition-colors shadow-sm shadow-brand-200 dark:shadow-brand-900/40 mt-2"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">

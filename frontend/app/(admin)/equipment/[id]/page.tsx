@@ -94,7 +94,7 @@ export default async function EquipmentProfilePage({
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm">
-        <Link href="/equipment" className="text-slate-400 hover:text-indigo-600 transition-colors">Equipment</Link>
+        <Link href="/equipment" className="text-slate-400 hover:text-brand-600 transition-colors">Equipment</Link>
         <svg className="w-3 h-3 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
         <span className="text-slate-700 dark:text-slate-300 font-medium">{equipment.name}</span>
       </div>
@@ -102,8 +102,8 @@ export default async function EquipmentProfilePage({
       {/* Profile header */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/40 flex items-center justify-center shrink-0">
-            <svg className="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-brand-900/20 border border-brand-100 dark:border-brand-900/40 flex items-center justify-center shrink-0">
+            <svg className="w-8 h-8 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
@@ -146,7 +146,7 @@ export default async function EquipmentProfilePage({
               )}
             </p>
           </div>
-          <Link href="/transactions" className="shrink-0 text-xs font-semibold text-indigo-600 hover:text-indigo-500">
+          <Link href="/transactions" className="shrink-0 text-xs font-semibold text-brand-600 hover:text-brand-500">
             Go to check-in →
           </Link>
         </div>

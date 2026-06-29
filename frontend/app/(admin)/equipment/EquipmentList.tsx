@@ -114,7 +114,7 @@ export default function EquipmentList({
               placeholder="Search name, category, serial number or location…"
               value={query}
               onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
             />
           </div>
 
@@ -141,7 +141,7 @@ export default function EquipmentList({
           <select
             value={catFilter}
             onChange={(e) => { setCatFilter(e.target.value); setPage(1); }}
-            className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 lg:w-44 transition-all shrink-0"
+            className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 lg:w-44 transition-all shrink-0"
           >
             <option value="">All categories</option>
             {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
@@ -176,8 +176,8 @@ export default function EquipmentList({
                       >
                         <td className="px-4 py-3.5">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/40 flex items-center justify-center shrink-0">
-                              <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div className="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/20 border border-brand-100 dark:border-brand-900/40 flex items-center justify-center shrink-0">
+                              <svg className="w-5 h-5 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                               </svg>
                             </div>
@@ -203,8 +203,8 @@ export default function EquipmentList({
                             onClick={(e) => { e.stopPropagation(); setExpanded((cur) => (cur === g.name ? null : g.name)); }}
                             className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors mr-1.5 ${
                               expanded === g.name
-                                ? "bg-indigo-600 text-white"
-                                : "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/40"
+                                ? "bg-brand-600 text-white"
+                                : "text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/20 hover:bg-brand-100 dark:hover:bg-brand-900/40"
                             }`}
                           >
                             Units
@@ -232,10 +232,10 @@ export default function EquipmentList({
                                 <Link
                                   key={item.id}
                                   href={`/equipment/${item.id}`}
-                                  className="flex items-center justify-between gap-2 px-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-indigo-400 dark:hover:border-indigo-600 hover:shadow-sm transition-all group/unit"
+                                  className="flex items-center justify-between gap-2 px-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-brand-400 dark:hover:border-brand-600 hover:shadow-sm transition-all group/unit"
                                 >
                                   <div className="min-w-0">
-                                    <p className="text-xs font-mono text-slate-600 dark:text-slate-300 truncate group-hover/unit:text-indigo-600 dark:group-hover/unit:text-indigo-400 transition-colors">
+                                    <p className="text-xs font-mono text-slate-600 dark:text-slate-300 truncate group-hover/unit:text-brand-600 dark:group-hover/unit:text-brand-400 transition-colors">
                                       {item.serial_number}
                                     </p>
                                     <p className="text-[10px] text-slate-400 truncate">
@@ -246,7 +246,7 @@ export default function EquipmentList({
                                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${unitBadge[item.status]}`}>
                                       {item.status}
                                     </span>
-                                    <svg className="w-3 h-3 text-slate-300 group-hover/unit:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                                    <svg className="w-3 h-3 text-slate-300 group-hover/unit:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
                                   </div>
                                 </Link>
                               ))}

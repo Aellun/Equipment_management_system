@@ -16,7 +16,7 @@ export function ActivityChart({ data }: { data: DayActivity[] }) {
           Activity — last 14 days
         </p>
         <div className="flex items-center gap-4 text-xs text-slate-400">
-          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-indigo-500" /> Checkouts</span>
+          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-brand-500" /> Checkouts</span>
           <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" /> Returns</span>
         </div>
       </div>
@@ -24,7 +24,7 @@ export function ActivityChart({ data }: { data: DayActivity[] }) {
         {data.map((d) => (
           <div key={d.label} className="flex-1 flex items-end justify-center gap-0.5 h-full group relative">
             <div
-              className="w-1/2 max-w-[14px] bg-indigo-500 rounded-t group-hover:bg-indigo-400 transition-colors"
+              className="w-1/2 max-w-[14px] bg-brand-500 rounded-t group-hover:bg-brand-400 transition-colors"
               style={{ height: `${(d.checkouts / max) * 100}%`, minHeight: d.checkouts ? 3 : 0 }}
             />
             <div
@@ -98,13 +98,13 @@ export function TopClients({ data }: { data: ClientRow[] }) {
         <div className="space-y-3">
           {data.map((c, i) => (
             <div key={c.name} className="flex items-center gap-3">
-              <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${i === 0 ? "bg-indigo-600 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"}`}>
+              <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${i === 0 ? "bg-brand-600 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"}`}>
                 {i + 1}
               </span>
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-medium text-slate-700 dark:text-slate-300 truncate">{c.name}</p>
                 <div className="h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 mt-1 overflow-hidden">
-                  <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${(c.count / max) * 100}%` }} />
+                  <div className="h-full bg-brand-500 rounded-full" style={{ width: `${(c.count / max) * 100}%` }} />
                 </div>
               </div>
               <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">{c.count}</span>

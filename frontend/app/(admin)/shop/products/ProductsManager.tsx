@@ -78,9 +78,9 @@ export default function ProductsManager({
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
         <div className="relative flex-1 max-w-xs">
           <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search products…" className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search products…" className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" />
         </div>
-        <button onClick={() => setShowForm(true)} className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm">
+        <button onClick={() => setShowForm(true)} className="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
           New Product
         </button>
@@ -118,13 +118,13 @@ export default function ProductsManager({
                       {minPrice !== Infinity && <> · from KSh {minPrice.toLocaleString()}</>}
                     </p>
                   </div>
-                  <button onClick={() => setExpanded(isOpen ? null : p.id)} className="p-2 text-slate-400 hover:text-indigo-600 transition-colors" title="Variants & stock">
+                  <button onClick={() => setExpanded(isOpen ? null : p.id)} className="p-2 text-slate-400 hover:text-brand-600 transition-colors" title="Variants & stock">
                     <svg className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                   </button>
-                  <button onClick={() => handleDuplicate(p)} disabled={loading} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors" title="Duplicate">
+                  <button onClick={() => handleDuplicate(p)} disabled={loading} className="p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-lg transition-colors" title="Duplicate">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                   </button>
-                  <button onClick={() => setEditTarget(p)} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors" title="Edit">
+                  <button onClick={() => setEditTarget(p)} className="p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-lg transition-colors" title="Edit">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                   </button>
                   <button onClick={() => setDeleteTarget(p)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Delete">
@@ -245,11 +245,11 @@ function VariantEditor({ product, onRefresh }: { product: Product; onRefresh: ()
           <input value={newV.variant_name} onChange={(e) => setNewV({ ...newV, variant_name: e.target.value })} placeholder="Variant name" className="col-span-5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-sm" />
           <input type="number" step="0.01" value={newV.price} onChange={(e) => setNewV({ ...newV, price: e.target.value })} placeholder="Price" className="col-span-3 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-sm" />
           <input type="number" value={newV.stock_qty} onChange={(e) => setNewV({ ...newV, stock_qty: e.target.value })} placeholder="Stock" className="col-span-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-sm" />
-          <button onClick={addVariant} disabled={busy} className="col-span-1 text-indigo-600 hover:text-indigo-500 text-sm font-semibold">Save</button>
+          <button onClick={addVariant} disabled={busy} className="col-span-1 text-brand-600 hover:text-brand-500 text-sm font-semibold">Save</button>
           <button onClick={() => setAdding(false)} className="col-span-1 text-slate-400 hover:text-slate-600 text-sm">✕</button>
         </div>
       ) : (
-        <button onClick={() => setAdding(true)} className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 pt-1">+ Add variant</button>
+        <button onClick={() => setAdding(true)} className="text-xs font-semibold text-brand-600 hover:text-brand-500 pt-1">+ Add variant</button>
       )}
     </div>
   );
@@ -295,7 +295,7 @@ function VariantRow({
         </select>
       </div>
       <div className="col-span-2 flex justify-end gap-1">
-        <button onClick={() => onSave(variant, Number(stock), Number(price))} disabled={busy || !dirty} className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 disabled:opacity-30">Save</button>
+        <button onClick={() => onSave(variant, Number(stock), Number(price))} disabled={busy || !dirty} className="text-xs font-semibold text-brand-600 hover:text-brand-500 disabled:opacity-30">Save</button>
         <button onClick={() => onDelete(variant)} disabled={busy} className="p-1 text-slate-400 hover:text-red-500">
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6" /></svg>
         </button>

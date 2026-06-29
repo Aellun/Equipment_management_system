@@ -2,7 +2,7 @@ import { Equipment, Transaction } from "@/types";
 import {
   ActivityChart, CategoryBreakdown, TopClients,
   DayActivity, CategoryRow, ClientRow,
-} from "./DashboardCharts";
+} from "../DashboardCharts";
 
 const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 

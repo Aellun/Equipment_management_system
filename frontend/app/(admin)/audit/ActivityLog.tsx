@@ -23,7 +23,7 @@ const actionConfig: Record<string, { label: string; color: string }> = {
   bulk_update: { label: "Renamed", color: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400" },
   checkout: { label: "Checked Out", color: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400" },
   bulk_checkout: { label: "Bulk Checkout", color: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400" },
-  checkin: { label: "Returned", color: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400" },
+  checkin: { label: "Returned", color: "bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-400" },
   update: { label: "Updated", color: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400" },
 };
 
@@ -112,14 +112,14 @@ export default function ActivityLog({ logs }: { logs: LogEntry[] }) {
             placeholder="Search by name or user…"
             value={query}
             onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
           />
         </div>
-        <select value={entityFilter} onChange={(e) => { setEntityFilter(e.target.value); setPage(1); }} className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 sm:w-40 transition-all">
+        <select value={entityFilter} onChange={(e) => { setEntityFilter(e.target.value); setPage(1); }} className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 sm:w-40 transition-all">
           <option value="">All types</option>
           {uniqueEntities.map(e => <option key={e} value={e}>{entityConfig[e]?.label ?? e}</option>)}
         </select>
-        <select value={actionFilter} onChange={(e) => { setActionFilter(e.target.value); setPage(1); }} className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 sm:w-40 transition-all">
+        <select value={actionFilter} onChange={(e) => { setActionFilter(e.target.value); setPage(1); }} className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 sm:w-40 transition-all">
           <option value="">All actions</option>
           {uniqueActions.map(a => <option key={a} value={a}>{actionConfig[a]?.label ?? a}</option>)}
         </select>

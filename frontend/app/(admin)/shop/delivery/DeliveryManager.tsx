@@ -72,7 +72,7 @@ export default function DeliveryManager({ zones, onRefresh }: { zones: DeliveryZ
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">{zones.length} zone(s)</p>
-        <button onClick={() => setModal({ draft: { ...empty } })} className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl shadow-sm">
+        <button onClick={() => setModal({ draft: { ...empty } })} className="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold rounded-xl shadow-sm">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
           New Zone
         </button>
@@ -108,7 +108,7 @@ export default function DeliveryManager({ zones, onRefresh }: { zones: DeliveryZ
                   <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{z.eta_days_min}-{z.eta_days_max}d</td>
                   <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{z.free_over != null ? `KSh ${Number(z.free_over).toLocaleString()}` : "—"}</td>
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => setModal({ id: z.id, draft: toDraft(z) })} className="p-1.5 text-slate-400 hover:text-indigo-600" title="Edit"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button>
+                    <button onClick={() => setModal({ id: z.id, draft: toDraft(z) })} className="p-1.5 text-slate-400 hover:text-brand-600" title="Edit"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button>
                     <button onClick={() => setDeleteTarget(z)} className="p-1.5 text-slate-400 hover:text-red-600" title="Delete"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6" /></svg></button>
                   </td>
                 </tr>
@@ -157,11 +157,11 @@ export default function DeliveryManager({ zones, onRefresh }: { zones: DeliveryZ
                 <input type="number" min="0" value={modal.draft.free_over} onChange={(e) => upd("free_over", e.target.value)} placeholder="Leave blank for no free threshold" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm" />
               </div>
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
-                <input type="checkbox" checked={modal.draft.is_active} onChange={(e) => upd("is_active", e.target.checked)} className="w-4 h-4 rounded border-slate-300 text-indigo-600" />
+                <input type="checkbox" checked={modal.draft.is_active} onChange={(e) => upd("is_active", e.target.checked)} className="w-4 h-4 rounded border-slate-300 text-brand-600" />
                 Active (selectable at checkout)
               </label>
               <div className="flex gap-3 pt-1">
-                <button type="submit" disabled={loading} className="flex-1 py-2.5 text-sm bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl font-semibold">{loading ? "Saving…" : "Save"}</button>
+                <button type="submit" disabled={loading} className="flex-1 py-2.5 text-sm bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-xl font-semibold">{loading ? "Saving…" : "Save"}</button>
                 <button type="button" onClick={() => setModal(null)} className="flex-1 py-2.5 text-sm bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-medium">Cancel</button>
               </div>
             </form>

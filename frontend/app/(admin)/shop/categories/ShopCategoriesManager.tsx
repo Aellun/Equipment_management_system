@@ -122,7 +122,7 @@ export default function ShopCategoriesManager({
         </p>
         <button
           onClick={() => setShowAdd(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -141,7 +141,7 @@ export default function ShopCategoriesManager({
           {categories.map((cat) => (
             <div
               key={cat.id}
-              className={`bg-white dark:bg-slate-900 border rounded-2xl p-5 flex items-start justify-between gap-3 group transition-all ${cat.is_active ? "border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700" : "border-dashed border-slate-300 dark:border-slate-700 opacity-75"}`}
+              className={`bg-white dark:bg-slate-900 border rounded-2xl p-5 flex items-start justify-between gap-3 group transition-all ${cat.is_active ? "border-slate-200 dark:border-slate-800 hover:border-brand-300 dark:hover:border-brand-700" : "border-dashed border-slate-300 dark:border-slate-700 opacity-75"}`}
             >
               <div className="min-w-0 flex-1">
                 <p className="font-semibold text-slate-900 dark:text-white truncate flex items-center gap-2">
@@ -163,7 +163,7 @@ export default function ShopCategoriesManager({
                   label={cat.is_active ? "Visible in storefront — click to hide" : "Hidden — click to show in storefront"}
                 />
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => setEditTarget(cat)} className="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 dark:hover:text-indigo-400 transition-colors" title="Edit">
+                <button onClick={() => setEditTarget(cat)} className="p-2 rounded-lg text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 dark:hover:text-brand-400 transition-colors" title="Edit">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
@@ -236,14 +236,14 @@ function CategoryModal({
         <form onSubmit={(e) => { e.preventDefault(); onSubmit(name, description); }} className="px-6 py-5 space-y-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Name <span className="text-red-500">*</span></label>
-            <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Cookware, Cutlery, Bakeware" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" />
+            <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Cookware, Cutlery, Bakeware" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all" />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Description</label>
-            <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Optional…" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 resize-none transition-all" />
+            <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Optional…" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 resize-none transition-all" />
           </div>
           <div className="flex gap-3 pt-1">
-            <button type="submit" disabled={loading} className="flex-1 py-2.5 text-sm bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl transition-colors font-semibold">{loading ? "Saving…" : "Save"}</button>
+            <button type="submit" disabled={loading} className="flex-1 py-2.5 text-sm bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-xl transition-colors font-semibold">{loading ? "Saving…" : "Save"}</button>
             <button type="button" onClick={onClose} className="flex-1 py-2.5 text-sm bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-colors font-medium">Cancel</button>
           </div>
         </form>

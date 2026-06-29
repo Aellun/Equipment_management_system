@@ -183,10 +183,10 @@ export default function GlobalSearch() {
                   <button
                     onClick={() => go(r)}
                     onMouseEnter={() => setSelected(i)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${i === selected ? "bg-indigo-50 dark:bg-slate-800" : ""}`}
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${i === selected ? "bg-brand-50 dark:bg-slate-800" : ""}`}
                   >
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium truncate ${i === selected ? "text-indigo-700 dark:text-indigo-300" : "text-slate-700 dark:text-slate-200"}`}>
+                      <p className={`text-sm font-medium truncate ${i === selected ? "text-brand-700 dark:text-brand-300" : "text-slate-700 dark:text-slate-200"}`}>
                         {r.title}
                       </p>
                       {r.subtitle && <p className="text-xs text-slate-400 truncate">{r.subtitle}</p>}
@@ -196,7 +196,7 @@ export default function GlobalSearch() {
                         {r.badge}
                       </span>
                     )}
-                    <svg className={`w-3.5 h-3.5 shrink-0 ${i === selected ? "text-indigo-400" : "text-slate-300 dark:text-slate-600"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    <svg className={`w-3.5 h-3.5 shrink-0 ${i === selected ? "text-brand-400" : "text-slate-300 dark:text-slate-600"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                   </button>
                 </div>
               );
