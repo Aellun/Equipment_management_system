@@ -12,8 +12,13 @@ from app.api.routes import (
     departments, reviews, delivery, returns,
 )
 from app import models  # noqa: F401 — registers all ORM models with Base.metadata
+from app.errands.setup import (
+    ERRANDS_MEDIA_DIR,
+    include_errands_routers,
+    init_errands_db,
+)
 
-app = FastAPI(title="Fab Platform — Equipment & Store", version="0.3.0")
+app = FastAPI(title="Dyzah Platform — Equipment · Store · Errands · Hygiene", version="0.4.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -54,9 +59,24 @@ app.include_router(reviews.router)
 app.include_router(delivery.router)
 app.include_router(returns.router)
 
+# Errands & Hygiene (catalog-driven services; shared booking/escrow engine).
+# These run on a separate sync engine against the SAME database; FastAPI runs
+# the sync handlers in a threadpool.
+include_errands_routers(app)
+
+
+@app.on_event("startup")
+def _startup_errands() -> None:
+    init_errands_db()
+
+
 # Serve uploaded product images
 os.makedirs("uploads", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+# Serve errands/hygiene proof photos
+os.makedirs(ERRANDS_MEDIA_DIR, exist_ok=True)
+app.mount("/errands-media", StaticFiles(directory=ERRANDS_MEDIA_DIR), name="errands-media")
 
 
 @app.get("/health", tags=["Health"])
