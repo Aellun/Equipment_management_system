@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_staff
 from app.crud import reservation as crud
 from app.crud import equipment as equipment_crud
 from app.crud import client as client_crud
@@ -9,7 +9,7 @@ from app.crud import activity as activity_crud
 from app.models.reservation import Reservation
 from app.schemas.reservation import ReservationCreate, ReservationUpdate, ReservationOut
 
-router = APIRouter(prefix="/reservations", tags=["Reservations"])
+router = APIRouter(prefix="/reservations", tags=["Reservations"], dependencies=[Depends(require_staff)])
 
 
 def _to_out(r: Reservation) -> ReservationOut:

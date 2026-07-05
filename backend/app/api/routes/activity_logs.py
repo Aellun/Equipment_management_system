@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.api.deps import get_db
+from app.api.deps import get_db, require_admin
 from app.crud import activity as crud
 from app.schemas.activity_log import ActivityLogOut
 
-router = APIRouter(prefix="/activity-logs", tags=["Activity Logs"])
+router = APIRouter(prefix="/activity-logs", tags=["Activity Logs"], dependencies=[Depends(require_admin)])
 
 
 @router.get("/", response_model=list[ActivityLogOut])

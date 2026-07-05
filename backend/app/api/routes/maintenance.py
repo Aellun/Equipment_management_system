@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_staff
 from app.crud import maintenance as crud
 from app.crud import equipment as equipment_crud
 from app.crud import activity as activity_crud
 from app.models.maintenance import MaintenanceLog
 from app.schemas.maintenance import MaintenanceCreate, MaintenanceUpdate, MaintenanceOut
 
-router = APIRouter(prefix="/maintenance", tags=["Maintenance"])
+router = APIRouter(prefix="/maintenance", tags=["Maintenance"], dependencies=[Depends(require_staff)])
 
 
 def _to_out(log: MaintenanceLog) -> MaintenanceOut:

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_staff
 from app.crud import order as crud
 from app.crud import activity as activity_crud
 from app.schemas.order import CheckoutPayload, OrderUpdate, OrderOut, OrderTrackingOut
@@ -9,7 +9,7 @@ from app.schemas.order import CheckoutPayload, OrderUpdate, OrderOut, OrderTrack
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
-@router.get("/", response_model=list[OrderOut])
+@router.get("/", response_model=list[OrderOut], dependencies=[Depends(require_staff)])
 async def list_orders(customer_id: int | None = None, db: AsyncSession = Depends(get_db)):
     if customer_id is not None:
         return await crud.get_for_customer(db, customer_id)
@@ -42,7 +42,7 @@ async def get_order(order_id: int, db: AsyncSession = Depends(get_db)):
     return order
 
 
-@router.patch("/{order_id}", response_model=OrderOut)
+@router.patch("/{order_id}", response_model=OrderOut, dependencies=[Depends(require_staff)])
 async def update_order(order_id: int, payload: OrderUpdate, db: AsyncSession = Depends(get_db)):
     order = await crud.get_by_id(db, order_id)
     if not order:

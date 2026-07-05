@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { Client } from "@/types";
 import { revalidatePath } from "next/cache";
 import AddClientForm from "./AddClientForm";
@@ -7,7 +8,7 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 
 async function getClients(): Promise<Client[]> {
   try {
-    const res = await fetch(`${API}/clients/`, { cache: "no-store" });
+    const res = await serverApi(`${API}/clients/`, { cache: "no-store" });
     return res.ok ? res.json() : [];
   } catch {
     return [];

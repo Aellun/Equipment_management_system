@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_staff
 from app.crud import transaction as crud
 from app.crud import activity as activity_crud
 from app.schemas.transaction import CheckoutPayload, BulkCheckoutPayload, TransactionOut
 from app.schemas.audit_log import CheckinPayload, AuditLogOut
 
-router = APIRouter(prefix="/transactions", tags=["Transactions"])
+router = APIRouter(prefix="/transactions", tags=["Transactions"], dependencies=[Depends(require_staff)])
 
 
 @router.get("/", response_model=list[TransactionOut])

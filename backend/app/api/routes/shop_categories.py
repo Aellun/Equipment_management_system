@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_staff
 from app.crud import shop_category as crud
 from app.crud import activity as activity_crud
 from app.schemas.shop_category import ShopCategoryCreate, ShopCategoryUpdate, ShopCategoryOut
 
-router = APIRouter(prefix="/shop-categories", tags=["Shop Categories"])
+router = APIRouter(prefix="/shop-categories", tags=["Shop Categories"], dependencies=[Depends(require_staff)])
 
 
 @router.get("/", response_model=list[ShopCategoryOut])

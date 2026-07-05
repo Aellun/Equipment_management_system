@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { DeliveryZone } from "@/types";
 import { revalidatePath } from "next/cache";
 import DeliveryManager from "./DeliveryManager";
@@ -6,7 +7,7 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 
 async function getData() {
   try {
-    const res = await fetch(`${API}/delivery-zones/`, { cache: "no-store" });
+    const res = await serverApi(`${API}/delivery-zones/`, { cache: "no-store" });
     return (res.ok ? await res.json() : []) as DeliveryZone[];
   } catch {
     return [];

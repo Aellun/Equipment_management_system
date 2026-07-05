@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_staff
 from app.crud import client as crud
 from app.crud import transaction as transaction_crud
 from app.crud import activity as activity_crud
 from app.schemas.client import ClientCreate, ClientUpdate, ClientOut
 from app.schemas.transaction import TransactionOut
 
-router = APIRouter(prefix="/clients", tags=["Clients"])
+router = APIRouter(prefix="/clients", tags=["Clients"], dependencies=[Depends(require_staff)])
 
 
 @router.get("/", response_model=list[ClientOut])

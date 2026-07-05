@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { Reservation, Equipment, Client } from "@/types";
 import { revalidatePath } from "next/cache";
 import ReservationsManager from "./ReservationsManager";
@@ -7,9 +8,9 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 async function getData() {
   try {
     const [resRes, eqRes, clRes] = await Promise.all([
-      fetch(`${API}/reservations/`, { cache: "no-store" }),
-      fetch(`${API}/equipment/`, { cache: "no-store" }),
-      fetch(`${API}/clients/`, { cache: "no-store" }),
+      serverApi(`${API}/reservations/`, { cache: "no-store" }),
+      serverApi(`${API}/equipment/`, { cache: "no-store" }),
+      serverApi(`${API}/clients/`, { cache: "no-store" }),
     ]);
     return {
       reservations: (resRes.ok ? await resRes.json() : []) as Reservation[],

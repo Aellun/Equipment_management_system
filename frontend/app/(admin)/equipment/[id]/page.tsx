@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Equipment, Transaction, MaintenanceLog, Reservation } from "@/types";
@@ -9,10 +10,10 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 async function getData(id: string) {
   try {
     const [eqRes, txRes, mlRes, rsRes] = await Promise.all([
-      fetch(`${API}/equipment/${id}`, { cache: "no-store" }),
-      fetch(`${API}/transactions/`, { cache: "no-store" }),
-      fetch(`${API}/maintenance/equipment/${id}`, { cache: "no-store" }),
-      fetch(`${API}/reservations/equipment/${id}`, { cache: "no-store" }),
+      serverApi(`${API}/equipment/${id}`, { cache: "no-store" }),
+      serverApi(`${API}/transactions/`, { cache: "no-store" }),
+      serverApi(`${API}/maintenance/equipment/${id}`, { cache: "no-store" }),
+      serverApi(`${API}/reservations/equipment/${id}`, { cache: "no-store" }),
     ]);
     if (!eqRes.ok) return { equipment: null, transactions: [], logs: [], reservations: [] };
     return {

@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_staff
 from app.crud import category as crud
 from app.schemas.category import CategoryCreate, CategoryUpdate, CategoryOut
 
-router = APIRouter(prefix="/categories", tags=["Categories"])
+router = APIRouter(prefix="/categories", tags=["Categories"], dependencies=[Depends(require_staff)])
 
 
 @router.get("/", response_model=list[CategoryOut])

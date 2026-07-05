@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { Product, ShopCategory, Department } from "@/types";
 import { revalidatePath } from "next/cache";
 import ProductsManager from "./ProductsManager";
@@ -7,9 +8,9 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 async function getData() {
   try {
     const [prodRes, catRes, deptRes] = await Promise.all([
-      fetch(`${API}/products/`, { cache: "no-store" }),
-      fetch(`${API}/shop-categories/`, { cache: "no-store" }),
-      fetch(`${API}/departments/`, { cache: "no-store" }),
+      serverApi(`${API}/products/`, { cache: "no-store" }),
+      serverApi(`${API}/shop-categories/`, { cache: "no-store" }),
+      serverApi(`${API}/departments/`, { cache: "no-store" }),
     ]);
     return {
       products: (prodRes.ok ? await prodRes.json() : []) as Product[],

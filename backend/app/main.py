@@ -11,6 +11,7 @@ from app.api.routes import (
     shop_categories, products, shop, cart, orders, customers, uploads,
     departments, reviews, delivery, returns,
 )
+from app.config import settings
 from app import models  # noqa: F401 — registers all ORM models with Base.metadata
 from app.errands.setup import (
     ERRANDS_MEDIA_DIR,
@@ -20,20 +21,40 @@ from app.errands.setup import (
 
 app = FastAPI(title="Dyzah Platform — Equipment · Store · Errands · Hygiene", version="0.4.0")
 
+# Cookie-based auth requires credentialed CORS, which forbids the "*" origin.
+# Origins are configurable via CORS_ORIGINS (comma-separated).
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=settings.cors_origin_list,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
+_MUTATING_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
+
+
+@app.middleware("http")
+async def gateway_guard(request: Request, call_next):
+    """Defence in depth: state-changing requests must arrive through nginx.
+
+    nginx injects (and strips any client-supplied copy of) X-Gateway-Secret on
+    every proxied request. GETs are exempt so server-side rendering can read
+    directly over the internal network; all writes flow browser→nginx→backend.
+    """
+    if (
+        settings.gateway_enforce
+        and request.method in _MUTATING_METHODS
+        and request.headers.get("X-Gateway-Secret") != settings.gateway_secret
+    ):
+        return JSONResponse(status_code=403, content={"detail": "Request must pass through the gateway"})
+    return await call_next(request)
+
+
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    response = JSONResponse(status_code=500, content={"detail": "Internal server error"})
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    return response
+    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
 
 # Equipment Management System
 app.include_router(equipment.router)

@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_staff
 from app.crud import delivery as crud
 from app.schemas.delivery import DeliveryZoneCreate, DeliveryZoneUpdate, DeliveryZoneOut
 
-router = APIRouter(prefix="/delivery-zones", tags=["Delivery"])
+router = APIRouter(prefix="/delivery-zones", tags=["Delivery"], dependencies=[Depends(require_staff)])
 
 
 @router.get("/", response_model=list[DeliveryZoneOut])

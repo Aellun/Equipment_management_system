@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { ShopCategory, Product } from "@/types";
 import { revalidatePath } from "next/cache";
 import ShopCategoriesManager from "./ShopCategoriesManager";
@@ -7,8 +8,8 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 async function getData() {
   try {
     const [catRes, prodRes] = await Promise.all([
-      fetch(`${API}/shop-categories/`, { cache: "no-store" }),
-      fetch(`${API}/products/`, { cache: "no-store" }),
+      serverApi(`${API}/shop-categories/`, { cache: "no-store" }),
+      serverApi(`${API}/products/`, { cache: "no-store" }),
     ]);
     return {
       categories: (catRes.ok ? await catRes.json() : []) as ShopCategory[],

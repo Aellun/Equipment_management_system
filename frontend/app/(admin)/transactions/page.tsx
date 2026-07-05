@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { Transaction, Equipment, Client, Category } from "@/types";
 import { revalidatePath } from "next/cache";
 import CheckoutBrowser from "./CheckoutBrowser";
@@ -8,10 +9,10 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 async function fetchAll() {
   try {
     const [txRes, eqRes, clRes, catRes] = await Promise.all([
-      fetch(`${API}/transactions/`, { cache: "no-store" }),
-      fetch(`${API}/equipment/`, { cache: "no-store" }),
-      fetch(`${API}/clients/`, { cache: "no-store" }),
-      fetch(`${API}/categories/`, { cache: "no-store" }),
+      serverApi(`${API}/transactions/`, { cache: "no-store" }),
+      serverApi(`${API}/equipment/`, { cache: "no-store" }),
+      serverApi(`${API}/clients/`, { cache: "no-store" }),
+      serverApi(`${API}/categories/`, { cache: "no-store" }),
     ]);
     return {
       transactions: (txRes.ok ? await txRes.json() : []) as Transaction[],

@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import ActivityLog from "./ActivityLog";
 
 const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
@@ -15,7 +16,7 @@ interface LogEntry {
 
 async function getLogs(): Promise<LogEntry[]> {
   try {
-    const res = await fetch(`${API}/activity-logs/?limit=500`, { cache: "no-store" });
+    const res = await serverApi(`${API}/activity-logs/?limit=500`, { cache: "no-store" });
     return res.ok ? res.json() : [];
   } catch {
     return [];

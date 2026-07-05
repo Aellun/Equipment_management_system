@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface User {
   id: number;
@@ -42,16 +43,46 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [user, setUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
+  // On mount, confirm the session server-side (the access token lives in an
+  // httpOnly cookie that JS can't read). If the short-lived access token has
+  // expired, silently rotate it via the refresh cookie and re-render SSR.
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setUser(JSON.parse(raw));
-    } catch {
-      localStorage.removeItem(STORAGE_KEY);
-    }
-    setIsLoading(false);
-  }, []);
+    let cancelled = false;
+    (async () => {
+      let resolved: User | null = null;
+      try {
+        const me = await fetch(`${API}/auth/me`);
+        if (me.ok) {
+          resolved = await me.json();
+        } else if (me.status === 401) {
+          const r = await fetch(`${API}/auth/refresh`, { method: "POST" });
+          if (r.ok) {
+            resolved = await r.json();
+            router.refresh(); // re-run admin SSR with the fresh access cookie
+          }
+        }
+      } catch {
+        // network error — treat as logged out
+      }
+      if (cancelled) return;
+      setUser(resolved);
+      if (resolved) localStorage.setItem(STORAGE_KEY, JSON.stringify(resolved));
+      else localStorage.removeItem(STORAGE_KEY);
+      setIsLoading(false);
+    })();
+
+    // Keep the 15-minute access token fresh while the console stays open.
+    const id = setInterval(() => {
+      fetch(`${API}/auth/refresh`, { method: "POST" }).catch(() => {});
+    }, 10 * 60 * 1000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, [router]);
 
   async function fetchUsers() {
     try {
@@ -73,33 +104,28 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         body: JSON.stringify({ email, password }),
       });
       if (res.ok) {
+        // Backend set httpOnly access/refresh cookies; body is the user profile.
         const userData = await res.json();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
         setUser(userData);
-        return true;
-      }
-      // If API returns 401 and it's the demo admin, use fallback for development
-      if (email.trim().toLowerCase() === "admin@fabent.com" && password === "Admin2024") {
-        const adminUser = { id: 1, name: "Admin", email: "admin@fabent.com", role: "Administrator" };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(adminUser));
-        setUser(adminUser);
+        router.refresh(); // render admin SSR now that the cookie is present
         return true;
       }
     } catch {
-      // On network error, also allow fallback
-      if (email.trim().toLowerCase() === "admin@fabent.com" && password === "Admin2024") {
-        const adminUser = { id: 1, name: "Admin", email: "admin@fabent.com", role: "Administrator" };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(adminUser));
-        setUser(adminUser);
-        return true;
-      }
+      // network error — fall through to failure
     }
     return false;
   }
 
-  function logout() {
+  async function logout() {
+    try {
+      await fetch(`${API}/auth/logout`, { method: "POST" });
+    } catch {
+      // ignore — clear locally regardless
+    }
     localStorage.removeItem(STORAGE_KEY);
     setUser(null);
+    router.refresh();
   }
 
   async function createUser(data: { name: string; email: string; password: string; role?: string }) {

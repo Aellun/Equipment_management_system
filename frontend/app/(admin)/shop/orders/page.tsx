@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { Order } from "@/types";
 import { revalidatePath } from "next/cache";
 import OrdersManager from "./OrdersManager";
@@ -6,7 +7,7 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 
 async function getData() {
   try {
-    const res = await fetch(`${API}/orders/`, { cache: "no-store" });
+    const res = await serverApi(`${API}/orders/`, { cache: "no-store" });
     return (res.ok ? await res.json() : []) as Order[];
   } catch {
     return [];

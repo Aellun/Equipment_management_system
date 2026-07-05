@@ -5,12 +5,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_staff
 from app.crud import equipment as crud
 from app.crud import activity as activity_crud
 from app.schemas.equipment import EquipmentCreate, EquipmentUpdate, EquipmentOut, EquipmentGroupUpdate
 
-router = APIRouter(prefix="/equipment", tags=["Equipment"])
+router = APIRouter(prefix="/equipment", tags=["Equipment"], dependencies=[Depends(require_staff)])
 
 
 @router.get("/export.csv")

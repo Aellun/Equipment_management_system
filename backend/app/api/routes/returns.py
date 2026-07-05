@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_staff
 from app.crud import return_request as crud
 from app.crud import order as order_crud
 from app.crud import activity as activity_crud
@@ -25,7 +25,7 @@ async def create_return(payload: ReturnCreate, db: AsyncSession = Depends(get_db
     return _with_number(req, payload.order_number.strip().upper())
 
 
-@router.get("/", response_model=list[ReturnOut])
+@router.get("/", response_model=list[ReturnOut], dependencies=[Depends(require_staff)])
 async def list_returns(db: AsyncSession = Depends(get_db)):
     reqs = await crud.get_all(db)
     out = []
@@ -35,7 +35,7 @@ async def list_returns(db: AsyncSession = Depends(get_db)):
     return out
 
 
-@router.patch("/{return_id}", response_model=ReturnOut)
+@router.patch("/{return_id}", response_model=ReturnOut, dependencies=[Depends(require_staff)])
 async def update_return(return_id: int, payload: ReturnUpdate, db: AsyncSession = Depends(get_db)):
     req = await crud.get_by_id(db, return_id)
     if not req:

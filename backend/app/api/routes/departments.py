@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_staff
 from app.crud import department as crud
 from app.crud import activity as activity_crud
 from app.schemas.department import (
     DepartmentCreate, DepartmentUpdate, DepartmentOut, StoreSettingUpdate,
 )
 
-router = APIRouter(prefix="/departments", tags=["Departments"])
+router = APIRouter(prefix="/departments", tags=["Departments"], dependencies=[Depends(require_staff)])
 
 
 @router.get("/", response_model=list[DepartmentOut])

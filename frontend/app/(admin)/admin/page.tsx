@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { Equipment, Transaction } from "@/types";
 import {
   ActivityChart, CategoryBreakdown, TopClients,
@@ -8,7 +9,7 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 
 async function getEquipment(): Promise<Equipment[]> {
   try {
-    const res = await fetch(`${API}/equipment/`, { cache: "no-store" });
+    const res = await serverApi(`${API}/equipment/`, { cache: "no-store" });
     return res.ok ? res.json() : [];
   } catch {
     return [];
@@ -17,7 +18,7 @@ async function getEquipment(): Promise<Equipment[]> {
 
 async function getTransactions(): Promise<Transaction[]> {
   try {
-    const res = await fetch(`${API}/transactions/`, { cache: "no-store" });
+    const res = await serverApi(`${API}/transactions/`, { cache: "no-store" });
     return res.ok ? res.json() : [];
   } catch {
     return [];

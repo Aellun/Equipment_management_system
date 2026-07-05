@@ -1,7 +1,9 @@
 import os
 import uuid
 
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+
+from app.api.deps import require_staff
 
 router = APIRouter(prefix="/uploads", tags=["Uploads"])
 
@@ -10,7 +12,7 @@ ALLOWED = {"image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp", "im
 MAX_BYTES = 10 * 1024 * 1024  # 10 MB
 
 
-@router.post("/image")
+@router.post("/image", dependencies=[Depends(require_staff)])
 async def upload_image(file: UploadFile = File(...)):
     if file.content_type not in ALLOWED:
         raise HTTPException(status_code=400, detail="Only JPEG, PNG, WEBP or GIF images are allowed")

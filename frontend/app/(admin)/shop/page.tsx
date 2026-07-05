@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import Link from "next/link";
 import { Order, Product, ReturnRequest, Review } from "@/types";
 
@@ -6,10 +7,10 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 async function getData() {
   try {
     const [ordRes, prodRes, retRes, revRes] = await Promise.all([
-      fetch(`${API}/orders/`, { cache: "no-store" }),
-      fetch(`${API}/products/`, { cache: "no-store" }),
-      fetch(`${API}/returns/`, { cache: "no-store" }),
-      fetch(`${API}/reviews/`, { cache: "no-store" }),
+      serverApi(`${API}/orders/`, { cache: "no-store" }),
+      serverApi(`${API}/products/`, { cache: "no-store" }),
+      serverApi(`${API}/returns/`, { cache: "no-store" }),
+      serverApi(`${API}/reviews/`, { cache: "no-store" }),
     ]);
     return {
       orders: (ordRes.ok ? await ordRes.json() : []) as Order[],

@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { MaintenanceLog, Equipment } from "@/types";
 import { revalidatePath } from "next/cache";
 import MaintenanceManager from "./MaintenanceManager";
@@ -7,8 +8,8 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 async function getData() {
   try {
     const [logRes, eqRes] = await Promise.all([
-      fetch(`${API}/maintenance/`, { cache: "no-store" }),
-      fetch(`${API}/equipment/`, { cache: "no-store" }),
+      serverApi(`${API}/maintenance/`, { cache: "no-store" }),
+      serverApi(`${API}/equipment/`, { cache: "no-store" }),
     ]);
     return {
       logs: (logRes.ok ? await logRes.json() : []) as MaintenanceLog[],

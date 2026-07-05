@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_staff
 from app.crud import review as crud
 from app.schemas.review import ReviewCreate, ReviewOut, ReviewSummary
 
@@ -34,12 +34,12 @@ async def store_review_summary(db: AsyncSession = Depends(get_db)):
 
 
 # ---- Admin moderation ----
-@router.get("/", response_model=list[ReviewOut])
+@router.get("/", response_model=list[ReviewOut], dependencies=[Depends(require_staff)])
 async def all_reviews(db: AsyncSession = Depends(get_db)):
     return await crud.get_all(db)
 
 
-@router.delete("/{review_id}", status_code=204)
+@router.delete("/{review_id}", status_code=204, dependencies=[Depends(require_staff)])
 async def delete_review(review_id: int, db: AsyncSession = Depends(get_db)):
     review = await crud.get_by_id(db, review_id)
     if not review:

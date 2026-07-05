@@ -33,6 +33,20 @@ export default function DyzahHome() {
             Dyzah
           </span>
           <span className="ml-2 hidden text-sm text-white/60 sm:inline">One umbrella for city services</span>
+          <nav className="ml-auto flex items-center gap-1 text-sm">
+            {[
+              { href: "/store", label: "Store" },
+              { href: "/services", label: "Services" },
+            ].map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="rounded px-3 py-1.5 text-white/80 hover:bg-white/10 hover:text-white hover:no-underline"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
         </div>
       </header>
 

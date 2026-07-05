@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { revalidatePath } from "next/cache";
 import AddUserForm from "./AddUserForm";
 import UserList from "./UserList";
@@ -7,7 +8,7 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 
 async function getUsers(): Promise<User[]> {
   try {
-    const res = await fetch(`${API}/users/`, { cache: "no-store" });
+    const res = await serverApi(`${API}/users/`, { cache: "no-store" });
     return res.ok ? res.json() : [];
   } catch {
     return [];
@@ -16,7 +17,7 @@ async function getUsers(): Promise<User[]> {
 
 async function deleteUser(id: number) {
   "use server";
-  await fetch(`${API}/users/${id}`, { method: "DELETE" });
+  await serverApi(`${API}/users/${id}`, { method: "DELETE" });
   revalidatePath("/users");
 }
 

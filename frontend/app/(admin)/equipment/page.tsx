@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { Equipment, Category } from "@/types";
 import { revalidatePath } from "next/cache";
 import AddEquipmentForm from "./AddEquipmentForm";
@@ -8,8 +9,8 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 async function getData() {
   try {
     const [eqRes, catRes] = await Promise.all([
-      fetch(`${API}/equipment/`, { cache: "no-store" }),
-      fetch(`${API}/categories/`, { cache: "no-store" }),
+      serverApi(`${API}/equipment/`, { cache: "no-store" }),
+      serverApi(`${API}/categories/`, { cache: "no-store" }),
     ]);
     return {
       equipment: (eqRes.ok ? await eqRes.json() : []) as Equipment[],

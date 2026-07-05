@@ -40,6 +40,25 @@ export default function StoreHeader({
 
   return (
     <header className="sticky top-0 z-40 bg-white dark:bg-slate-900 shadow-sm">
+      {/* Cross-business switcher */}
+      <div className="bg-slate-950 text-slate-400 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 h-7 flex items-center gap-1 text-[11px] sm:text-xs">
+          {[
+            { href: "/home", label: "Dyzah Home" },
+            { href: "/store", label: "Store" },
+            { href: "/services", label: "Services" },
+          ].map((s) => (
+            <Link
+              key={s.href}
+              href={s.href}
+              className="rounded px-2 py-0.5 hover:bg-slate-800 hover:text-white transition-colors"
+            >
+              {s.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* Utility bar */}
       <div className="bg-slate-900 dark:bg-slate-950 text-slate-300">
         <div className="max-w-7xl mx-auto px-4 h-8 flex items-center justify-between text-[11px] sm:text-xs">

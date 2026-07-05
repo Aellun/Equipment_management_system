@@ -1,10 +1,11 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { Customer } from "@/types";
 
 const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 
 async function getData() {
   try {
-    const res = await fetch(`${API}/customers/`, { cache: "no-store" });
+    const res = await serverApi(`${API}/customers/`, { cache: "no-store" });
     return (res.ok ? await res.json() : []) as Customer[];
   } catch {
     return [];

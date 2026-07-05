@@ -1,3 +1,4 @@
+import { serverApi } from "@/app/lib/serverApi";
 import { Department, Product } from "@/types";
 import { revalidatePath } from "next/cache";
 import DepartmentsManager from "./DepartmentsManager";
@@ -7,8 +8,8 @@ const API = process.env.INTERNAL_API_URL ?? "http://localhost:8000";
 async function getData() {
   try {
     const [deptRes, prodRes] = await Promise.all([
-      fetch(`${API}/departments/`, { cache: "no-store" }),
-      fetch(`${API}/products/`, { cache: "no-store" }),
+      serverApi(`${API}/departments/`, { cache: "no-store" }),
+      serverApi(`${API}/products/`, { cache: "no-store" }),
     ]);
     return {
       departments: (deptRes.ok ? await deptRes.json() : []) as Department[],

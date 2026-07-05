@@ -13,6 +13,15 @@ x-backend-env: &backend-env
   REDIS_URL: redis://redis:6379/0
   SECRET_KEY: ${SECRET_KEY:-dyzah-dev-secret-change-me}
   ERRANDS_MEDIA_DIR: /app/errands_media
+  # --- Auth / edge hardening ---
+  # Browser origins allowed to call the credentialed API.
+  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost,http://localhost:3000}
+  # Set true once served over HTTPS so auth cookies are marked Secure.
+  COOKIE_SECURE: ${COOKIE_SECURE:-false}
+  # Must match the X-Gateway-Secret nginx injects (see nginx/nginx.conf).
+  GATEWAY_SECRET: ${GATEWAY_SECRET:-dyzah-gateway-secret-change-me}
+  # Require mutations (POST/PUT/PATCH/DELETE) to arrive through nginx.
+  GATEWAY_ENFORCE: ${GATEWAY_ENFORCE:-true}
   # M-Pesa (mock by default; set real Daraja creds + MPESA_MOCK=false for live)
   MPESA_MOCK: ${MPESA_MOCK:-true}
   MPESA_CALLBACK_URL: ${MPESA_CALLBACK_URL:-http://localhost/api/errands/payments/mpesa/callback}
@@ -89,6 +98,9 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: /api
       INTERNAL_API_URL: http://backend:8000
+      # SSR reaches the backend directly; it presents the gateway secret so its
+      # server-action writes pass the backend's gateway check. Must match.
+      GATEWAY_SECRET: ${GATEWAY_SECRET:-dyzah-gateway-secret-change-me}
       NODE_ENV: production
     depends_on:
       - backend
