@@ -17,7 +17,7 @@ export interface ShellConfig {
 const SWITCHER = [
   { href: "/home", label: "Dyzah Home" },
   { href: "/store", label: "Store" },
-  { href: "/services", label: "Services" },
+  { href: "/hygiene", label: "Hygiene" },
 ];
 
 export default function ServicesShell({ config, children }: { config: ShellConfig; children: React.ReactNode }) {
@@ -180,7 +180,7 @@ export default function ServicesShell({ config, children }: { config: ShellConfi
               ))}
             </div>
           </div>
-          <p className="mt-6 text-xs text-muted">© {new Date().getFullYear()} Dyzah. One umbrella for city services.</p>
+          <p className="mt-6 text-xs text-muted">© {new Date().getFullYear()} Dyzah. One umbrella, four businesses.</p>
         </div>
       </footer>
     </div>

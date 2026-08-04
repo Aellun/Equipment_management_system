@@ -87,7 +87,7 @@ async function adminFetch<T>(path: string, init?: RequestInit, retried = false):
 }
 
 const TABS = ["Overview", "Runners", "Tasks", "Disputes", "Pricing"] as const;
-type Tab = (typeof TABS)[number];
+type Tab = (typeof TABS)[number] | "Enquiries";
 
 function AdminLogin({ onAuthed }: { onAuthed: () => void }) {
   const [email, setEmail] = useState(AUTO_EMAIL);
@@ -320,7 +320,7 @@ function AssignControl({ task, runners, onDone }: { task: Task; runners: AvailRu
   );
 }
 
-function Tasks() {
+function Tasks({ vertical }: { vertical?: string }) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [runners, setRunners] = useState<AvailRunner[]>([]);
   const [loading, setLoading] = useState(true);
@@ -328,11 +328,12 @@ function Tasks() {
     () =>
       Promise.all([adminFetch<Task[]>("/errands/admin/tasks"), adminFetch<AvailRunner[]>("/errands/admin/runners/available")])
         .then(([t, r]) => {
-          setTasks(t);
+          // Each business gets its own console, so show only its own jobs.
+          setTasks(vertical ? t.filter((x) => x.vertical === vertical) : t);
           setRunners(r);
         })
         .finally(() => setLoading(false)),
-    []
+    [vertical]
   );
   useEffect(() => {
     load();
@@ -366,10 +367,16 @@ function Tasks() {
 }
 
 // ── Disputes tab ─────────────────────────────────────────────────
-function Disputes() {
+function Disputes({ vertical }: { vertical?: string }) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-  const load = useCallback(() => adminFetch<Task[]>("/errands/admin/tasks?status=disputed").then(setTasks).finally(() => setLoading(false)), []);
+  const load = useCallback(
+    () =>
+      adminFetch<Task[]>("/errands/admin/tasks?status=disputed")
+        .then((t) => setTasks(vertical ? t.filter((x) => x.vertical === vertical) : t))
+        .finally(() => setLoading(false)),
+    [vertical]
+  );
   useEffect(() => {
     load();
   }, [load]);
@@ -408,17 +415,17 @@ function Disputes() {
 }
 
 // ── Pricing tab (edit base price + toggle active) ────────────────
-function Pricing() {
+function Pricing({ vertical }: { vertical?: string }) {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState<number | null>(null);
   const load = useCallback(
     () =>
-      fetch(`${API}/errands/services`)
+      fetch(`${API}/errands/services${vertical ? `?vertical=${vertical}` : ""}`)
         .then((r) => r.json())
         .then(setServices)
         .finally(() => setLoading(false)),
-    []
+    [vertical]
   );
   useEffect(() => {
     load();
@@ -480,7 +487,130 @@ function Pricing() {
   );
 }
 
-export default function AdminServices({ label }: { vertical?: string; label: string }) {
+// ── Enquiries tab (Dyzah Hygiene B2B supply) ─────────────────────
+// These rows carry prospective-client contact details, which is why they are
+// only ever fetched from this admin-authenticated console.
+interface Enquiry {
+  id: number;
+  reference: string;
+  organisation: string;
+  sector: string;
+  county: string;
+  contact_name: string;
+  contact_email: string;
+  contact_phone: string;
+  products: string;
+  estimated_quantity: string;
+  frequency: string;
+  notes: string;
+  status: string;
+  created_at: string;
+}
+
+const ENQUIRY_STATUSES = ["new", "contacted", "quoted", "won", "closed"] as const;
+
+function Enquiries() {
+  const [rows, setRows] = useState<Enquiry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const load = useCallback(
+    () =>
+      adminFetch<Enquiry[]>("/errands/hygiene/admin/enquiries")
+        .then(setRows)
+        .finally(() => setLoading(false)),
+    []
+  );
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const setStatus = async (id: number, status: string) => {
+    await adminFetch(`/errands/hygiene/admin/enquiries/${id}/status?status=${status}`, { method: "POST" });
+    load();
+  };
+
+  if (loading) return <Spinner />;
+  if (rows.length === 0)
+    return (
+      <div className="card flex items-center gap-2 p-6 text-slate-500">
+        <Icon name="info" className="h-5 w-5 text-muted" /> No supply enquiries yet.
+      </div>
+    );
+
+  return (
+    <div className="space-y-4">
+      <p className="flex items-start gap-2 rounded-xl bg-gold-50 p-3 text-xs text-gold-700 ring-1 ring-gold-300">
+        <Icon name="shield-check" className="mt-0.5 h-4 w-4 shrink-0" />
+        These records contain prospective-client contact details. Use them only to follow up on the quote.
+      </p>
+      {rows.map((e) => (
+        <div key={e.id} className="card p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs text-muted">
+                {e.reference} · {new Date(e.created_at).toLocaleDateString()}
+              </p>
+              <p className="font-semibold">{e.organisation}</p>
+              <p className="text-sm text-muted">
+                {[e.sector, e.county].filter(Boolean).join(" · ") || "—"}
+              </p>
+            </div>
+            <select
+              value={e.status}
+              onChange={(ev) => setStatus(e.id, ev.target.value)}
+              className="rounded-lg border border-line px-3 py-1.5 text-sm capitalize"
+            >
+              {ENQUIRY_STATUSES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <dl className="mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+            <Detail label="Contact" value={e.contact_name} />
+            <Detail label="Phone" value={e.contact_phone} href={e.contact_phone ? `tel:${e.contact_phone}` : undefined} />
+            <Detail label="Email" value={e.contact_email} href={e.contact_email ? `mailto:${e.contact_email}` : undefined} />
+            <Detail label="Frequency" value={e.frequency} />
+            <Detail label="Products" value={e.products} />
+            <Detail label="Estimated quantity" value={e.estimated_quantity} />
+          </dl>
+          {e.notes && <p className="mt-3 rounded-lg bg-canvas p-3 text-sm text-slate-600">{e.notes}</p>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Detail({ label, value, href }: { label: string; value: string; href?: string }) {
+  if (!value) return null;
+  return (
+    <div>
+      <dt className="text-xs uppercase tracking-wide text-muted">{label}</dt>
+      <dd className="font-medium">
+        {href ? (
+          <a href={href} className="link">
+            {value}
+          </a>
+        ) : (
+          value
+        )}
+      </dd>
+    </div>
+  );
+}
+
+export default function AdminServices({
+  vertical,
+  label,
+  showEnquiries = false,
+}: {
+  /** Restrict tasks, disputes and pricing to one business line. */
+  vertical?: string;
+  label: string;
+  /** Dyzah Hygiene only — the B2B supply pipeline. */
+  showEnquiries?: boolean;
+}) {
   const [authed, setAuthed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("Overview");
@@ -496,11 +626,13 @@ export default function AdminServices({ label }: { vertical?: string; label: str
   if (loading) return <Spinner />;
   if (!authed) return <AdminLogin onAuthed={() => setAuthed(true)} />;
 
+  const tabs: Tab[] = showEnquiries ? [...TABS, "Enquiries"] : [...TABS];
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Dyzah {label} — Operations</h1>
       <div className="flex flex-wrap gap-2">
-        {TABS.map((t) => (
+        {tabs.map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -512,9 +644,10 @@ export default function AdminServices({ label }: { vertical?: string; label: str
       </div>
       {tab === "Overview" && <Overview />}
       {tab === "Runners" && <Runners />}
-      {tab === "Tasks" && <Tasks />}
-      {tab === "Disputes" && <Disputes />}
-      {tab === "Pricing" && <Pricing />}
+      {tab === "Tasks" && <Tasks vertical={vertical} />}
+      {tab === "Disputes" && <Disputes vertical={vertical} />}
+      {tab === "Pricing" && <Pricing vertical={vertical} />}
+      {tab === "Enquiries" && <Enquiries />}
     </div>
   );
 }

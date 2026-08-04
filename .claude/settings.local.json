@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(python3 -c ' *)",
-      "Bash(curl -v http://localhost:3000)"
+      "Bash(curl -v http://localhost:3000)",
+      "Bash(snap list *)",
+      "Bash(awk '/disabled/{print $1, $3}')"
     ]
   }
 }

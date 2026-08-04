@@ -1,5 +1,10 @@
 import type { Config } from "tailwindcss";
 
+/** Bind a colour to a CSS variable holding space-separated RGB channels
+ *  (e.g. `--brand-500: 255 106 0`) while keeping Tailwind's opacity
+ *  modifiers (`bg-brand-500/20`) working. */
+const rgbVar = (name: string) => `rgb(var(${name}) / <alpha-value>)`;
+
 const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -12,28 +17,43 @@ const config: Config = {
         sans: ["var(--font-inter)", "Inter", "system-ui", "-apple-system", "sans-serif"],
       },
       colors: {
-        // ── Dyzah unified Alibaba.com-style palette ──────────────────
-        // Shared across Store, Services and Admin surfaces.
-        // Alibaba: vivid orange CTAs, white/light chrome, grey canvas.
-        squid: "#1d1d1f", // dark panels / hero gradient end
-        navy: "#2b2b2f", // secondary dark
+        // ── Dyzah palette ────────────────────────────────────────────
+        // `brand`, `squid`, `navy` and `link` resolve through CSS variables
+        // (see globals.css) so a surface can re-theme every shared component
+        // by setting one class. Defaults = Dyzah Store/Errands orange;
+        // `.theme-hygiene` swaps in the Dyzah Hygiene navy + green.
+        squid: rgbVar("--squid"), // dark panels / hero gradient start
+        navy: rgbVar("--navy"), // secondary dark
         canvas: "#f5f5f5", // app background (light grey)
         line: "#e8e8e8", // borders / dividers
         muted: "#767676", // secondary text
         ink: "#1a1a1a", // near-black text
-        link: { DEFAULT: "#ff6a00", hover: "#e85f00" },
-        // Brand: Alibaba orange
+        link: { DEFAULT: rgbVar("--link"), hover: rgbVar("--link-hover") },
+        // Primary brand ramp — themable per surface.
         brand: {
-          50: "#fff3ec",
-          100: "#ffe0cc",
-          200: "#ffc09a",
-          300: "#ff9d63",
-          400: "#ff8336",
-          500: "#ff6a00", // Alibaba primary orange
-          600: "#e85f00",
-          700: "#c44f00",
-          800: "#9c3f00",
-          900: "#7a3200",
+          50: rgbVar("--brand-50"),
+          100: rgbVar("--brand-100"),
+          200: rgbVar("--brand-200"),
+          300: rgbVar("--brand-300"),
+          400: rgbVar("--brand-400"),
+          500: rgbVar("--brand-500"),
+          600: rgbVar("--brand-600"),
+          700: rgbVar("--brand-700"),
+          800: rgbVar("--brand-800"),
+          900: rgbVar("--brand-900"),
+        },
+        // ── Dyzah Hygiene brand constants ────────────────────────────
+        // Taken from the company logo: navy wordmark + green "HYGIENE".
+        // Fixed (not themable) so hygiene chrome keeps its identity even
+        // when rendered outside the hygiene surface (e.g. the /home hub).
+        hygiene: {
+          navy: "#032657",
+          "navy-600": "#06305f",
+          "navy-400": "#0a3f80",
+          green: "#59A740",
+          "green-600": "#4a8f35",
+          "green-100": "#ddeed5",
+          "green-50": "#f1f8ee",
         },
         // Secondary warm accent (deal/highlight)
         accent: {
@@ -95,7 +115,7 @@ const config: Config = {
       boxShadow: {
         card: "0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04)",
         "card-hover": "0 4px 12px 0 rgb(0 0 0 / 0.08)",
-        focus: "0 0 0 3px rgba(255,106,0,0.30)",
+        focus: "0 0 0 3px rgb(var(--brand-500) / 0.30)",
       },
     },
   },

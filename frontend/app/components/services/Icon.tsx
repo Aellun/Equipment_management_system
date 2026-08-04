@@ -1,5 +1,5 @@
 // Lightweight inline SVG icon set (lucide-style, 24×24, stroke = currentColor).
-// Ported from the standalone errands app; shared by Errands & Hygiene.
+// Ported from the standalone errands app; shared by Dyzah Errands & Dyzah Hygiene.
 import type { ReactNode } from "react";
 
 const PATHS: Record<string, ReactNode> = {
@@ -280,7 +280,31 @@ const SERVICE_ICONS: Record<string, string> = {
   "scholarship-help": "graduation-cap",
   "cv-jobs": "briefcase",
   "corporate-retainer": "building",
-  // Hygiene
+  // ── Dyzah Hygiene ──
+  // Commercial
+  "commercial-office-cleaning": "building",
+  "retail-mall-cleaning": "shopping-bag",
+  "bank-branch-cleaning": "banknote",
+  // Residential
+  "residential-housekeeping": "home",
+  "residential-deep-clean": "sparkles",
+  "move-in-out-clean": "package",
+  "post-renovation-clean": "package",
+  // Institutional
+  "school-cleaning": "graduation-cap",
+  "worship-cleaning": "landmark",
+  "government-facility-cleaning": "landmark",
+  // Healthcare
+  "hospital-cleaning": "heart-pulse",
+  "lab-pharmacy-cleaning": "pill",
+  "infection-control-sanitization": "shield-check",
+  // Industrial
+  "warehouse-cleaning": "package",
+  "factory-cleaning": "building",
+  // Hospitality
+  "hotel-housekeeping": "star",
+  "restaurant-kitchen-cleaning": "sparkles",
+  // Sanitation & washroom
   "sanitary-bucket-schools": "trash",
   "sanitary-bin-offices": "trash",
   "sanitary-bin-rental": "trash",
@@ -307,11 +331,16 @@ const CATEGORY_ICONS: Record<string, string> = {
   "Students & Scholarships": "graduation-cap",
   "Jobs & Careers": "briefcase",
   Corporate: "building",
-  // Hygiene categories
-  "Sanitary Collection": "trash",
-  "Laundry & Linen": "shirt",
-  "Cleaning & Sanitization": "sparkles",
+  // Dyzah Hygiene categories
+  "Commercial Cleaning": "building",
+  "Residential Cleaning": "home",
+  "Institutional Cleaning": "graduation-cap",
+  "Healthcare Cleaning": "heart-pulse",
+  "Industrial Cleaning": "package",
+  "Hospitality Cleaning": "star",
+  "Sanitation & Washroom Hygiene": "droplet",
   "Waste & Pest Control": "bug",
+  "Laundry & Linen": "shirt",
   Subscriptions: "receipt",
 };
 

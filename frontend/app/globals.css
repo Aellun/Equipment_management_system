@@ -8,6 +8,48 @@
   :root {
     --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
     color-scheme: light;
+
+    /* ── Default brand: Dyzah Store / Errands orange ───────────────
+       Space-separated RGB channels so Tailwind opacity modifiers work.
+       Every shared component styles itself from these, so re-theming a
+       surface is one class (see .theme-hygiene). */
+    --brand-50: 255 243 236;
+    --brand-100: 255 224 204;
+    --brand-200: 255 192 154;
+    --brand-300: 255 157 99;
+    --brand-400: 255 131 54;
+    --brand-500: 255 106 0;
+    --brand-600: 232 95 0;
+    --brand-700: 196 79 0;
+    --brand-800: 156 63 0;
+    --brand-900: 122 50 0;
+    --squid: 29 29 31;
+    --navy: 43 43 47;
+    --link: 255 106 0;
+    --link-hover: 232 95 0;
+  }
+
+  /* ── Dyzah Hygiene ────────────────────────────────────────────────
+     The client's brand colours, sampled from the company logo:
+     navy #032657 (wordmark) and green #59A740 ("HYGIENE" + leaf).
+     Green drives CTAs and accents; navy drives dark chrome. Applying
+     this class to the hygiene shell re-themes every shared services
+     component (booking, tracking, auth) without touching them. */
+  .theme-hygiene {
+    --brand-50: 241 248 238;
+    --brand-100: 221 238 213;
+    --brand-200: 188 220 174;
+    --brand-300: 150 200 131;
+    --brand-400: 116 180 94;
+    --brand-500: 89 167 64;   /* #59A740 */
+    --brand-600: 74 143 53;
+    --brand-700: 60 114 44;
+    --brand-800: 47 90 35;
+    --brand-900: 38 73 29;
+    --squid: 3 38 87;         /* #032657 */
+    --navy: 6 48 95;
+    --link: 3 38 87;
+    --link-hover: 74 143 53;
   }
 
   * {

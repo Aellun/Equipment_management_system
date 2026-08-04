@@ -4,6 +4,7 @@ from app.errands.models.task import Task, TaskStatus, Urgency
 from app.errands.models.payment import Payment, PaymentStatus
 from app.errands.models.review import Review
 from app.errands.models.settings import AppSetting
+from app.errands.models.hygiene_enquiry import EnquiryStatus, HygieneEnquiry
 
 __all__ = [
     "User",
@@ -18,4 +19,6 @@ __all__ = [
     "PaymentStatus",
     "Review",
     "AppSetting",
+    "HygieneEnquiry",
+    "EnquiryStatus",
 ]

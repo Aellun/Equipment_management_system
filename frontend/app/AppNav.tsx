@@ -62,10 +62,17 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    title: "Services",
-    external: { href: "/services", label: "View services site" },
+    title: "Dyzah Errands",
+    external: { href: "/services", label: "View errands site" },
     items: [
-      { href: "/ops/services", label: "Services Ops", icon: <I d="M5 17a2 2 0 104 0 2 2 0 00-4 0zm10 0a2 2 0 104 0 2 2 0 00-4 0z" extra="M9 17h4l2-9h3M9 17l-2-7H4" /> },
+      { href: "/ops/services", label: "Errands Ops", icon: <I d="M5 17a2 2 0 104 0 2 2 0 00-4 0zm10 0a2 2 0 104 0 2 2 0 00-4 0z" extra="M9 17h4l2-9h3M9 17l-2-7H4" /> },
+    ],
+  },
+  {
+    title: "Dyzah Hygiene",
+    external: { href: "/hygiene", label: "View hygiene site" },
+    items: [
+      { href: "/ops/hygiene", label: "Hygiene Ops", icon: <I d="M12 3l-1.9 5.8a2 2 0 01-1.3 1.3L3 12l5.8 1.9a2 2 0 011.3 1.3L12 21l1.9-5.8a2 2 0 011.3-1.3L21 12l-5.8-1.9a2 2 0 01-1.3-1.3z" /> },
     ],
   },
   {

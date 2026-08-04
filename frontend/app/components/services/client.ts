@@ -1,6 +1,7 @@
 "use client";
 
-// Lightweight fetch client for the Dyzah Errands/Hygiene domain.
+// Lightweight fetch client for the shared services engine, used by both
+// Dyzah Errands (/services) and Dyzah Hygiene (/hygiene).
 // All endpoints are namespaced under /errands on the backend; the browser
 // reaches them through nginx at /api/errands/*. Proof photos live at
 // /errands-media/* and are also reached through /api.

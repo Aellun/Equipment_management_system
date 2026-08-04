@@ -72,4 +72,23 @@ Thumbs.db
 # Node package manager lock files (optional - uncomment if you want strict versions)
 # frontend/package-lock.json
 # frontend/yarn.lock
-DYZAH HYGIENE-1_260803_212300.pdf
+
+# ── Client-supplied source documents — never commit ──────────────────
+# Company profiles, briefs, proposals, contracts and scans. These carry
+# client material that must not be distributed with the code, so they are
+# ignored everywhere in the tree with no exceptions.
+#
+# What the documents contribute (copy, brand colours, service lines) belongs
+# in code instead — e.g. frontend/app/components/hygiene/brand.ts, which is
+# where the Dyzah Hygiene profile was transcribed. See docs/DYZAH_HYGIENE.md.
+*.pdf
+*.PDF
+*.doc
+*.docx
+*.odt
+*.rtf
+*.xls
+*.xlsx
+*.ods
+*.ppt
+*.pptx

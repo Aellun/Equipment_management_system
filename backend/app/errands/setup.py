@@ -12,7 +12,7 @@ from sqlalchemy import text
 
 from app.errands.core.db import Base, engine
 from app.errands import models  # noqa: F401 — registers errands tables on Base.metadata
-from app.errands.routers import admin, auth, payments, runners, services, tasks
+from app.errands.routers import admin, auth, hygiene, payments, runners, services, tasks
 
 ERRANDS_MEDIA_DIR = os.environ.get("ERRANDS_MEDIA_DIR", "/app/errands_media")
 
@@ -57,3 +57,4 @@ def include_errands_routers(app: FastAPI) -> None:
     app.include_router(payments.router)
     app.include_router(runners.router)
     app.include_router(admin.router)
+    app.include_router(hygiene.router)

@@ -1,12 +1,21 @@
 import Link from "next/link";
 import { Icon } from "@/app/components/services/Icon";
+import HygieneLogo from "@/app/components/hygiene/HygieneLogo";
 
 export const metadata = {
   title: "Dyzah — One umbrella for city services",
-  description: "Dyzah Store and Dyzah Services (errands, deliveries, hygiene) — one trusted platform.",
+  description: "Dyzah Store, Dyzah Errands and Dyzah Hygiene — one trusted platform.",
 };
 
-const BUSINESSES: { href: string; icon: string; name: string; tagline: string; cta: string }[] = [
+const BUSINESSES: {
+  href: string;
+  icon: string;
+  name: string;
+  tagline: string;
+  cta: string;
+  /** Set for businesses that carry their own brand identity on this card. */
+  branded?: boolean;
+}[] = [
   {
     href: "/store",
     icon: "shopping-bag",
@@ -17,9 +26,18 @@ const BUSINESSES: { href: string; icon: string; name: string; tagline: string; c
   {
     href: "/services",
     icon: "bike",
-    name: "Dyzah Services",
-    tagline: "Errands, deliveries, sanitary collection, laundry & cleaning — verified crew, photo proof.",
-    cta: "Book a service",
+    name: "Dyzah Errands",
+    tagline: "Errands, deliveries, government queues and diaspora support — verified runners, photo proof.",
+    cta: "Book an errand",
+  },
+  {
+    href: "/hygiene",
+    icon: "sparkles",
+    name: "Dyzah Hygiene",
+    tagline:
+      "Professional cleaning for offices, homes, schools and healthcare — plus hygiene product and sanitary pad supply.",
+    cta: "Explore hygiene",
+    branded: true,
   },
 ];
 
@@ -36,7 +54,8 @@ export default function DyzahHome() {
           <nav className="ml-auto flex items-center gap-1 text-sm">
             {[
               { href: "/store", label: "Store" },
-              { href: "/services", label: "Services" },
+              { href: "/services", label: "Errands" },
+              { href: "/hygiene", label: "Hygiene" },
             ].map((l) => (
               <Link
                 key={l.href}
@@ -64,21 +83,36 @@ export default function DyzahHome() {
 
       <main className="mx-auto max-w-6xl px-4 py-12">
         <h2 className="text-2xl font-bold">Our businesses</h2>
-        <div className="mt-6 grid gap-5 sm:grid-cols-2">
+        <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {BUSINESSES.map((b) => (
             <Link
               key={b.name}
               href={b.href}
               className="card flex flex-col p-6 transition hover:-translate-y-1 hover:shadow-md hover:no-underline"
             >
-              <span className="icon-chip h-14 w-14">
-                <Icon name={b.icon} className="h-7 w-7" />
-              </span>
-              <p className="mt-4 text-lg font-bold text-ink">{b.name}</p>
-              <p className="mt-1 flex-1 text-sm text-slate-500">{b.tagline}</p>
-              <span className="mt-4 inline-flex items-center gap-1 font-semibold text-brand-600">
-                {b.cta} <Icon name="arrow-right" className="h-4 w-4" />
-              </span>
+              {/* Dyzah Hygiene carries its own logo and colours even here, so
+                  the umbrella page reflects that it is its own brand. */}
+              {b.branded ? (
+                <>
+                  <HygieneLogo className="items-start text-[15px]" />
+                  <p className="mt-4 text-lg font-bold text-hygiene-navy">{b.name}</p>
+                  <p className="mt-1 flex-1 text-sm text-slate-500">{b.tagline}</p>
+                  <span className="mt-4 inline-flex items-center gap-1 font-semibold text-hygiene-green">
+                    {b.cta} <Icon name="arrow-right" className="h-4 w-4" />
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="icon-chip h-14 w-14">
+                    <Icon name={b.icon} className="h-7 w-7" />
+                  </span>
+                  <p className="mt-4 text-lg font-bold text-ink">{b.name}</p>
+                  <p className="mt-1 flex-1 text-sm text-slate-500">{b.tagline}</p>
+                  <span className="mt-4 inline-flex items-center gap-1 font-semibold text-brand-600">
+                    {b.cta} <Icon name="arrow-right" className="h-4 w-4" />
+                  </span>
+                </>
+              )}
             </Link>
           ))}
         </div>
@@ -104,7 +138,7 @@ export default function DyzahHome() {
 
       <footer className="mt-8 border-t border-line bg-navy text-white">
         <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-white/70">
-          © {new Date().getFullYear()} Dyzah. Store · Services (Errands & Hygiene).
+          © {new Date().getFullYear()} Dyzah. Store · Errands · Hygiene.
         </div>
       </footer>
     </div>

@@ -7,6 +7,36 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added — Dyzah Hygiene as a separate business
+
+- **Its own branded site at `/hygiene`**: landing, About (who we are, our story,
+  vision, mission, core values), cleaning catalog, booking, tracking and account
+  surfaces. Copy and positioning come from the client's company profile.
+- **Client brand colours**: navy `#032657` and green `#59A740`, sampled from the
+  company logo. The Dyzah palette is now CSS-variable driven, so the single
+  `.theme-hygiene` class on the hygiene shell re-themes every shared services
+  component without touching them.
+- **B2B supply enquiries** for the hygiene product / sanitary pad pillar, which
+  is quoted per tender rather than sold at a public price:
+  `POST /api/errands/hygiene/enquiries` (public) and admin list/status routes.
+  Public responses return a reference and status only — contact details are
+  returned exclusively from admin-authenticated routes.
+- **Separate operations console** at `/ops/hygiene`, including an Enquiries tab.
+  `/ops/services` is now Dyzah Errands only; both filter by vertical.
+- Documentation: `docs/DYZAH_HYGIENE.md`.
+
+### Changed
+
+- **Hygiene catalog re-cut** to the profile's service lines (commercial,
+  residential, institutional, healthcare, industrial, hospitality cleaning, plus
+  sanitation/washroom hygiene, waste & pest control and laundry). Hygiene rows
+  are now upserted by slug and retired rows deactivated rather than deleted.
+- **`/services` is Dyzah Errands only** — it no longer lists hygiene services.
+- `/home` presents three customer-facing businesses; the Hygiene card carries
+  its own logo and colours.
+- nginx sets `Cache-Control: no-store` on `/ops` as well as `/admin`, since the
+  hygiene console renders prospective-client contact details.
+
 ---
 
 ## [0.2.1] - 2026-05-14

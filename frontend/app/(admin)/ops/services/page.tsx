@@ -1,6 +1,7 @@
 import AdminServices from "@/app/components/services/AdminServices";
 
-// Combined Errands + Hygiene operations (all verticals).
+// Dyzah Errands operations. Hygiene is a separate business with its own
+// console at /ops/hygiene.
 export default function Page() {
-  return <AdminServices label="Services" />;
+  return <AdminServices vertical="errands" label="Errands" />;
 }
