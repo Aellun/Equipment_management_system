@@ -7,6 +7,7 @@ import { hygieneApi, type EnquiryPayload } from "./client";
 import { ENQUIRY_FREQUENCIES, ENQUIRY_SECTORS, HYGIENE } from "./brand";
 
 const EMPTY: EnquiryPayload = {
+  kind: "supply",
   organisation: "",
   sector: "",
   county: "",

@@ -18,6 +18,7 @@ const SWITCHER = [
   { href: "/home", label: "Dyzah Home" },
   { href: "/store", label: "Store" },
   { href: "/hygiene", label: "Hygiene" },
+  { href: "/events", label: "Events" },
 ];
 
 export default function ServicesShell({ config, children }: { config: ShellConfig; children: React.ReactNode }) {
@@ -27,7 +28,7 @@ export default function ServicesShell({ config, children }: { config: ShellConfi
   const [menuOpen, setMenuOpen] = useState(false);
   const [q, setQ] = useState("");
 
-  const dash = user?.role === "admin" ? "/admin" : user?.role === "runner" ? `${config.basePath}/runner` : `${config.basePath}/dashboard`;
+  const dash = user?.role === "admin" ? "/admin" : user?.role === "runner" ? `${config.basePath}/runner` : `${config.basePath}/account`;
 
   const nav = [
     [`${config.basePath}/browse`, "All services"],

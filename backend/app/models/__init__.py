@@ -27,3 +27,4 @@ __all__ = [
     "TrackingEvent", "ReturnRequest", "ReturnStatus",
     "MaintenanceLog", "Reservation",
 ]
+from app.models.rental_quote import RentalQuote, RentalQuoteItem, QuoteStatus, FulfilmentMethod  # noqa: F401,E402

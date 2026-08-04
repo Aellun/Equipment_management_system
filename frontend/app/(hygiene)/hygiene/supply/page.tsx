@@ -1,172 +1,118 @@
 import Link from "next/link";
 import { Icon } from "@/app/components/services/Icon";
-import { HYGIENE } from "@/app/components/hygiene/brand";
 
 export const metadata = {
-  title: "Hygiene products & sanitary pad distribution",
+  title: "Sanitary pads & hygiene products",
   description:
-    "Reliable supply and distribution of quality sanitary pads and hygiene products to schools, county governments, healthcare facilities, NGOs, development partners and corporate organisations across Kenya.",
+    "Bulk supply of sanitary pads and hygiene products to schools, county governments, healthcare facilities, NGOs and corporates across Kenya.",
 };
 
-const B = HYGIENE.basePath;
+const B = "/hygiene";
 
-/** Organisation types the supply programme is designed to support. */
-const PARTNERS: [string, string][] = [
-  ["landmark", "Government institutions"],
-  ["landmark", "County governments"],
-  ["graduation-cap", "Schools & colleges"],
-  ["heart-pulse", "Healthcare facilities"],
-  ["shield-check", "NGOs & humanitarian agencies"],
-  ["building", "Corporate organisations"],
-  ["user", "Development partners"],
-  ["message-circle", "Faith-based organisations"],
-  ["home", "Community-based initiatives"],
+const BUYERS = [
+  "Schools & colleges",
+  "County governments",
+  "Healthcare facilities",
+  "NGOs & humanitarian agencies",
+  "Corporates",
+  "Faith-based organisations",
 ];
 
-const IMPACT: [string, string][] = [
-  ["Every sanitary pad distributed helps keep a girl in school.", "graduation-cap"],
-  ["Every hygiene kit supports healthier families.", "heart-pulse"],
-  ["Every awareness programme strengthens communities.", "message-circle"],
+const PRODUCTS: [string, string][] = [
+  ["heart-pulse", "Sanitary pads"],
+  ["package", "Menstrual hygiene kits"],
+  ["droplet", "Washroom consumables"],
+  ["shield-check", "Sanitiser & dispensers"],
 ];
 
 export default function SupplyPage() {
   return (
-    <div className="space-y-16">
-      {/* ── Hero ─────────────────────────────────────────────── */}
-      <section className="card overflow-hidden bg-gradient-to-br from-hygiene-navy to-hygiene-navy-600 p-8 text-white sm:p-12">
-        <span className="badge bg-white/10 text-hygiene-green ring-1 ring-hygiene-green/40">
-          Second pillar of our business
-        </span>
-        <h1 className="mt-4 max-w-3xl text-3xl font-extrabold leading-tight tracking-tight md:text-4xl">
-          Hygiene products & sanitary pad distribution
-        </h1>
-        <p className="mt-3 max-w-2xl text-lg text-hygiene-green">
-          Promoting dignity, health and well-being through accessible hygiene solutions.
-        </p>
-        <p className="mt-4 max-w-3xl text-white/75">
-          Access to quality hygiene products is fundamental to public health, personal dignity, confidence and social
-          development. While professional cleaning forms one pillar of our business, we are equally dedicated to
-          ensuring individuals, families, institutions and communities can access the essentials that promote healthier
-          living.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href={`${B}/supply/enquiry`}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-hygiene-green px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-hygiene-green-600 hover:no-underline"
-          >
-            Request a supply quote <Icon name="arrow-right" className="h-4 w-4" />
-          </Link>
-          <Link
-            href={`${B}/about`}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-white/25 transition-colors hover:bg-white/20 hover:no-underline"
-          >
-            About Dyzah Hygiene
-          </Link>
-        </div>
-      </section>
-
-      {/* ── Why it matters ───────────────────────────────────── */}
-      <section className="grid gap-8 md:grid-cols-2">
-        <div>
-          <h2 className="text-2xl font-bold">More than a distributor</h2>
-          <div className="mt-4 space-y-4 text-slate-600">
-            <p>
-              One of our flagship initiatives is the supply and distribution of high-quality sanitary pads and menstrual
-              hygiene products. We believe menstrual health is not only a personal issue but a matter of education,
-              gender equality, economic empowerment and human dignity.
-            </p>
-            <p>
-              Every girl and woman deserves access to safe, affordable and reliable menstrual hygiene products, without
-              barriers that compromise her health, education, confidence or opportunities.
-            </p>
-            <p>
-              Across Kenya and many parts of Africa, thousands of girls continue to miss school due to inadequate access
-              to sanitary products and limited menstrual hygiene education. Women in vulnerable communities also face
-              challenges accessing affordable hygiene essentials. These realities inspired us to become more than a
-              distributor — we have become an advocate for menstrual dignity.
+    <div className="space-y-6">
+      {/* Hero — one line, one action */}
+      <section className="rounded bg-hygiene-navy px-6 py-8 text-white md:px-10 md:py-10">
+        <div className="flex flex-wrap items-center justify-between gap-6">
+          <div className="max-w-xl">
+            <h1 className="text-2xl font-extrabold md:text-3xl">Sanitary pads & hygiene products, in bulk</h1>
+            <p className="mt-2 text-white/75">
+              Reliable supply to schools, county governments, NGOs and corporates. Priced per tender, so
+              tell us what you need and we&apos;ll quote.
             </p>
           </div>
-        </div>
-        <div className="card flex flex-col justify-center gap-6 p-8">
-          {IMPACT.map(([text, icon]) => (
-            <div key={text} className="flex gap-3">
-              <span className="icon-chip h-11 w-11 shrink-0">
-                <Icon name={icon} className="h-5 w-5" />
-              </span>
-              <p className="self-center text-sm font-medium text-ink">{text}</p>
-            </div>
-          ))}
-          <p className="border-t border-line pt-5 text-sm text-slate-500">
-            Every partnership contributes to a future where access to hygiene is recognised not as a privilege, but as a
-            basic necessity.
-          </p>
+          <Link
+            href={`${B}/supply/enquiry`}
+            className="rounded bg-brand-500 px-6 py-3 font-semibold text-white hover:bg-brand-600 hover:no-underline"
+          >
+            Request a quote
+          </Link>
         </div>
       </section>
 
-      {/* ── Who we supply ────────────────────────────────────── */}
-      <section>
-        <h2 className="text-2xl font-bold">Who we supply</h2>
-        <p className="mt-1 text-muted">
-          Our distribution services are designed to give organisations dependable access to quality hygiene products.
-        </p>
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {PARTNERS.map(([icon, label]) => (
-            <div key={label} className="card flex items-center gap-3 p-4">
-              <span className="icon-chip h-10 w-10 shrink-0">
-                <Icon name={icon} className="h-5 w-5" />
-              </span>
-              <span className="text-sm font-medium text-ink">{label}</span>
+      {/* What we supply */}
+      <section className="rounded border border-line bg-white">
+        <h2 className="border-b border-line px-5 py-3 font-bold">What we supply</h2>
+        <div className="grid grid-cols-2 divide-x divide-y divide-line lg:grid-cols-4 lg:divide-y-0">
+          {PRODUCTS.map(([icon, label]) => (
+            <div key={label} className="flex flex-col items-center gap-2 px-4 py-6 text-center">
+              <Icon name={icon} className="h-6 w-6 text-hygiene-navy" />
+              <span className="text-sm font-medium">{label}</span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── How supply works ─────────────────────────────────── */}
-      <section className="card p-8">
-        <h2 className="text-2xl font-bold">How supply works</h2>
-        <p className="mt-1 text-muted">
-          Volumes, specifications and pricing vary by organisation and tender, so supply is quoted rather than sold at a
-          fixed shelf price.
-        </p>
-        <div className="mt-6 grid gap-6 md:grid-cols-4">
-          {(
-            [
-              ["Send your requirement", "Tell us the products, volumes, frequency and delivery county."],
-              ["We prepare a quote", "Competitive pricing built around your specification and schedule."],
-              ["Agree terms", "Delivery schedule, documentation and any programme support are confirmed."],
-              ["Reliable delivery", "Consistent supply on the agreed cycle, with support throughout."],
-            ] as [string, string][]
-          ).map(([title, body], i) => (
-            <div key={title}>
-              <div className="grid h-10 w-10 place-items-center rounded-full bg-brand-50 font-bold text-brand-600">
-                {i + 1}
-              </div>
-              <p className="mt-3 font-semibold">{title}</p>
-              <p className="mt-1 text-sm text-slate-500">{body}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-6 flex items-start gap-2 rounded-xl bg-brand-50 p-4 text-sm text-slate-600 ring-1 ring-brand-200">
-          <Icon name="info" className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" />
-          Enquiry details are used only to prepare and follow up on your quote. They are not published anywhere on this
-          site and are visible only to the Dyzah Hygiene team.
-        </p>
-      </section>
+      {/* Who buys + how it works */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <section className="rounded border border-line bg-white">
+          <h2 className="border-b border-line px-5 py-3 font-bold">Who we supply</h2>
+          <ul className="grid gap-2 p-5 text-sm sm:grid-cols-2">
+            {BUYERS.map((b) => (
+              <li key={b} className="flex items-center gap-2">
+                <Icon name="check" className="h-4 w-4 shrink-0 text-brand-500" />
+                {b}
+              </li>
+            ))}
+          </ul>
+        </section>
 
-      {/* ── CTA ──────────────────────────────────────────────── */}
-      <section className="card flex flex-col items-start gap-4 bg-brand-50 p-8 ring-1 ring-brand-200 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-ink">
-            Building healthier communities — one product, one partnership, one life at a time.
-          </h2>
-          <p className="mt-1 text-sm text-slate-600">
-            Combining reliable supply chains, competitive pricing and a strong commitment to social impact.
-          </p>
-        </div>
-        <Link href={`${B}/supply/enquiry`} className="btn-primary shrink-0">
-          Request a quote
+        <section className="rounded border border-line bg-white">
+          <h2 className="border-b border-line px-5 py-3 font-bold">How it works</h2>
+          <ol className="divide-y divide-line text-sm">
+            {[
+              ["Send your requirement", "Products, volumes, frequency, delivery county."],
+              ["We quote", "Competitive pricing against your specification."],
+              ["We deliver", "On the agreed cycle, with support throughout."],
+            ].map(([title, body], i) => (
+              <li key={title} className="flex gap-3 px-5 py-3.5">
+                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-hygiene-navy text-[11px] font-bold text-white">
+                  {i + 1}
+                </span>
+                <span>
+                  <span className="font-semibold">{title}</span>
+                  <span className="block text-muted">{body}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
+
+      {/* Impact — the reason this pillar exists, kept to three lines */}
+      <section className="rounded border border-line bg-brand-50 p-6">
+        <h2 className="font-bold text-ink">Every pad distributed helps keep a girl in school.</h2>
+        <p className="mt-1.5 max-w-3xl text-sm text-slate-600">
+          Thousands of girls in Kenya miss school for lack of sanitary products. We supply the
+          programmes that change that — and we work with partners on hygiene education alongside it.
+        </p>
+        <Link href={`${B}/about#impact`} className="mt-3 inline-block text-sm font-semibold text-brand-700 hover:underline">
+          More on our community work →
         </Link>
       </section>
+
+      <p className="flex items-start gap-2 text-xs text-muted">
+        <Icon name="shield-check" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-500" />
+        Enquiry details are used only to prepare and follow up on your quote. They are never published
+        or shared with other clients.
+      </p>
     </div>
   );
 }

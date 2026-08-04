@@ -493,6 +493,7 @@ function Pricing({ vertical }: { vertical?: string }) {
 interface Enquiry {
   id: number;
   reference: string;
+  kind: "supply" | "survey";
   organisation: string;
   sector: string;
   county: string;
@@ -501,6 +502,9 @@ interface Enquiry {
   contact_phone: string;
   products: string;
   estimated_quantity: string;
+  site_type: string;
+  site_size: string;
+  locations: string;
   frequency: string;
   notes: string;
   status: string;
@@ -546,7 +550,14 @@ function Enquiries() {
         <div key={e.id} className="card p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-xs text-muted">
+              <p className="flex items-center gap-2 text-xs text-muted">
+                <span
+                  className={`rounded px-1.5 py-0.5 font-semibold uppercase tracking-wide ${
+                    e.kind === "survey" ? "bg-sky-100 text-sky-700" : "bg-leaf-100 text-leaf-700"
+                  }`}
+                >
+                  {e.kind === "survey" ? "Site survey" : "Supply"}
+                </span>
                 {e.reference} · {new Date(e.created_at).toLocaleDateString()}
               </p>
               <p className="font-semibold">{e.organisation}</p>
@@ -574,6 +585,9 @@ function Enquiries() {
             <Detail label="Frequency" value={e.frequency} />
             <Detail label="Products" value={e.products} />
             <Detail label="Estimated quantity" value={e.estimated_quantity} />
+            <Detail label="Site type" value={e.site_type} />
+            <Detail label="Site size" value={e.site_size} />
+            <Detail label="Locations" value={e.locations} />
           </dl>
           {e.notes && <p className="mt-3 rounded-lg bg-canvas p-3 text-sm text-slate-600">{e.notes}</p>}
         </div>

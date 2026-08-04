@@ -18,7 +18,7 @@ from sqlalchemy.orm import Session
 from app.errands.core.db import get_db
 from app.errands.core.deps import require_role
 from app.errands.core.tasks import notify
-from app.errands.models.hygiene_enquiry import EnquiryStatus, HygieneEnquiry
+from app.errands.models.hygiene_enquiry import EnquiryKind, EnquiryStatus, HygieneEnquiry
 from app.errands.models.user import UserRole
 from app.errands.schemas.hygiene import EnquiryCreate, EnquiryOut, EnquiryReceipt
 
@@ -40,6 +40,7 @@ def create_enquiry(body: EnquiryCreate, db: Session = Depends(get_db)):
         )
     enquiry = HygieneEnquiry(
         reference=_make_reference(),
+        kind=body.kind,
         organisation=body.organisation.strip(),
         sector=body.sector.strip(),
         county=body.county.strip(),
@@ -48,6 +49,9 @@ def create_enquiry(body: EnquiryCreate, db: Session = Depends(get_db)):
         contact_phone=body.contact_phone,
         products=body.products.strip(),
         estimated_quantity=body.estimated_quantity.strip(),
+        site_type=body.site_type.strip(),
+        site_size=body.site_size.strip(),
+        locations=body.locations.strip(),
         frequency=body.frequency.strip(),
         notes=body.notes.strip(),
     )
@@ -55,8 +59,9 @@ def create_enquiry(body: EnquiryCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(enquiry)
     # Notify by reference only — no contact details in the message body.
-    notify("email", "admin", f"New Dyzah Hygiene supply enquiry {enquiry.reference}")
-    return EnquiryReceipt(reference=enquiry.reference, status=enquiry.status)
+    label = "site survey request" if enquiry.kind == EnquiryKind.survey else "supply enquiry"
+    notify("email", "admin", f"New Dyzah Hygiene {label} {enquiry.reference}")
+    return EnquiryReceipt(reference=enquiry.reference, status=enquiry.status, kind=enquiry.kind)
 
 
 @router.get("/enquiries/{reference}/status", response_model=EnquiryReceipt)
@@ -67,7 +72,7 @@ def enquiry_status(reference: str, db: Session = Depends(get_db)):
     )
     if not enquiry:
         raise HTTPException(status_code=404, detail="Enquiry not found")
-    return EnquiryReceipt(reference=enquiry.reference, status=enquiry.status)
+    return EnquiryReceipt(reference=enquiry.reference, status=enquiry.status, kind=enquiry.kind)
 
 
 # ── Admin ────────────────────────────────────────────────────────
@@ -76,10 +81,16 @@ def enquiry_status(reference: str, db: Session = Depends(get_db)):
     response_model=list[EnquiryOut],
     dependencies=[Depends(require_role(UserRole.admin))],
 )
-def list_enquiries(status: EnquiryStatus | None = None, db: Session = Depends(get_db)):
+def list_enquiries(
+    status: EnquiryStatus | None = None,
+    kind: EnquiryKind | None = None,
+    db: Session = Depends(get_db),
+):
     stmt = select(HygieneEnquiry).order_by(desc(HygieneEnquiry.created_at))
     if status:
         stmt = stmt.where(HygieneEnquiry.status == status)
+    if kind:
+        stmt = stmt.where(HygieneEnquiry.kind == kind)
     return db.scalars(stmt).all()
 
 

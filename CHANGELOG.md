@@ -7,6 +7,66 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added — Dyzah Events: customer storefront + rental operations
+
+Researched against Rentman, Current RMS, Goodshuffle Pro and Booqable. The
+consistent pattern in event hire is **soft availability + quote request** —
+customers pick dates and build a list; a human confirms stock, transport and
+access before money moves — with **utilisation** as the headline operating
+metric.
+
+- **Public storefront at `/events`**: dates first (they decide availability),
+  catalog grouped by item with live "8 free of 8 on your dates", hire list
+  persisted across visits, quote request, and reference tracking.
+- **New API**: `/events/catalog`, `/events/availability` (proper interval-overlap
+  logic), `/events/quotes` + staff pipeline, and `/events/admin/stats`.
+- **Hire inventory seeded**: 29 groups (~1,700 units) across seating, tables,
+  tents, audio, lighting, power, catering and decor, with day rates.
+- **Equipment gains storefront fields** — `daily_rate`, `description`,
+  `image_url`, `is_public`. Nothing appears publicly until deliberately
+  published (`is_public` defaults to false).
+- **Admin dashboard rebuilt** around rental KPIs: fleet utilisation against the
+  60–80% industry benchmark, overdue returns, today's movements, repair
+  backlog and pipeline value — replacing a generic count wall.
+- **`/events-ops`**: quote board where staff price and advance requests.
+
+### Added — purpose-built operations consoles per business
+
+The single generic services console was built around errands and fitted
+neither of the other businesses.
+
+- **`/ops/hygiene`** is a cleaning day sheet: Today (visits, unassigned crew,
+  overdue, awaiting sign-off) → Schedule by day → Crew vetting → Leads (site
+  surveys and product supply in one pipeline) → Pricing showing each service's
+  booking path.
+- **`/ops/services`** is a live errands dispatch board: unassigned queue first,
+  then who is on the road, with auto/manual assignment.
+
+### Added — customer accounts shaped to each business
+
+- **`/hygiene/account`**: next visit leads, plan and per-visit saving beside
+  it, then upcoming / past visits (with photo proof) / saved addresses.
+- **`/services/account`**: a progress rail for live errands
+  (paid → assigned → on the way → proof → done), unpaid quotes surfaced first,
+  receipts below.
+
+### Changed
+
+- `/home` presents four businesses; Events joins the cross-business switchers.
+- Admin nav groups by business, each linking to its own storefront.
+- Events uses the Dyzah Hygiene navy/green via `.theme-events`, kept as its own
+  class so it can diverge later.
+
+### Privacy
+
+Event quote requests carry customer contact details and venue addresses.
+Public routes return a reference, status and price only; the full record is
+staff-only. Verified end to end.
+
+---
+
+## [Previous unreleased] — Dyzah Hygiene
+
 ### Added — Dyzah Hygiene as a separate business
 
 - **Its own branded site at `/hygiene`**: landing, About (who we are, our story,

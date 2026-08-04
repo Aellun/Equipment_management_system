@@ -11,10 +11,11 @@ from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-from app.errands.models.hygiene_enquiry import EnquiryStatus
+from app.errands.models.hygiene_enquiry import EnquiryKind, EnquiryStatus
 
 
 class EnquiryCreate(BaseModel):
+    kind: EnquiryKind = EnquiryKind.supply
     organisation: str = Field(min_length=2, max_length=160)
     sector: str = Field(default="", max_length=60)
     county: str = Field(default="", max_length=60)
@@ -23,6 +24,9 @@ class EnquiryCreate(BaseModel):
     contact_phone: str = Field(default="", max_length=30)
     products: str = Field(default="", max_length=300)
     estimated_quantity: str = Field(default="", max_length=80)
+    site_type: str = Field(default="", max_length=80)
+    site_size: str = Field(default="", max_length=80)
+    locations: str = Field(default="", max_length=40)
     frequency: str = Field(default="", max_length=60)
     notes: str = Field(default="", max_length=2000)
 
@@ -37,6 +41,7 @@ class EnquiryReceipt(BaseModel):
 
     reference: str
     status: EnquiryStatus
+    kind: EnquiryKind = EnquiryKind.supply
 
 
 class EnquiryOut(BaseModel):
@@ -44,6 +49,7 @@ class EnquiryOut(BaseModel):
 
     id: int
     reference: str
+    kind: EnquiryKind
     organisation: str
     sector: str
     county: str
@@ -52,6 +58,9 @@ class EnquiryOut(BaseModel):
     contact_phone: str
     products: str
     estimated_quantity: str
+    site_type: str
+    site_size: str
+    locations: str
     frequency: str
     notes: str
     status: EnquiryStatus

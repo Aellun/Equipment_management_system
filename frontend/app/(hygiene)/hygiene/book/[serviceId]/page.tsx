@@ -1,10 +1,14 @@
 "use client";
 
+import { Suspense } from "react";
 import { useParams } from "next/navigation";
-import BookingPage from "@/app/components/services/pages/BookingPage";
-import { HYGIENE } from "@/app/components/hygiene/brand";
+import CleaningBooking from "@/app/components/hygiene/CleaningBooking";
 
 export default function Page() {
   const { serviceId } = useParams<{ serviceId: string }>();
-  return <BookingPage vertical="hygiene" basePath={HYGIENE.basePath} serviceId={serviceId} />;
+  return (
+    <Suspense fallback={null}>
+      <CleaningBooking serviceId={serviceId} />
+    </Suspense>
+  );
 }

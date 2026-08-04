@@ -1,7 +1,7 @@
-import AdminServices from "@/app/components/services/AdminServices";
+import ErrandsOps from "@/app/components/services/ErrandsOps";
 
-// Dyzah Errands operations. Hygiene is a separate business with its own
-// console at /ops/hygiene.
+export const metadata = { title: "Errands dispatch" };
+
 export default function Page() {
-  return <AdminServices vertical="errands" label="Errands" />;
+  return <ErrandsOps />;
 }

@@ -1,7 +1,7 @@
-import AdminServices from "@/app/components/services/AdminServices";
+import HygieneOps from "@/app/components/hygiene/HygieneOps";
 
-// Dyzah Hygiene operations — cleaning jobs plus the B2B supply enquiry
-// pipeline, which only this business has.
+export const metadata = { title: "Cleaning operations" };
+
 export default function Page() {
-  return <AdminServices vertical="hygiene" label="Hygiene" showEnquiries />;
+  return <HygieneOps />;
 }

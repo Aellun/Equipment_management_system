@@ -37,6 +37,32 @@ def init_errands_db() -> None:
         " WHEN escrow_status::text = 'refunded' THEN 'refunded'::errand_payment_status"
         " ELSE 'pending'::errand_payment_status END",
         "ALTER TABLE errand_payments DROP COLUMN IF EXISTS escrow_status",
+        # ── Dyzah Hygiene: cleaning bookings ─────────────────────────
+        # Cleaning is scheduled at an address for a date and window and priced
+        # from property size, not from a pickup→drop-off route.
+        "DO $$ BEGIN CREATE TYPE errand_quote_mode AS ENUM ('rooms','unit','survey','distance'); EXCEPTION WHEN duplicate_object THEN NULL; END $$",
+        "DO $$ BEGIN CREATE TYPE errand_frequency AS ENUM ('one_off','weekly','fortnightly','monthly'); EXCEPTION WHEN duplicate_object THEN NULL; END $$",
+        "ALTER TABLE errand_service_types ADD COLUMN IF NOT EXISTS quote_mode errand_quote_mode NOT NULL DEFAULT 'distance'",
+        "ALTER TABLE errand_service_types ADD COLUMN IF NOT EXISTS included_bedrooms INTEGER NOT NULL DEFAULT 2",
+        "ALTER TABLE errand_service_types ADD COLUMN IF NOT EXISTS included_bathrooms INTEGER NOT NULL DEFAULT 1",
+        "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS service_address VARCHAR(240) NOT NULL DEFAULT ''",
+        "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS scheduled_date DATE",
+        "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS arrival_window VARCHAR(40) NOT NULL DEFAULT ''",
+        "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS frequency errand_frequency NOT NULL DEFAULT 'one_off'",
+        "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS bedrooms INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS bathrooms INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS quantity INTEGER NOT NULL DEFAULT 1",
+        "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS extras VARCHAR(300) NOT NULL DEFAULT ''",
+        "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS access_notes TEXT NOT NULL DEFAULT ''",
+        "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS size_fee DOUBLE PRECISION NOT NULL DEFAULT 0",
+        "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS extras_fee DOUBLE PRECISION NOT NULL DEFAULT 0",
+        "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS frequency_discount DOUBLE PRECISION NOT NULL DEFAULT 0",
+        # Site-survey requests reuse the hygiene enquiry pipeline.
+        "DO $$ BEGIN CREATE TYPE errand_hygiene_enquiry_kind AS ENUM ('supply','survey'); EXCEPTION WHEN duplicate_object THEN NULL; END $$",
+        "ALTER TABLE errand_hygiene_enquiries ADD COLUMN IF NOT EXISTS kind errand_hygiene_enquiry_kind NOT NULL DEFAULT 'supply'",
+        "ALTER TABLE errand_hygiene_enquiries ADD COLUMN IF NOT EXISTS site_type VARCHAR(80) NOT NULL DEFAULT ''",
+        "ALTER TABLE errand_hygiene_enquiries ADD COLUMN IF NOT EXISTS site_size VARCHAR(80) NOT NULL DEFAULT ''",
+        "ALTER TABLE errand_hygiene_enquiries ADD COLUMN IF NOT EXISTS locations VARCHAR(40) NOT NULL DEFAULT ''",
     ]
     # One transaction per statement: a failed statement (e.g. the backfill once
     # the legacy column is gone) must not poison the ones after it.

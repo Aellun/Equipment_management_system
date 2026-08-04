@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from app.errands.models.service import QuoteMode
+
 
 class ServiceOut(BaseModel):
     id: int
@@ -14,6 +16,10 @@ class ServiceOut(BaseModel):
     est_minutes: int
     goods_paid_separately: bool
     is_active: bool
+    # Drives which booking path the storefront shows for this service.
+    quote_mode: QuoteMode = QuoteMode.distance
+    included_bedrooms: int = 2
+    included_bathrooms: int = 1
 
     class Config:
         from_attributes = True

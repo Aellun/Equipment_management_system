@@ -30,8 +30,8 @@ def test_submit_returns_reference_without_echoing_pii(client, seeded):
 
     assert body["reference"].startswith("DH-")
     assert body["status"] == "new"
-    # The public response must carry nothing but the reference and status.
-    assert set(body) == {"reference", "status"}
+    # The public response carries only routing fields — never contact details.
+    assert set(body) == {"reference", "status", "kind"}
 
 
 def test_contact_details_required(client, seeded):
@@ -52,7 +52,7 @@ def test_public_status_lookup_leaks_no_pii(client, seeded):
 
     resp = client.get(f"/errands/hygiene/enquiries/{reference}/status")
     assert resp.status_code == 200
-    assert resp.json() == {"reference": reference, "status": "new"}
+    assert resp.json() == {"reference": reference, "status": "new", "kind": "supply"}
 
     # Belt and braces: no contact field may appear anywhere in the payload.
     for secret in (VALID["contact_email"], VALID["contact_phone"], VALID["contact_name"]):
@@ -103,4 +103,32 @@ def test_admin_can_advance_status(client, seeded):
 
     # …and the public lookup reflects it, still without any PII.
     public = client.get(f"/errands/hygiene/enquiries/{reference}/status").json()
-    assert public == {"reference": reference, "status": "quoted"}
+    assert public == {"reference": reference, "status": "quoted", "kind": "supply"}
+
+
+def test_survey_request_lands_in_the_same_pipeline(client, seeded):
+    """A site-survey request is a different lead type, not a different system."""
+    resp = client.post(
+        "/errands/hygiene/enquiries",
+        json={
+            "kind": "survey",
+            "organisation": "Westside Clinic",
+            "contact_name": "Ops Manager",
+            "contact_phone": "254700111222",
+            "site_type": "Hospital, clinic or dental practice",
+            "site_size": "200 – 500 m²",
+            "locations": "2",
+            "frequency": "Daily",
+        },
+    )
+    assert resp.status_code == 201, resp.text
+    assert resp.json()["kind"] == "survey"
+
+    headers = auth_header(client, "admin@momaemjay.co.ke", "admin1234")
+    rows = client.get("/errands/hygiene/admin/enquiries?kind=survey", headers=headers).json()
+    assert [r["organisation"] for r in rows] == ["Westside Clinic"]
+    assert rows[0]["site_type"] == "Hospital, clinic or dental practice"
+
+    # …and filtering the other way excludes it.
+    supply = client.get("/errands/hygiene/admin/enquiries?kind=supply", headers=headers).json()
+    assert all(r["kind"] == "supply" for r in supply)

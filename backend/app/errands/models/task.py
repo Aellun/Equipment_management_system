@@ -1,7 +1,7 @@
 import enum
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
-from sqlalchemy import DateTime, Enum, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import Date, DateTime, Enum, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.errands.core.db import Base
@@ -22,6 +22,20 @@ class Urgency(str, enum.Enum):
     standard = "standard"   # within the day
     express = "express"     # within ~2 hours
     sameday = "sameday"     # scheduled same day window
+
+
+class Frequency(str, enum.Enum):
+    """How often a cleaning visit repeats.
+
+    Recurring work is the core of a cleaning business — a weekly customer is
+    worth many times a one-off — so the frequency is chosen at booking and
+    discounted accordingly (see services/pricing.py).
+    """
+
+    one_off = "one_off"
+    weekly = "weekly"
+    fortnightly = "fortnightly"
+    monthly = "monthly"
 
 
 def _now() -> datetime:
@@ -46,11 +60,34 @@ class Task(Base):
     urgency: Mapped[Urgency] = mapped_column(Enum(Urgency, name="errand_urgency"), default=Urgency.standard)
     notes: Mapped[str] = mapped_column(Text, default="")
 
+    # ── Cleaning bookings (Dyzah Hygiene) ────────────────────────
+    # A clean is scheduled at an address for a date and arrival window, and
+    # priced from how big the place is — not from a pickup/drop-off route.
+    # Left null by errands bookings, which use the fields above instead.
+    service_address: Mapped[str] = mapped_column(String(240), default="")
+    scheduled_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    arrival_window: Mapped[str] = mapped_column(String(40), default="")
+    frequency: Mapped[Frequency] = mapped_column(
+        Enum(Frequency, name="errand_frequency"), default=Frequency.one_off
+    )
+    bedrooms: Mapped[int] = mapped_column(Integer, default=0)
+    bathrooms: Mapped[int] = mapped_column(Integer, default=0)
+    # Units for per-unit services (bins serviced, kg of laundry, dispensers…).
+    quantity: Mapped[int] = mapped_column(Integer, default=1)
+    # Comma-separated extra slugs chosen at booking (see pricing.EXTRAS).
+    extras: Mapped[str] = mapped_column(String(300), default="")
+    access_notes: Mapped[str] = mapped_column(Text, default="")
+
     # Transparent price breakdown (KSh)
     base_price: Mapped[float] = mapped_column(Float, default=0.0)
     distance_fee: Mapped[float] = mapped_column(Float, default=0.0)
     urgency_fee: Mapped[float] = mapped_column(Float, default=0.0)
     service_fee: Mapped[float] = mapped_column(Float, default=0.0)
+    # Cleaning: charge for rooms beyond what the base covers, cost of chosen
+    # extras, and the recurring-plan discount (held positive, subtracted).
+    size_fee: Mapped[float] = mapped_column(Float, default=0.0)
+    extras_fee: Mapped[float] = mapped_column(Float, default=0.0)
+    frequency_discount: Mapped[float] = mapped_column(Float, default=0.0)
     total_price: Mapped[float] = mapped_column(Float, default=0.0)
 
     status: Mapped[TaskStatus] = mapped_column(

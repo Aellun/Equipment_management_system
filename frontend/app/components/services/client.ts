@@ -75,6 +75,10 @@ export interface Service {
   est_minutes: number;
   goods_paid_separately: boolean;
   is_active: boolean;
+  /** Which booking path this service takes (see Dyzah Hygiene). */
+  quote_mode: "rooms" | "unit" | "survey" | "distance";
+  included_bedrooms: number;
+  included_bathrooms: number;
 }
 
 export interface Quote {
@@ -107,6 +111,20 @@ export interface Task {
   total_price: number;
   proof_photo_url?: string | null;
   proof_note: string;
+  // Cleaning bookings (Dyzah Hygiene). Address and access notes are blank
+  // unless the viewer owns the booking, is the assigned crew, or is admin.
+  service_address?: string;
+  scheduled_date?: string | null;
+  arrival_window?: string;
+  frequency?: "one_off" | "weekly" | "fortnightly" | "monthly";
+  bedrooms?: number;
+  bathrooms?: number;
+  quantity?: number;
+  extras?: string;
+  access_notes?: string;
+  size_fee?: number;
+  extras_fee?: number;
+  frequency_discount?: number;
   runner?: { id: number; full_name: string; suburb?: string; rating_avg?: number; rating_count?: number } | null;
   customer?: { full_name: string; phone?: string } | null;
   payment_status?: string | null;

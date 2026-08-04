@@ -9,11 +9,11 @@ from app.errands.core.deps import get_current_user
 from app.errands.core.tasks import notify
 from app.errands.models.payment import PaymentStatus
 from app.errands.models.review import Review
-from app.errands.models.service import ServiceType
+from app.errands.models.service import QuoteMode, ServiceType
 from app.errands.models.task import Task, TaskStatus
 from app.errands.models.user import User, UserRole
 from app.errands.schemas.task import BookingRequest, ReviewCreate, TaskOut
-from app.errands.services.pricing import calculate_quote
+from app.errands.services.pricing import EXTRAS, calculate_quote
 from app.errands.services.serializers import task_to_out
 
 router = APIRouter(prefix="/errands/tasks", tags=["errands:tasks"])
@@ -49,8 +49,23 @@ def create_task(
     service = db.get(ServiceType, body.service_type_id)
     if not service or not service.is_active:
         raise HTTPException(status_code=400, detail="Service not available")
+    if service.quote_mode == QuoteMode.survey:
+        raise HTTPException(
+            status_code=400,
+            detail="This service is quoted after a free site survey — request one instead of booking online.",
+        )
 
-    q = calculate_quote(service, body.distance_km, body.urgency)
+    extras = [s for s in body.extras if s in EXTRAS]
+    q = calculate_quote(
+        service,
+        body.distance_km,
+        body.urgency,
+        bedrooms=body.bedrooms,
+        bathrooms=body.bathrooms,
+        quantity=body.quantity,
+        frequency=body.frequency,
+        extras=extras,
+    )
     task = Task(
         reference=_make_reference(),
         customer_id=user.id,
@@ -61,9 +76,21 @@ def create_task(
         distance_km=body.distance_km,
         urgency=body.urgency,
         notes=body.notes,
+        service_address=body.service_address,
+        scheduled_date=body.scheduled_date,
+        arrival_window=body.arrival_window,
+        frequency=body.frequency,
+        bedrooms=body.bedrooms,
+        bathrooms=body.bathrooms,
+        quantity=body.quantity,
+        extras=",".join(extras),
+        access_notes=body.access_notes,
         base_price=q.base_price,
         distance_fee=q.distance_fee,
         urgency_fee=q.urgency_fee,
+        size_fee=q.size_fee,
+        extras_fee=q.extras_fee,
+        frequency_discount=q.frequency_discount,
         service_fee=q.service_fee,
         total_price=q.total_price,
         status=TaskStatus.quoted,

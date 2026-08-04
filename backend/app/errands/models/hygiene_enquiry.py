@@ -26,12 +26,27 @@ class EnquiryStatus(str, enum.Enum):
     closed = "closed"
 
 
+class EnquiryKind(str, enum.Enum):
+    """Both lead types land in one pipeline so the team works a single list."""
+
+    # Hygiene products / sanitary pads for an institution.
+    supply = "supply"
+    # A free site survey before quoting a cleaning contract — offices,
+    # schools, hospitals, factories, hotels.
+    survey = "survey"
+
+
 class HygieneEnquiry(Base):
     __tablename__ = "errand_hygiene_enquiries"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     # Customer-facing handle, safe to share over email/phone: DH-XXXXXX.
     reference: Mapped[str] = mapped_column(String(20), unique=True, index=True)
+    kind: Mapped[EnquiryKind] = mapped_column(
+        Enum(EnquiryKind, name="errand_hygiene_enquiry_kind"),
+        default=EnquiryKind.supply,
+        index=True,
+    )
 
     # ── Organisation ─────────────────────────────────────────────
     organisation: Mapped[str] = mapped_column(String(160))
@@ -45,8 +60,13 @@ class HygieneEnquiry(Base):
     contact_phone: Mapped[str] = mapped_column(String(30), default="")
 
     # ── Requirement ──────────────────────────────────────────────
+    # `supply` leads fill in products/quantity; `survey` leads fill in the
+    # site fields. Both share frequency and notes.
     products: Mapped[str] = mapped_column(String(300), default="")
     estimated_quantity: Mapped[str] = mapped_column(String(80), default="")
+    site_type: Mapped[str] = mapped_column(String(80), default="")
+    site_size: Mapped[str] = mapped_column(String(80), default="")
+    locations: Mapped[str] = mapped_column(String(40), default="")
     frequency: Mapped[str] = mapped_column(String(60), default="")
     notes: Mapped[str] = mapped_column(Text, default="")
 

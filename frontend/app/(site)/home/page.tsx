@@ -4,7 +4,7 @@ import HygieneLogo from "@/app/components/hygiene/HygieneLogo";
 
 export const metadata = {
   title: "Dyzah — One umbrella for city services",
-  description: "Dyzah Store, Dyzah Errands and Dyzah Hygiene — one trusted platform.",
+  description: "Dyzah Store, Errands, Hygiene and Events — one trusted platform.",
 };
 
 const BUSINESSES: {
@@ -29,6 +29,14 @@ const BUSINESSES: {
     name: "Dyzah Errands",
     tagline: "Errands, deliveries, government queues and diaspora support — verified runners, photo proof.",
     cta: "Book an errand",
+  },
+  {
+    href: "/events",
+    icon: "package",
+    name: "Dyzah Events",
+    tagline:
+      "Chairs, tables, tents, sound and lighting for weddings, conferences and parties — delivered and collected.",
+    cta: "Hire equipment",
   },
   {
     href: "/hygiene",
@@ -56,6 +64,7 @@ export default function DyzahHome() {
               { href: "/store", label: "Store" },
               { href: "/services", label: "Errands" },
               { href: "/hygiene", label: "Hygiene" },
+              { href: "/events", label: "Events" },
             ].map((l) => (
               <Link
                 key={l.href}
@@ -138,7 +147,7 @@ export default function DyzahHome() {
 
       <footer className="mt-8 border-t border-line bg-navy text-white">
         <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-white/70">
-          © {new Date().getFullYear()} Dyzah. Store · Errands · Hygiene.
+          © {new Date().getFullYear()} Dyzah. Store · Errands · Hygiene · Events.
         </div>
       </footer>
     </div>

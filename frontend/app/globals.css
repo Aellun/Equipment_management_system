@@ -35,6 +35,12 @@
      Green drives CTAs and accents; navy drives dark chrome. Applying
      this class to the hygiene shell re-themes every shared services
      component (booking, tracking, auth) without touching them. */
+  /* ── Dyzah Events ─────────────────────────────────────────────────
+     Shares the Dyzah Hygiene navy + green so the two operational
+     businesses read as one company. Kept as its own class rather than
+     reusing .theme-hygiene, so Events can diverge without touching
+     Hygiene. */
+  .theme-events,
   .theme-hygiene {
     --brand-50: 241 248 238;
     --brand-100: 221 238 213;

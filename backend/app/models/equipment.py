@@ -1,7 +1,7 @@
 import enum
 from datetime import datetime, date
 
-from sqlalchemy import String, Text, Numeric, Date, Enum as SQLEnum, DateTime, func
+from sqlalchemy import String, Text, Numeric, Date, Boolean, Enum as SQLEnum, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -34,6 +34,15 @@ class Equipment(Base):
     supplier: Mapped[str | None] = mapped_column(String(255), nullable=True)
     warranty_expiry: Mapped[date | None] = mapped_column(Date, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # ── Storefront (Dyzah Events) ────────────────────────────────
+    # Stock is serialised one row per unit, but customers hire by the item
+    # ("12 round tables"), so the storefront groups by name and these fields
+    # describe the group. Set them on any unit and the group inherits them.
+    daily_rate: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    # Off by default: nothing appears on the public site until someone says so.
+    is_public: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     transactions: Mapped[list["Transaction"]] = relationship("Transaction", back_populates="equipment")

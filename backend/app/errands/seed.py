@@ -12,9 +12,9 @@ Catalog reflects the competitive strategy:
 from sqlalchemy import select
 
 from app.errands.core.config import settings
-from app.errands.core.db import Base, SessionLocal, engine
+from app.errands.core.db import SessionLocal
 from app.errands.core.security import hash_password
-from app.errands.models.service import ServiceType
+from app.errands.models.service import QuoteMode, ServiceType
 from app.errands.models.user import RunnerProfile, User, UserRole, VerificationStatus
 
 # slug, name, category, icon, base_price, price_unit, est_min, goods_separate, active, sort
@@ -55,6 +55,24 @@ CATALOG = [
 # public unit price. It runs through the enquiry flow instead — see
 # app.errands.models.hygiene_enquiry.
 #
+# Booking path per category (QuoteMode):
+#   rooms  — homes: priced instantly from bed/bathroom count, booked online
+#   unit   — per bin, per kg, per dispenser: priced by quantity, booked online
+#   survey — offices, schools, hospitals, factories, hotels: no public price,
+#            the customer books a free site survey and we quote after visiting
+_HYGIENE_QUOTE_MODES = {
+    "Commercial Cleaning": "survey",
+    "Institutional Cleaning": "survey",
+    "Healthcare Cleaning": "survey",
+    "Industrial Cleaning": "survey",
+    "Hospitality Cleaning": "survey",
+    "Residential Cleaning": "rooms",
+    "Sanitation & Washroom Hygiene": "unit",
+    "Waste & Pest Control": "unit",
+    "Laundry & Linen": "unit",
+    "Subscriptions": "survey",
+}
+
 # Prices are indicative "from" rates for a standard site; anything larger is
 # re-quoted after a site visit.
 # slug, name, category, icon, base_price, price_unit, est_min, goods_separate, active, sort
@@ -127,24 +145,27 @@ def seed_services(db) -> None:
     # console, and the seed runs on every container start, so overwriting them
     # would silently revert admin changes on the next restart.
     for (slug, name, cat, icon, price, unit, mins, goods, active, sort) in HYGIENE_CATALOG:
+        mode = QuoteMode(_HYGIENE_QUOTE_MODES.get(cat, "survey"))
         existing = db.scalar(select(ServiceType).where(ServiceType.slug == slug))
         if existing:
             existing.vertical = "hygiene"
             existing.name = name
             existing.category = cat
             existing.icon = icon
-            existing.description = _describe_hygiene(name, cat)
+            existing.description = _describe_hygiene(slug, name)
             existing.price_unit = unit
             existing.est_minutes = mins
             existing.goods_paid_separately = goods
             existing.sort_order = sort
+            existing.quote_mode = mode
             continue
         db.add(
             ServiceType(
                 slug=slug, name=name, vertical="hygiene", category=cat, icon=icon,
-                description=_describe_hygiene(name, cat),
+                description=_describe_hygiene(slug, name),
                 base_price=price, price_unit=unit, est_minutes=mins,
                 goods_paid_separately=goods, is_active=active, sort_order=sort,
+                quote_mode=mode,
             )
         )
     # Retire hygiene services dropped from the catalog. Deactivate rather than
@@ -160,29 +181,59 @@ def seed_services(db) -> None:
     db.commit()
 
 
-_HYGIENE_BLURBS = {
-    "Commercial Cleaning": "Flexible daily, weekly or monthly schedules that minimise disruption to business operations.",
-    "Residential Cleaning": "Safe for children, pets and household surfaces — living areas, kitchens, bathrooms, balconies and outdoor spaces.",
-    "Institutional Cleaning": "Classrooms, halls, offices, libraries, restrooms and recreational areas kept to public-health standards.",
-    "Healthcare Cleaning": "Hospital-grade disinfectants and recognised infection-prevention protocols on every high-contact surface.",
-    "Industrial Cleaning": "Industrial-grade equipment for dust, grease, oil and production residue across floors, machinery and loading bays.",
-    "Hospitality Cleaning": "Discreet, consistent service that keeps guest-facing spaces welcoming and hygienic.",
-    "Sanitation & Washroom Hygiene": "Scheduled servicing with responsible disposal and restocking, logged on every visit.",
-    "Waste & Pest Control": "Responsible collection and treatment that meets health and safety requirements.",
-    "Laundry & Linen": "Collected, cleaned and returned on an agreed cycle.",
+# One short, specific line per service. Deliberately not generated from the
+# service name plus a shared category sentence: identical copy repeated down a
+# list reads as filler and tells the customer nothing.
+_HYGIENE_DESCRIPTIONS = {
+    # Commercial
+    "commercial-office-cleaning": "Desks, meeting rooms, kitchens and washrooms, cleaned around your working hours.",
+    "retail-mall-cleaning": "Shop floors, fitting rooms and common areas kept presentable through trading hours.",
+    "bank-branch-cleaning": "Banking halls, ATM lobbies and staff areas, cleaned before or after opening.",
+    "office-deep-clean": "Periodic reset: carpets, upholstery, high-touch surfaces and full sanitisation.",
+    # Residential
+    "residential-housekeeping": "Regular clean of living areas, kitchen, bathrooms and floors. Products safe for children and pets.",
+    "residential-deep-clean": "Top to bottom, including skirtings, inside appliances, tiles and grout.",
+    "move-in-out-clean": "Empty-property clean so you get the deposit back or move into a spotless house.",
+    "post-renovation-clean": "Dust, paint splatter and building debris removed so the place is liveable again.",
+    # Institutional
+    "school-cleaning": "Classrooms, halls, dormitories, labs and washrooms, scheduled around the timetable.",
+    "worship-cleaning": "Sanctuaries, halls and ablution areas prepared between services and events.",
+    "government-facility-cleaning": "Public offices, registries and service counters, cleaned to public-health standards.",
+    # Healthcare
+    "hospital-cleaning": "Wards, theatres and consultation rooms using hospital-grade disinfectants and infection-control protocols.",
+    "lab-pharmacy-cleaning": "Controlled cleaning for labs, dispensaries and storage, with contamination protocols observed.",
+    "infection-control-sanitization": "Targeted disinfection of high-contact surfaces after an outbreak or exposure.",
+    # Industrial
+    "warehouse-cleaning": "Racking, floors, loading bays and yards cleared of dust and spillage.",
+    "factory-cleaning": "Grease, oil and production residue removed from machinery, floors and workspaces.",
+    # Hospitality
+    "hotel-housekeeping": "Guest rooms, corridors and public areas turned around between stays.",
+    "restaurant-kitchen-cleaning": "Kitchens, extraction, cold rooms and dining areas cleaned to food-safety standards.",
+    # Sanitation & washroom hygiene
+    "sanitary-bucket-schools": "Scheduled collection and safe disposal for school washrooms, with each visit logged.",
+    "sanitary-bin-offices": "Discreet bin servicing for office washrooms on a set collection round.",
+    "sanitary-bin-rental": "Bins supplied, exchanged and maintained — no capital outlay.",
+    "nappy-bin-service": "Hygienic nappy disposal for nurseries, clinics and family washrooms.",
+    "washroom-hygiene": "Full washroom service: deep clean plus soap, tissue and liner restocking.",
+    "sanitizer-dispenser": "Dispensers refilled, cleaned and kept working at entrances and washrooms.",
+    "water-dispenser-clean": "Internal sanitisation of water dispensers, which are easily missed and easily contaminated.",
+    # Waste & pest
+    "waste-collection": "Scheduled waste collection and responsible disposal.",
+    "fumigation": "Treatment for cockroaches, rodents, bedbugs and termites, with a follow-up visit.",
+    # Laundry & linen
+    "laundry-wash-fold": "Collected, washed, dried and folded, then returned on an agreed cycle.",
+    "laundry-duvets": "Bulky bedding washed and dried properly — beyond a domestic machine.",
+    "ironing-service": "Ironed and pressed, ready to wear or shelve.",
+    "dry-cleaning": "Suits, dresses and delicate fabrics handled by garment type.",
+    "linen-rental": "Linen supplied and laundered on rotation for hotels and offices.",
+    # Coming soon
+    "hygiene-subscription": "Coming soon — bundled monthly hygiene contracts for schools, offices and SMEs.",
 }
 
 
-def _describe_hygiene(name: str, category: str) -> str:
-    """Card copy for a hygiene service.
-
-    The service name is already the card heading, so the description carries
-    only what the name does not: what the category actually covers, and the
-    delivery promise."""
-    if category == "Subscriptions":
-        return "Coming soon — bundled monthly hygiene contracts for schools, offices and SMEs."
-    blurb = _HYGIENE_BLURBS.get(category, "")
-    return f"{blurb} Delivered by a trained, vetted Dyzah Hygiene crew, with photo proof on completion.".strip()
+def _describe_hygiene(slug: str, name: str) -> str:
+    """Card copy for a hygiene service — one specific line, no boilerplate."""
+    return _HYGIENE_DESCRIPTIONS.get(slug, name)
 
 
 def _describe(name: str, category: str) -> str:
@@ -249,7 +300,13 @@ def seed_users(db) -> None:
 
 
 def main() -> None:
-    Base.metadata.create_all(bind=engine)
+    # Apply schema changes before seeding. entrypoint.sh runs this module
+    # before uvicorn boots, so the app's own startup migration hook has not
+    # run yet — without this, the first deploy after any column is added
+    # seeds against the old schema and silently skips.
+    from app.errands.setup import init_errands_db
+
+    init_errands_db()
     db = SessionLocal()
     try:
         seed_services(db)

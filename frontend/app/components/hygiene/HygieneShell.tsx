@@ -8,18 +8,22 @@ import { useServicesAuth } from "@/app/components/services/ServicesAuthProvider"
 import HygieneLogo from "./HygieneLogo";
 import { HYGIENE, HYGIENE_CONTACT, hasContactDetails } from "./brand";
 
-/** Sibling Dyzah businesses, for the thin switcher strip. */
 const SWITCHER = [
-  { href: "/home", label: "Dyzah Home" },
+  { href: "/home", label: "Dyzah" },
   { href: "/store", label: "Store" },
   { href: "/services", label: "Errands" },
 ];
 
-const NAV: [string, string][] = [
-  [`${HYGIENE.basePath}/services`, "Cleaning services"],
-  [`${HYGIENE.basePath}/supply`, "Hygiene products"],
-  [`${HYGIENE.basePath}/about`, "About us"],
-  [`${HYGIENE.basePath}/track`, "Track a booking"],
+/** Category rail — the way customers actually pick, by what they own. */
+const CATEGORIES: [string, string][] = [
+  ["/hygiene/services?for=home", "Homes"],
+  ["/hygiene/services?for=office", "Offices"],
+  ["/hygiene/services?for=schools", "Schools"],
+  ["/hygiene/services?for=healthcare", "Healthcare"],
+  ["/hygiene/services?for=industrial", "Industrial"],
+  ["/hygiene/services?for=hospitality", "Hotels"],
+  ["/hygiene/services?for=washrooms", "Washrooms & bins"],
+  ["/hygiene/supply", "Hygiene products"],
 ];
 
 export default function HygieneShell({ children }: { children: React.ReactNode }) {
@@ -27,10 +31,11 @@ export default function HygieneShell({ children }: { children: React.ReactNode }
   const router = useRouter();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [q, setQ] = useState("");
 
   const base = HYGIENE.basePath;
   const dash =
-    user?.role === "admin" ? "/admin" : user?.role === "runner" ? `${base}/runner` : `${base}/dashboard`;
+    user?.role === "admin" ? "/admin" : user?.role === "runner" ? `${base}/runner` : `${base}/account`;
 
   const doLogout = () => {
     logout();
@@ -38,137 +43,171 @@ export default function HygieneShell({ children }: { children: React.ReactNode }
     router.push(base);
   };
 
+  const search = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.push(`${base}/services${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ""}`);
+  };
+
   return (
     // `theme-hygiene` swaps the brand CSS variables to the client's navy +
-    // green, which re-themes every shared services component rendered inside.
+    // green, re-theming every shared services component rendered inside.
     <div className="theme-hygiene flex min-h-screen flex-col bg-canvas text-ink">
-      <header className="sticky top-0 z-30 shadow-sm">
-        {/* Cross-business switcher */}
-        <div className="bg-hygiene-navy text-white/70">
-          <div className="mx-auto flex max-w-6xl items-center gap-1 px-3 py-1 text-xs">
+      <header className="sticky top-0 z-30">
+        {/* Utility strip */}
+        <div className="bg-hygiene-navy text-[12px] text-white/65">
+          <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-1.5">
             {SWITCHER.map((s) => (
-              <Link
-                key={s.href}
-                href={s.href}
-                className="rounded px-2 py-1 hover:bg-white/10 hover:text-white hover:no-underline"
-              >
+              <Link key={s.href} href={s.href} className="hover:text-white hover:no-underline">
                 {s.label}
               </Link>
             ))}
-            <span className="ml-auto hidden sm:inline">{HYGIENE.tagline}</span>
+            <span className="ml-auto hidden items-center gap-4 sm:flex">
+              {HYGIENE_CONTACT.phone && (
+                <a href={`tel:${HYGIENE_CONTACT.phone}`} className="flex items-center gap-1.5 hover:text-white">
+                  <Icon name="phone" className="h-3.5 w-3.5" />
+                  {HYGIENE_CONTACT.phone}
+                </a>
+              )}
+              <Link href={`${base}/track`} className="hover:text-white hover:no-underline">
+                Track a booking
+              </Link>
+              <Link href={`${base}/about`} className="hover:text-white hover:no-underline">
+                About us
+              </Link>
+            </span>
           </div>
         </div>
 
-        {/* Primary bar */}
+        {/* Main bar */}
         <div className="border-b border-line bg-white">
-          <div className="mx-auto flex max-w-6xl items-center gap-4 px-3 py-3">
+          <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-2.5">
             <button
-              className="grid h-10 w-10 shrink-0 place-items-center rounded text-ink hover:bg-brand-50 md:hidden"
+              className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded text-ink hover:bg-canvas lg:hidden"
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="Menu"
             >
-              <Icon name={menuOpen ? "x" : "menu"} className="h-6 w-6" />
+              <Icon name={menuOpen ? "x" : "menu"} className="h-5 w-5" />
             </button>
 
             <Link href={base} className="shrink-0 hover:no-underline" aria-label={HYGIENE.name}>
-              <HygieneLogo className="text-[15px]" />
+              <HygieneLogo className="text-[14px]" />
             </Link>
 
-            <nav className="ml-6 hidden items-center gap-1 text-sm md:flex">
-              {NAV.map(([to, label]) => (
-                <Link
-                  key={to}
-                  href={to}
-                  className={`rounded px-3 py-2 font-medium hover:bg-brand-50 hover:no-underline ${
-                    pathname === to ? "text-brand-600" : "text-ink"
-                  }`}
-                >
-                  {label}
-                </Link>
-              ))}
-            </nav>
+            <form onSubmit={search} className="hidden min-w-0 flex-1 items-center md:flex">
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search cleaning services"
+                className="h-10 min-w-0 flex-1 rounded-l border border-r-0 border-slate-300 px-3 text-sm outline-none focus:border-brand-500"
+              />
+              <button
+                type="submit"
+                className="grid h-10 w-12 shrink-0 place-items-center rounded-r bg-brand-500 text-white hover:bg-brand-600"
+                aria-label="Search"
+              >
+                <Icon name="search" className="h-4 w-4" />
+              </button>
+            </form>
 
-            <div className="ml-auto flex items-center gap-2">
+            <div className="ml-auto flex shrink-0 items-center gap-1">
               {user ? (
                 <>
-                  <Link href={dash} className="rounded px-2 py-1.5 text-sm text-ink hover:bg-brand-50 hover:no-underline">
-                    <span className="block text-[11px] leading-none text-muted">
-                      Hi, {user.full_name.split(" ")[0]}
-                    </span>
-                    <span className="font-semibold">My bookings</span>
-                  </Link>
-                  <button
-                    onClick={doLogout}
-                    className="hidden rounded px-3 py-2 text-sm text-ink hover:bg-brand-50 sm:inline-flex"
+                  <Link
+                    href={dash}
+                    className="hidden rounded px-2.5 py-1 text-sm leading-tight text-ink hover:bg-canvas hover:no-underline sm:block"
                   >
-                    Log out
+                    <span className="block text-[11px] text-muted">Hi, {user.full_name.split(" ")[0]}</span>
+                    <span className="font-semibold">My account</span>
+                  </Link>
+                  <button onClick={doLogout} className="hidden px-2 text-sm text-muted hover:text-ink lg:block">
+                    Sign out
                   </button>
                 </>
               ) : (
                 <Link
                   href={`${base}/login`}
-                  className="rounded px-3 py-1.5 text-sm text-ink hover:bg-brand-50 hover:no-underline"
+                  className="hidden rounded px-2.5 py-1 text-sm leading-tight text-ink hover:bg-canvas hover:no-underline sm:block"
                 >
-                  <span className="block text-[11px] leading-none text-muted">Hello, sign in</span>
+                  <span className="block text-[11px] text-muted">Hello, sign in</span>
                   <span className="font-semibold">Account</span>
                 </Link>
               )}
               <Link
                 href={`${base}/services`}
-                className="hidden rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-600 hover:no-underline sm:inline-flex"
+                className="rounded bg-brand-500 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-600 hover:no-underline"
               >
-                Book a clean
+                Get a price
               </Link>
             </div>
           </div>
         </div>
 
+        {/* Category rail */}
+        <div className="border-b border-line bg-white shadow-sm">
+          <nav className="scrollbar-none mx-auto flex max-w-7xl items-center gap-1 overflow-x-auto px-4 text-sm">
+            {CATEGORIES.map(([href, label]) => (
+              <Link
+                key={href}
+                href={href}
+                className={`whitespace-nowrap border-b-2 px-3 py-2.5 hover:no-underline ${
+                  pathname === href.split("?")[0] && href.includes("supply")
+                    ? "border-brand-500 font-semibold text-brand-700"
+                    : "border-transparent text-slate-600 hover:border-slate-300 hover:text-ink"
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="border-b border-line bg-white shadow-sm md:hidden">
-            <nav className="mx-auto flex max-w-6xl flex-col px-2 py-2">
-              {NAV.map(([to, label]) => (
-                <Link
-                  key={to}
-                  href={to}
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded px-3 py-2.5 text-sm font-medium text-ink hover:bg-brand-50 hover:no-underline"
-                >
-                  {label}
-                </Link>
-              ))}
-              {user && (
-                <Link
-                  href={dash}
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded px-3 py-2.5 text-sm font-medium text-ink hover:bg-brand-50 hover:no-underline"
-                >
-                  My bookings
-                </Link>
+          <div className="border-b border-line bg-white shadow-md lg:hidden">
+            <form onSubmit={search} className="flex items-center p-3">
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search cleaning services"
+                className="h-10 min-w-0 flex-1 rounded-l border border-r-0 border-slate-300 px-3 text-sm outline-none"
+              />
+              <button type="submit" className="grid h-10 w-12 place-items-center rounded-r bg-brand-500 text-white">
+                <Icon name="search" className="h-4 w-4" />
+              </button>
+            </form>
+            <nav className="flex flex-col pb-2">
+              {[...CATEGORIES, [`${base}/about`, "About us"], [`${base}/track`, "Track a booking"]].map(
+                ([href, label]) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    onClick={() => setMenuOpen(false)}
+                    className="px-4 py-2.5 text-sm text-ink hover:bg-canvas hover:no-underline"
+                  >
+                    {label}
+                  </Link>
+                )
               )}
               <div className="my-1 border-t border-line" />
               {user ? (
-                <button
-                  onClick={doLogout}
-                  className="flex items-center gap-2 rounded px-3 py-2.5 text-left text-sm font-medium text-ink hover:bg-brand-50"
-                >
-                  <Icon name="log-out" className="h-4 w-4 text-muted" /> Log out
+                <button onClick={doLogout} className="px-4 py-2.5 text-left text-sm text-ink hover:bg-canvas">
+                  Sign out
                 </button>
               ) : (
                 <>
                   <Link
                     href={`${base}/login`}
                     onClick={() => setMenuOpen(false)}
-                    className="rounded px-3 py-2.5 text-sm font-medium text-ink hover:bg-brand-50 hover:no-underline"
+                    className="px-4 py-2.5 text-sm text-ink hover:bg-canvas hover:no-underline"
                   >
                     Sign in
                   </Link>
                   <Link
                     href={`${base}/register`}
                     onClick={() => setMenuOpen(false)}
-                    className="rounded px-3 py-2.5 text-sm font-medium text-ink hover:bg-brand-50 hover:no-underline"
+                    className="px-4 py-2.5 text-sm text-ink hover:bg-canvas hover:no-underline"
                   >
-                    Create account
+                    Create an account
                   </Link>
                 </>
               )}
@@ -177,78 +216,103 @@ export default function HygieneShell({ children }: { children: React.ReactNode }
         )}
       </header>
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:py-8">{children}</main>
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">{children}</main>
 
-      <footer className="mt-8 bg-hygiene-navy text-white">
-        <div className="mx-auto max-w-6xl px-4 py-10">
-          <div className="grid gap-8 md:grid-cols-3">
-            <div>
-              <HygieneLogo onDark showTagline className="items-start text-[15px]" />
-              <p className="mt-4 max-w-xs text-sm text-white/70">{HYGIENE.serving}.</p>
-            </div>
+      <Footer />
+    </div>
+  );
+}
 
-            <div>
-              <p className="text-sm font-semibold">What we do</p>
-              <ul className="mt-3 space-y-2 text-sm text-white/70">
-                {NAV.slice(0, 3).map(([to, label]) => (
-                  <li key={to}>
-                    <Link href={to} className="hover:text-white hover:no-underline">
+/** Detail the profile carries but the sales pages should not — parked here,
+ *  where an interested customer can still find it. */
+function Footer() {
+  const base = HYGIENE.basePath;
+  const COLUMNS: [string, [string, string][]][] = [
+    [
+      "Cleaning",
+      [
+        [`${base}/services?for=home`, "Home cleaning"],
+        [`${base}/services?for=office`, "Office cleaning"],
+        [`${base}/services?for=schools`, "Schools & institutions"],
+        [`${base}/services?for=healthcare`, "Healthcare facilities"],
+        [`${base}/services?for=industrial`, "Industrial & warehouse"],
+        [`${base}/services?for=hospitality`, "Hotels & restaurants"],
+      ],
+    ],
+    [
+      "Hygiene services",
+      [
+        [`${base}/services?for=washrooms`, "Washrooms & sanitary bins"],
+        [`${base}/services?for=washrooms`, "Waste & pest control"],
+        [`${base}/services?for=washrooms`, "Laundry & linen"],
+        [`${base}/supply`, "Sanitary pad supply"],
+        [`${base}/supply/enquiry`, "Request a supply quote"],
+      ],
+    ],
+    [
+      "Company",
+      [
+        [`${base}/about`, "About Dyzah Hygiene"],
+        [`${base}/about#story`, "Our story"],
+        [`${base}/about#values`, "Vision, mission & values"],
+        [`${base}/about#impact`, "Community impact"],
+        [`${base}/survey`, "Book a free site survey"],
+        [`${base}/track`, "Track a booking"],
+      ],
+    ],
+  ];
+
+  return (
+    <footer className="mt-10 bg-hygiene-navy text-white">
+      <div className="mx-auto max-w-7xl px-4 py-10">
+        <div className="grid gap-8 md:grid-cols-4">
+          <div>
+            <HygieneLogo onDark showTagline className="items-start text-[14px]" />
+            <p className="mt-4 text-sm text-white/60">{HYGIENE.serving}.</p>
+            {hasContactDetails() && (
+              <ul className="mt-4 space-y-1.5 text-sm text-white/75">
+                {HYGIENE_CONTACT.phone && (
+                  <li>
+                    <a href={`tel:${HYGIENE_CONTACT.phone}`} className="hover:text-white">
+                      {HYGIENE_CONTACT.phone}
+                    </a>
+                  </li>
+                )}
+                {HYGIENE_CONTACT.email && (
+                  <li>
+                    <a href={`mailto:${HYGIENE_CONTACT.email}`} className="hover:text-white">
+                      {HYGIENE_CONTACT.email}
+                    </a>
+                  </li>
+                )}
+                {HYGIENE_CONTACT.address && <li className="text-white/60">{HYGIENE_CONTACT.address}</li>}
+              </ul>
+            )}
+          </div>
+
+          {COLUMNS.map(([title, links]) => (
+            <div key={title}>
+              <p className="text-sm font-semibold">{title}</p>
+              <ul className="mt-3 space-y-2 text-sm text-white/65">
+                {links.map(([href, label]) => (
+                  <li key={label}>
+                    <Link href={href} className="hover:text-white hover:no-underline">
                       {label}
                     </Link>
                   </li>
                 ))}
-                <li>
-                  <Link href={`${HYGIENE.basePath}/supply/enquiry`} className="hover:text-white hover:no-underline">
-                    Request a supply quote
-                  </Link>
-                </li>
               </ul>
             </div>
-
-            <div>
-              <p className="text-sm font-semibold">Get in touch</p>
-              {hasContactDetails() ? (
-                <ul className="mt-3 space-y-2 text-sm text-white/70">
-                  {HYGIENE_CONTACT.phone && (
-                    <li className="flex items-center gap-2">
-                      <Icon name="phone" className="h-4 w-4 text-hygiene-green" />
-                      <a href={`tel:${HYGIENE_CONTACT.phone}`} className="hover:text-white">
-                        {HYGIENE_CONTACT.phone}
-                      </a>
-                    </li>
-                  )}
-                  {HYGIENE_CONTACT.email && (
-                    <li className="flex items-center gap-2">
-                      <Icon name="message-circle" className="h-4 w-4 text-hygiene-green" />
-                      <a href={`mailto:${HYGIENE_CONTACT.email}`} className="hover:text-white">
-                        {HYGIENE_CONTACT.email}
-                      </a>
-                    </li>
-                  )}
-                  {HYGIENE_CONTACT.address && (
-                    <li className="flex items-start gap-2">
-                      <Icon name="map-pin" className="mt-0.5 h-4 w-4 shrink-0 text-hygiene-green" />
-                      {HYGIENE_CONTACT.address}
-                    </li>
-                  )}
-                </ul>
-              ) : (
-                <p className="mt-3 text-sm text-white/70">
-                  Send us your requirement through the{" "}
-                  <Link href={`${HYGIENE.basePath}/supply/enquiry`} className="font-medium text-hygiene-green hover:text-white">
-                    enquiry form
-                  </Link>{" "}
-                  and our team will get back to you.
-                </p>
-              )}
-            </div>
-          </div>
-
-          <p className="mt-8 border-t border-white/10 pt-6 text-xs text-white/50">
-            © {new Date().getFullYear()} {HYGIENE.name}. {HYGIENE.strapline}
-          </p>
+          ))}
         </div>
-      </footer>
-    </div>
+
+        <div className="mt-8 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row sm:justify-between">
+          <span>
+            © {new Date().getFullYear()} {HYGIENE.name}. {HYGIENE.strapline}
+          </span>
+          <span>Trained, vetted crews · M-Pesa payments · Photo proof on every visit</span>
+        </div>
+      </div>
+    </footer>
   );
 }

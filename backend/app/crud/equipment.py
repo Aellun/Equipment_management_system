@@ -69,6 +69,16 @@ async def bulk_update(db: AsyncSession, name: str, payload) -> list[Equipment]:
             item.name = payload.new_name
         if payload.new_category:
             item.category = payload.new_category
+        # Storefront fields: `is not None` rather than truthiness, so a rate of
+        # 0 or an explicit unpublish (False) is applied instead of ignored.
+        for field, value in (
+            ("daily_rate", getattr(payload, "daily_rate", None)),
+            ("description", getattr(payload, "description", None)),
+            ("image_url", getattr(payload, "image_url", None)),
+            ("is_public", getattr(payload, "is_public", None)),
+        ):
+            if value is not None:
+                setattr(item, field, value)
     await db.commit()
     for item in items:
         await db.refresh(item)

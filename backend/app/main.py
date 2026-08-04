@@ -10,6 +10,8 @@ from app.api.routes import (
     maintenance, reservations,
     shop_categories, products, shop, cart, orders, customers, uploads,
     departments, reviews, delivery, returns,
+
+    events,
 )
 from app.config import settings
 from app import models  # noqa: F401 — registers all ORM models with Base.metadata
@@ -66,6 +68,8 @@ app.include_router(auth.router)
 app.include_router(activity_logs.router)
 app.include_router(maintenance.router)
 app.include_router(reservations.router)
+# Dyzah Events storefront (public catalog, availability, quote pipeline)
+app.include_router(events.router)
 
 # E-commerce
 app.include_router(shop_categories.router)

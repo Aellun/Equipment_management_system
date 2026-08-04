@@ -1,18 +1,16 @@
-import ServicesPage from "@/app/components/services/pages/ServicesPage";
-import { HYGIENE } from "@/app/components/hygiene/brand";
+import { Suspense } from "react";
+import HygieneCatalog from "@/app/components/hygiene/HygieneCatalog";
 
 export const metadata = {
   title: "Cleaning services",
   description:
-    "Commercial, residential, institutional, healthcare, industrial and hospitality cleaning, plus sanitation, washroom hygiene, waste control and laundry services.",
+    "Home, office, school, healthcare, industrial and hospitality cleaning, plus washroom hygiene, sanitary bins, waste control and laundry.",
 };
 
 export default function Page() {
   return (
-    <ServicesPage
-      vertical="hygiene"
-      basePath={HYGIENE.basePath}
-      heading="Our cleaning & hygiene services"
-    />
+    <Suspense fallback={null}>
+      <HygieneCatalog />
+    </Suspense>
   );
 }
