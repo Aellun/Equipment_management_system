@@ -28,7 +28,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
 
   return (
     <StoreProvider>
-      <div className="min-h-screen bg-slate-100 dark:bg-slate-950 flex flex-col">
+      <div className="min-h-screen bg-slate-100 flex flex-col">
         <StoreHeader storeName={storeName} departments={departments} categories={categories} />
         <main className="flex-1">{children}</main>
         <StoreFooter storeName={storeName} departments={departments} />

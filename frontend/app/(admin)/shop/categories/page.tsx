@@ -38,8 +38,8 @@ export default async function ShopCategoriesPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Shop Categories</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Shop Categories</h1>
+        <p className="text-sm text-slate-500 mt-1">
           Organise products into browsable categories. Use the switch to show or hide a category —
           hiding it removes it and its products from the storefront until you turn it back on.
         </p>

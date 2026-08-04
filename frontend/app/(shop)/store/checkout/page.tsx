@@ -86,20 +86,20 @@ export default function CheckoutPage() {
   if (done) {
     return (
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
-        <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-5">
+        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
           <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Thank you!</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Thank you!</h1>
         <p className="text-slate-500 mt-2">Your order has been placed.</p>
-        <div className="mt-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl px-4 py-3 inline-block">
+        <div className="mt-4 bg-slate-50 rounded-xl px-4 py-3 inline-block">
           <p className="text-xs text-slate-400 uppercase">Your tracking code</p>
-          <p className="text-lg font-mono font-bold text-slate-900 dark:text-white">{done.code}</p>
+          <p className="text-lg font-mono font-bold text-slate-900">{done.code}</p>
         </div>
-        <p className="text-sm text-slate-400 mt-4">Total to pay on delivery: <strong className="text-slate-700 dark:text-slate-300">KSh {Number(done.total).toLocaleString()}</strong></p>
+        <p className="text-sm text-slate-400 mt-4">Total to pay on delivery: <strong className="text-slate-700">KSh {Number(done.total).toLocaleString()}</strong></p>
         <p className="text-xs text-slate-400 mt-1">Save your code — use it to track your order anytime.</p>
         <div className="flex gap-3 justify-center mt-6">
           <Link href={`/store/track?code=${done.code}`} className="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white text-sm font-semibold rounded-xl transition-colors">Track this order</Link>
-          <Link href="/store" className="px-5 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-semibold rounded-xl transition-colors">Continue shopping</Link>
+          <Link href="/store" className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors">Continue shopping</Link>
         </div>
       </div>
     );
@@ -108,7 +108,7 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
-        <h1 className="text-xl font-bold text-slate-900 dark:text-white">Nothing to check out</h1>
+        <h1 className="text-xl font-bold text-slate-900">Nothing to check out</h1>
         <p className="text-sm text-slate-500 mt-1">Your cart is empty.</p>
         <Link href="/store" className="inline-block mt-6 px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white text-sm font-semibold rounded-xl transition-colors">Browse products</Link>
       </div>
@@ -117,28 +117,28 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Checkout</h1>
+      <h1 className="text-2xl font-bold text-slate-900 mb-6">Checkout</h1>
       <div className="grid lg:grid-cols-3 gap-6">
-        <form onSubmit={placeOrder} className="lg:col-span-2 space-y-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+        <form onSubmit={placeOrder} className="lg:col-span-2 space-y-4 bg-white border border-slate-200 rounded-2xl p-6">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Full name <span className="text-red-500">*</span></label>
-            <input required value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" />
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Full name <span className="text-red-500">*</span></label>
+            <input required value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" />
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email <span className="text-red-500">*</span></label>
-              <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" />
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Email <span className="text-red-500">*</span></label>
+              <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Phone</label>
-              <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="07xx xxx xxx" className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" />
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Phone</label>
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="07xx xxx xxx" className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" />
             </div>
           </div>
 
           {/* Delivery zone + method */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Delivery region <span className="text-red-500">*</span></label>
-            <select required value={zoneId ?? ""} onChange={(e) => setZoneId(Number(e.target.value))} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Delivery region <span className="text-red-500">*</span></label>
+            <select required value={zoneId ?? ""} onChange={(e) => setZoneId(Number(e.target.value))} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20">
               {zones.map((z) => (
                 <option key={z.id} value={z.id}>{z.name} · {z.eta_days_min}-{z.eta_days_max} days</option>
               ))}
@@ -147,27 +147,27 @@ export default function CheckoutPage() {
 
           {zone && (
             <div className="grid grid-cols-2 gap-3">
-              <button type="button" onClick={() => setMethod("door")} className={`rounded-xl border p-3 text-left transition-colors ${method === "door" ? "border-orange-600 bg-orange-50 dark:bg-orange-900/20" : "border-slate-300 dark:border-slate-700"}`}>
-                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Door delivery</p>
+              <button type="button" onClick={() => setMethod("door")} className={`rounded-xl border p-3 text-left transition-colors ${method === "door" ? "border-orange-600 bg-orange-50" : "border-slate-300"}`}>
+                <p className="text-sm font-semibold text-slate-800">Door delivery</p>
                 <p className="text-xs text-slate-500 mt-0.5">
                   {zone.free_over != null && subtotal >= Number(zone.free_over) ? "FREE" : `KSh ${Number(zone.door_fee).toLocaleString()}`}
                 </p>
               </button>
-              <button type="button" onClick={() => setMethod("pickup")} className={`rounded-xl border p-3 text-left transition-colors ${method === "pickup" ? "border-orange-600 bg-orange-50 dark:bg-orange-900/20" : "border-slate-300 dark:border-slate-700"}`}>
-                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Pickup station</p>
+              <button type="button" onClick={() => setMethod("pickup")} className={`rounded-xl border p-3 text-left transition-colors ${method === "pickup" ? "border-orange-600 bg-orange-50" : "border-slate-300"}`}>
+                <p className="text-sm font-semibold text-slate-800">Pickup station</p>
                 <p className="text-xs text-slate-500 mt-0.5">{Number(zone.pickup_fee) === 0 ? "FREE" : `KSh ${Number(zone.pickup_fee).toLocaleString()}`}</p>
               </button>
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               {method === "pickup" ? "Pickup contact / nearest town" : "Delivery address"} <span className="text-red-500">*</span>
             </label>
-            <textarea required rows={3} value={address} onChange={(e) => setAddress(e.target.value)} placeholder={method === "pickup" ? "Nearest pickup town / your details…" : "Street, building, city, landmark…"} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" />
+            <textarea required rows={3} value={address} onChange={(e) => setAddress(e.target.value)} placeholder={method === "pickup" ? "Nearest pickup town / your details…" : "Street, building, city, landmark…"} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20" />
           </div>
 
-          <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl px-4 py-3 text-sm text-orange-700 dark:text-orange-300">
+          <div className="bg-orange-50 rounded-xl px-4 py-3 text-sm text-orange-700">
             <strong>Payment:</strong> Pay on delivery. No payment is taken now.
           </div>
           <button type="submit" disabled={placing} className="w-full py-3 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-xl disabled:opacity-50 transition-colors">
@@ -176,21 +176,21 @@ export default function CheckoutPage() {
         </form>
 
         <div className="lg:col-span-1">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sticky top-20">
-            <h2 className="font-semibold text-slate-900 dark:text-white mb-4">Order Summary</h2>
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 sticky top-20">
+            <h2 className="font-semibold text-slate-900 mb-4">Order Summary</h2>
             <div className="space-y-2 mb-4">
               {items.map((it) => (
                 <div key={it.id} className="flex justify-between text-sm">
-                  <span className="text-slate-600 dark:text-slate-400 truncate pr-2">{it.product_name} <span className="text-slate-400">×{it.quantity}</span></span>
-                  <span className="text-slate-700 dark:text-slate-300 shrink-0">KSh {Number(it.line_total ?? 0).toLocaleString()}</span>
+                  <span className="text-slate-600 truncate pr-2">{it.product_name} <span className="text-slate-400">×{it.quantity}</span></span>
+                  <span className="text-slate-700 shrink-0">KSh {Number(it.line_total ?? 0).toLocaleString()}</span>
                 </div>
               ))}
             </div>
-            <div className="space-y-1.5 text-sm border-t border-slate-100 dark:border-slate-800 pt-3">
-              <div className="flex justify-between"><span className="text-slate-500">Subtotal</span><span className="text-slate-700 dark:text-slate-300">KSh {subtotal.toLocaleString()}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">Delivery {method === "pickup" ? "(pickup)" : ""}</span><span className="text-slate-700 dark:text-slate-300">{deliveryFee === 0 ? "FREE" : `KSh ${deliveryFee.toLocaleString()}`}</span></div>
+            <div className="space-y-1.5 text-sm border-t border-slate-100 pt-3">
+              <div className="flex justify-between"><span className="text-slate-500">Subtotal</span><span className="text-slate-700">KSh {subtotal.toLocaleString()}</span></div>
+              <div className="flex justify-between"><span className="text-slate-500">Delivery {method === "pickup" ? "(pickup)" : ""}</span><span className="text-slate-700">{deliveryFee === 0 ? "FREE" : `KSh ${deliveryFee.toLocaleString()}`}</span></div>
             </div>
-            <div className="flex justify-between font-bold text-slate-900 dark:text-white border-t border-slate-100 dark:border-slate-800 pt-3 mt-2">
+            <div className="flex justify-between font-bold text-slate-900 border-t border-slate-100 pt-3 mt-2">
               <span>Total</span>
               <span>KSh {total.toLocaleString()}</span>
             </div>

@@ -8,9 +8,9 @@ import { useToast } from "@/app/components/Toast";
 const API = process.env.NEXT_PUBLIC_API_URL ?? "/api";
 
 const statusBadge: Record<string, string> = {
-  Upcoming: "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-400",
-  Fulfilled: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
-  Cancelled: "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
+  Upcoming: "bg-sky-100 text-sky-700",
+  Fulfilled: "bg-emerald-100 text-emerald-700",
+  Cancelled: "bg-slate-100 text-slate-500",
 };
 
 const FILTERS = ["Upcoming", "All", "Fulfilled", "Cancelled"] as const;
@@ -61,15 +61,15 @@ export default function ReservationsManager({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl gap-0.5">
+        <div className="flex p-1 bg-slate-100 rounded-xl gap-0.5">
           {FILTERS.map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={`px-3 py-1.5 text-xs rounded-lg transition-all font-semibold ${
                 filter === f
-                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
-                  : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
               }`}
             >
               {f}
@@ -85,10 +85,10 @@ export default function ReservationsManager({
         </button>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
         {filtered.length === 0 ? (
           <div className="text-center py-16">
-            <p className="font-semibold text-slate-700 dark:text-slate-300 text-sm">
+            <p className="font-semibold text-slate-700 text-sm">
               {reservations.length === 0 ? "No reservations yet" : "Nothing matches this filter"}
             </p>
             <p className="text-sm text-slate-400 mt-1">
@@ -99,25 +99,25 @@ export default function ReservationsManager({
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[680px]">
               <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Asset</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Client</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Period</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
-                  <th className="px-4 py-3.5 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
+                <tr className="border-b border-slate-100 bg-slate-50/70">
+                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Asset</th>
+                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Client</th>
+                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Period</th>
+                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                  <th className="px-4 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100">
                 {filtered.map((r) => (
-                  <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <tr key={r.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-3.5">
-                      <Link href={`/equipment/${r.equipment_id}`} className="font-medium text-brand-600 dark:text-brand-400 hover:underline">
+                      <Link href={`/equipment/${r.equipment_id}`} className="font-medium text-brand-600 hover:underline">
                         {r.equipment_name ?? `#${r.equipment_id}`}
                       </Link>
                       <p className="text-[11px] font-mono text-slate-400">{r.equipment_serial}</p>
                     </td>
-                    <td className="px-4 py-3.5 text-slate-700 dark:text-slate-300">{r.client_name ?? `#${r.client_id}`}</td>
-                    <td className="px-4 py-3.5 text-xs text-slate-600 dark:text-slate-300">
+                    <td className="px-4 py-3.5 text-slate-700">{r.client_name ?? `#${r.client_id}`}</td>
+                    <td className="px-4 py-3.5 text-xs text-slate-600">
                       {fmt(r.start_date)} <span className="text-slate-300">→</span> {fmt(r.end_date)}
                       {r.notes && <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1 max-w-[200px]">{r.notes}</p>}
                     </td>
@@ -132,14 +132,14 @@ export default function ReservationsManager({
                           <button
                             disabled={loading}
                             onClick={() => patchReservation(r, "Fulfilled", "Reservation marked fulfilled.")}
-                            className="px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 rounded-lg transition-colors mr-1.5"
+                            className="px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors mr-1.5"
                           >
                             Fulfil
                           </button>
                           <button
                             disabled={loading}
                             onClick={() => patchReservation(r, "Cancelled", "Reservation cancelled — the dates are free again.")}
-                            className="px-3 py-1.5 text-xs font-semibold text-slate-500 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                            className="px-3 py-1.5 text-xs font-semibold text-slate-500 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
                           >
                             Cancel
                           </button>
@@ -216,21 +216,21 @@ function NewReservationModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl w-full max-w-md animate-fadeIn">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="font-semibold text-slate-900 dark:text-white">New Reservation</h3>
-          <button onClick={onClose} className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-md animate-fadeIn">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+          <h3 className="font-semibold text-slate-900">New Reservation</h3>
+          <button onClick={onClose} className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
         <form onSubmit={submit} className="px-6 py-5 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Unit <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Unit <span className="text-red-500">*</span></label>
             <select
               required
               value={equipmentId}
               onChange={(e) => setEquipmentId(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             >
               <option value="">Select a unit…</option>
               {eligible.map((e) => (
@@ -241,12 +241,12 @@ function NewReservationModal({
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Client <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Client <span className="text-red-500">*</span></label>
             <select
               required
               value={clientId}
               onChange={(e) => setClientId(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             >
               <option value="">Select a client…</option>
               {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -254,41 +254,41 @@ function NewReservationModal({
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">From <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">From <span className="text-red-500">*</span></label>
               <input
                 type="date"
                 required
                 value={start}
                 onChange={(e) => setStart(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">To <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">To <span className="text-red-500">*</span></label>
               <input
                 type="date"
                 required
                 value={end}
                 min={start}
                 onChange={(e) => setEnd(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Notes</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Notes</label>
             <input
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="e.g. Wedding at Karen Gardens"
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
           <div className="flex gap-3 pt-1">
             <button type="submit" disabled={loading} className="flex-1 py-2.5 text-sm bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-xl transition-colors font-semibold">
               {loading ? "Reserving…" : "Reserve Unit"}
             </button>
-            <button type="button" onClick={onClose} className="flex-1 py-2.5 text-sm bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-colors font-medium">
+            <button type="button" onClick={onClose} className="flex-1 py-2.5 text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors font-medium">
               Cancel
             </button>
           </div>

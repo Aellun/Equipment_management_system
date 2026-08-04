@@ -41,10 +41,10 @@ export default async function ProductsPage() {
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Products</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Products</h1>
+          <p className="text-sm text-slate-500 mt-1">
             {products.length} products · {totalStock} units in stock
-            {lowStock > 0 && <span className="text-amber-600 dark:text-amber-400"> · {lowStock} low stock</span>}
+            {lowStock > 0 && <span className="text-amber-600"> · {lowStock} low stock</span>}
           </p>
         </div>
       </div>

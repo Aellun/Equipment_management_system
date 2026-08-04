@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.errands.core.db import get_db
 from app.errands.core.deps import require_role
 from app.errands.core.tasks import notify
-from app.errands.models.payment import EscrowStatus
+from app.errands.models.payment import PaymentStatus
 from app.errands.models.service import ServiceType
 from app.errands.models.task import Task, TaskStatus
 from app.errands.models.user import RunnerProfile, User, UserRole, VerificationStatus
@@ -169,17 +169,17 @@ def update_service(service_id: int, body: ServiceUpdate, db: Session = Depends(g
 def resolve_dispute(
     task_id: int, refund_customer: bool, db: Session = Depends(get_db)
 ):
-    """Resolve a dispute: either refund the customer or release escrow to runner."""
+    """Resolve a dispute. Payment already sits in the admin M-Pesa account:
+    refunding the customer is a manual M-Pesa send, recorded here for the books."""
     task = db.get(Task, task_id)
     if not task or task.status != TaskStatus.disputed:
         raise HTTPException(status_code=404, detail="No open dispute on this task")
-    if task.payment:
-        if refund_customer:
-            task.payment.escrow_status = EscrowStatus.refunded
-            task.status = TaskStatus.cancelled
-        else:
-            task.payment.escrow_status = EscrowStatus.released
-            task.status = TaskStatus.completed
+    if refund_customer:
+        if task.payment and task.payment.payment_status == PaymentStatus.paid:
+            task.payment.payment_status = PaymentStatus.refunded
+        task.status = TaskStatus.cancelled
+    else:
+        task.status = TaskStatus.completed
     db.commit()
     db.refresh(task)
     return task_to_out(db, task)

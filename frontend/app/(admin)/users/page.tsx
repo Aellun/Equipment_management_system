@@ -33,8 +33,8 @@ export default async function UsersPage() {
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Users</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Users</h1>
+          <p className="text-sm text-slate-500 mt-1">
             {users.length} user{users.length !== 1 ? "s" : ""} registered
           </p>
         </div>

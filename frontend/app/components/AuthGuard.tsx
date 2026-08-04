@@ -101,25 +101,25 @@ function LoginPage() {
       </div>
 
       {/* Right panel — form */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 bg-slate-50 dark:bg-slate-950 relative">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 bg-slate-50 relative">
         {/* Mobile brand */}
         <div className="lg:hidden text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-500 rounded-2xl mb-4 shadow-lg shadow-brand-200 dark:shadow-brand-900/50">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-brand-500 rounded-2xl mb-4 shadow-lg shadow-brand-200">
             <SpotlightIcon className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white">Dyzah</h1>
+          <h1 className="text-xl font-bold text-slate-900">Dyzah</h1>
           <p className="text-slate-500 text-sm mt-1">Admin Console</p>
         </div>
 
         <div className="w-full max-w-sm">
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Welcome back</h2>
-            <p className="text-slate-500 dark:text-slate-400 mt-1.5 text-sm">Sign in to access your dashboard</p>
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Welcome back</h2>
+            <p className="text-slate-500 mt-1.5 text-sm">Sign in to access your dashboard</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email address</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Email address</label>
               <input
                 type="email"
                 required
@@ -128,12 +128,12 @@ function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@fabent.com"
-                className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all shadow-sm"
+                className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all shadow-sm"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -142,7 +142,7 @@ function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 pr-11 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all shadow-sm"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 pr-11 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all shadow-sm"
                 />
                 <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
                   {showPassword ? (
@@ -160,7 +160,7 @@ function LoginPage() {
             </div>
 
             {error && (
-              <div className="flex items-center gap-2.5 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/40 rounded-xl px-3.5 py-2.5">
+              <div className="flex items-center gap-2.5 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-3.5 py-2.5">
                 <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
@@ -171,7 +171,7 @@ function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-brand-500 hover:bg-brand-500 active:bg-brand-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl py-3 text-sm transition-colors shadow-sm shadow-brand-200 dark:shadow-brand-900/40 mt-2"
+              className="w-full bg-brand-500 hover:bg-brand-600 active:bg-brand-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl py-3 text-sm transition-colors shadow-sm shadow-brand-200 mt-2"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -185,7 +185,7 @@ function LoginPage() {
             </button>
           </form>
 
-          <p className="text-xs text-center text-slate-400 dark:text-slate-600 mt-8 leading-relaxed">
+          <p className="text-xs text-center text-slate-400 mt-8 leading-relaxed">
             Restricted to authorised staff only.<br />Contact your administrator for access.
           </p>
         </div>
@@ -196,7 +196,7 @@ function LoginPage() {
 
 function LoadingScreen() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center">
       <div className="flex items-center gap-3 text-slate-400">
         <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -216,7 +216,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col md:flex-row h-screen overflow-hidden">
       <AppNav />
       <GlobalSearch />
-      <main className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950 p-4 md:p-8 min-w-0">
+      <main className="flex-1 overflow-auto bg-slate-50 p-4 md:p-8 min-w-0">
         {children}
       </main>
     </div>

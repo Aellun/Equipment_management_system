@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.errands.core.db import get_db
 from app.errands.core.deps import get_current_user
 from app.errands.core.tasks import notify
-from app.errands.models.payment import EscrowStatus
+from app.errands.models.payment import PaymentStatus
 from app.errands.models.review import Review
 from app.errands.models.service import ServiceType
 from app.errands.models.task import Task, TaskStatus
@@ -134,7 +134,7 @@ def accept_proof(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Customer accepts the proof → escrow released, task completed."""
+    """Customer accepts the proof → task completed."""
     task = _get_owned_task(db, task_id, user)
     if user.role != UserRole.customer or task.customer_id != user.id:
         raise HTTPException(status_code=403, detail="Only the customer can accept")
@@ -142,8 +142,6 @@ def accept_proof(
         raise HTTPException(status_code=400, detail="No proof to accept yet")
 
     task.status = TaskStatus.completed
-    if task.payment and task.payment.escrow_status == EscrowStatus.held:
-        task.payment.escrow_status = EscrowStatus.released
     if task.runner_id:
         runner = db.get(User, task.runner_id)
         if runner and runner.runner_profile:
@@ -182,15 +180,14 @@ def cancel(
         raise HTTPException(status_code=403, detail="Cannot cancel")
     if task.status in (TaskStatus.completed, TaskStatus.cancelled):
         raise HTTPException(status_code=400, detail="Task already closed")
-    # Refund if money was held.
-    if task.payment and task.payment.escrow_status in (
-        EscrowStatus.held,
-        EscrowStatus.pending,
-    ):
-        task.payment.escrow_status = EscrowStatus.refunded
+    # Payment goes directly to the admin M-Pesa account, so any refund on a
+    # paid booking is settled manually by the admin (recorded via dispute
+    # resolution) — nothing to auto-reverse here.
     task.status = TaskStatus.cancelled
     db.commit()
     db.refresh(task)
+    if task.payment and task.payment.payment_status == PaymentStatus.paid:
+        notify("email", "admin", f"{task.reference} cancelled after payment — manual M-Pesa refund may be needed")
     return task_to_out(db, task, user)
 
 

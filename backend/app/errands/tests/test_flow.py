@@ -1,8 +1,8 @@
-"""End-to-end escrow + assignment flow against the real API (mock M-Pesa)."""
+"""End-to-end direct-payment + assignment flow against the real API (mock M-Pesa)."""
 from app.errands.tests.conftest import auth_header
 
 
-def test_full_escrow_flow(client, seeded):
+def test_full_payment_flow(client, seeded):
     cust = auth_header(client, "c@t.co")
     svc_id = seeded["service"].id
 
@@ -38,12 +38,12 @@ def test_full_escrow_flow(client, seeded):
     assert pay["mock"] is True
     checkout_id = pay["checkout_request_id"]
 
-    # 4. Simulate callback success -> escrow held + runner auto-assigned.
+    # 4. Simulate callback success -> paid directly to admin + runner auto-assigned.
     settled = client.post(
         f"/errands/payments/mpesa/simulate?checkout_request_id={checkout_id}&success=true",
         headers=cust,
     ).json()
-    assert settled["escrow_status"] == "held"
+    assert settled["payment_status"] == "paid"
     assert settled["status"] == "assigned"
     assert settled["runner"] is not None
 
@@ -63,10 +63,10 @@ def test_full_escrow_flow(client, seeded):
     assert proof.status_code == 200, proof.text
     assert proof.json()["status"] == "proof_submitted"
 
-    # 7. Customer accepts -> escrow released, task completed.
+    # 7. Customer accepts -> task completed (payment already settled to admin).
     accepted = client.post(f"/errands/tasks/{task_id}/accept", headers=cust).json()
     assert accepted["status"] == "completed"
-    assert accepted["escrow_status"] == "released"
+    assert accepted["payment_status"] == "paid"
 
     # 8. Customer leaves a review -> runner rating updates.
     reviewed = client.post(
@@ -77,7 +77,7 @@ def test_full_escrow_flow(client, seeded):
     assert reviewed.status_code == 200
 
 
-def test_cancel_refunds_escrow(client, seeded):
+def test_cancel_after_payment_keeps_record(client, seeded):
     cust = auth_header(client, "c@t.co")
     svc_id = seeded["service"].id
     task_id = client.post(
@@ -89,7 +89,9 @@ def test_cancel_refunds_escrow(client, seeded):
 
     cancelled = client.post(f"/errands/tasks/{task_id}/cancel", headers=cust).json()
     assert cancelled["status"] == "cancelled"
-    assert cancelled["escrow_status"] == "refunded"
+    # Money went straight to the admin M-Pesa account; any refund is manual,
+    # so the payment record stays "paid".
+    assert cancelled["payment_status"] == "paid"
 
 
 def test_coming_soon_service_cannot_be_booked(client, seeded, db_session):

@@ -37,8 +37,15 @@ function getAdminToken() {
   return typeof window === "undefined" ? null : localStorage.getItem(ADMIN_TOKEN_KEY);
 }
 
-async function ensureAdminToken(): Promise<boolean> {
-  if (getAdminToken()) return true;
+function clearAdminToken() {
+  if (typeof window !== "undefined") localStorage.removeItem(ADMIN_TOKEN_KEY);
+}
+
+async function ensureAdminToken(force = false): Promise<boolean> {
+  // `force` bypasses a cached token — needed when a stored token turns out to
+  // be stale/expired (server returns 401) so we re-authenticate instead of
+  // trusting whatever happens to be in localStorage.
+  if (!force && getAdminToken()) return true;
   try {
     const res = await fetch(`${API}/errands/auth/login`, {
       method: "POST",
@@ -55,12 +62,18 @@ async function ensureAdminToken(): Promise<boolean> {
   }
 }
 
-async function adminFetch<T>(path: string, init?: RequestInit): Promise<T> {
+async function adminFetch<T>(path: string, init?: RequestInit, retried = false): Promise<T> {
   const token = getAdminToken();
   const res = await fetch(`${API}${path}`, {
     ...init,
     headers: { ...(init?.headers || {}), ...(token ? { Authorization: `Bearer ${token}` } : {}) },
   });
+  // Stale/expired token → drop it, re-authenticate once, and retry so the page
+  // self-heals instead of getting stuck on "Could not validate credentials".
+  if ((res.status === 401 || res.status === 403) && !retried) {
+    clearAdminToken();
+    if (await ensureAdminToken(true)) return adminFetch<T>(path, init, true);
+  }
   if (!res.ok) {
     let detail = `Request failed (${res.status})`;
     try {
@@ -380,13 +393,13 @@ function Disputes() {
             <div>
               <p className="text-xs text-muted">{t.reference}</p>
               <p className="font-semibold">{t.service_name}</p>
-              <p className="text-sm text-muted">{KES(t.total_price)} held in escrow</p>
+              <p className="text-sm text-muted">{KES(t.total_price)} paid via M-Pesa</p>
             </div>
             <StatusBadge status="disputed" />
           </div>
           <div className="mt-4 flex gap-3">
             <button className="btn-ghost flex-1" onClick={() => resolve(t.id, true)}>Refund customer</button>
-            <button className="btn-primary flex-1" onClick={() => resolve(t.id, false)}>Release to runner</button>
+            <button className="btn-primary flex-1" onClick={() => resolve(t.id, false)}>Complete for runner</button>
           </div>
         </div>
       ))}

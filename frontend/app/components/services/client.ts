@@ -108,7 +108,7 @@ export interface Task {
   proof_note: string;
   runner?: { id: number; full_name: string; suburb?: string; rating_avg?: number; rating_count?: number } | null;
   customer?: { full_name: string; phone?: string } | null;
-  escrow_status?: string | null;
+  payment_status?: string | null;
   created_at: string;
 }
 
@@ -151,7 +151,7 @@ export const tasksApi = {
     request<Task>(`/errands/tasks/${id}/review`, { method: "POST", body: data, auth: true }),
 };
 
-// ── Payments (M-Pesa escrow; mock-simulatable) ───────────────────
+// ── Payments (direct M-Pesa STK push; mock-simulatable) ──────────
 export const paymentsApi = {
   pay: (taskId: number) =>
     request<{ checkout_request_id: string; customer_message: string; mock: boolean; task_id: number }>(

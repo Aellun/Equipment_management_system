@@ -38,8 +38,8 @@ export default async function DepartmentsPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Departments</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Departments</h1>
+        <p className="text-sm text-slate-500 mt-1">
           Top-level product lines (e.g. Kitchenware, Clothing). Use the switch to show or hide a
           department — hiding it removes it and all its products from the storefront instantly.
         </p>

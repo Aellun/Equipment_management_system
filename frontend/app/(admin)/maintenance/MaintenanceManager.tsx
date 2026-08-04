@@ -8,10 +8,10 @@ import { useToast } from "@/app/components/Toast";
 const API = process.env.NEXT_PUBLIC_API_URL ?? "/api";
 
 const statusBadge: Record<string, string> = {
-  Open: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
-  "In Progress": "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
-  Completed: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
-  Cancelled: "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
+  Open: "bg-red-100 text-red-700",
+  "In Progress": "bg-amber-100 text-amber-700",
+  Completed: "bg-emerald-100 text-emerald-700",
+  Cancelled: "bg-slate-100 text-slate-500",
 };
 
 const FILTERS = ["All", "Open", "In Progress", "Completed", "Cancelled"] as const;
@@ -61,15 +61,15 @@ export default function MaintenanceManager({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl gap-0.5 overflow-x-auto">
+        <div className="flex p-1 bg-slate-100 rounded-xl gap-0.5 overflow-x-auto">
           {FILTERS.map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={`px-3 py-1.5 text-xs rounded-lg transition-all font-semibold whitespace-nowrap ${
                 filter === f
-                  ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
-                  : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
               }`}
             >
               {f}
@@ -85,10 +85,10 @@ export default function MaintenanceManager({
         </button>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
         {filtered.length === 0 ? (
           <div className="text-center py-16">
-            <p className="font-semibold text-slate-700 dark:text-slate-300 text-sm">
+            <p className="font-semibold text-slate-700 text-sm">
               {logs.length === 0 ? "No maintenance recorded yet" : "Nothing matches this filter"}
             </p>
             <p className="text-sm text-slate-400 mt-1">
@@ -99,35 +99,35 @@ export default function MaintenanceManager({
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[680px]">
               <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Work Log</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Asset</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Reported</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Cost</th>
-                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
-                  <th className="px-4 py-3.5 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
+                <tr className="border-b border-slate-100 bg-slate-50/70">
+                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Work Log</th>
+                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Asset</th>
+                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Reported</th>
+                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Cost</th>
+                  <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                  <th className="px-4 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100">
                 {filtered.map((l) => (
-                  <tr key={l.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <tr key={l.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-3.5">
-                      <p className="font-medium text-slate-900 dark:text-white">{l.title}</p>
+                      <p className="font-medium text-slate-900">{l.title}</p>
                       {l.description && <p className="text-xs text-slate-400 mt-0.5 line-clamp-1 max-w-xs">{l.description}</p>}
                     </td>
                     <td className="px-4 py-3.5">
-                      <Link href={`/equipment/${l.equipment_id}`} className="text-brand-600 dark:text-brand-400 hover:underline font-medium">
+                      <Link href={`/equipment/${l.equipment_id}`} className="text-brand-600 hover:underline font-medium">
                         {l.equipment_name ?? `#${l.equipment_id}`}
                       </Link>
                       <p className="text-[11px] font-mono text-slate-400">{l.equipment_serial}</p>
                     </td>
-                    <td className="px-4 py-3.5 text-xs text-slate-500 dark:text-slate-400">
+                    <td className="px-4 py-3.5 text-xs text-slate-500">
                       {new Date(l.reported_at).toLocaleDateString()}
                       {l.completed_at && (
                         <p className="text-[11px] text-slate-400">done {new Date(l.completed_at).toLocaleDateString()}</p>
                       )}
                     </td>
-                    <td className="px-4 py-3.5 text-xs text-slate-600 dark:text-slate-300">
+                    <td className="px-4 py-3.5 text-xs text-slate-600">
                       {l.cost ? `KSh ${Number(l.cost).toLocaleString()}` : "—"}
                     </td>
                     <td className="px-4 py-3.5">
@@ -140,7 +140,7 @@ export default function MaintenanceManager({
                         <button
                           disabled={loading}
                           onClick={() => patchLog(l, { status: "In Progress" }, `"${l.title}" marked in progress.`)}
-                          className="px-3 py-1.5 text-xs font-semibold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-900/40 rounded-lg transition-colors mr-1.5"
+                          className="px-3 py-1.5 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors mr-1.5"
                         >
                           Start
                         </button>
@@ -150,14 +150,14 @@ export default function MaintenanceManager({
                           <button
                             disabled={loading}
                             onClick={() => setCompleteTarget(l)}
-                            className="px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 rounded-lg transition-colors mr-1.5"
+                            className="px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors mr-1.5"
                           >
                             Complete
                           </button>
                           <button
                             disabled={loading}
                             onClick={() => patchLog(l, { status: "Cancelled" }, `"${l.title}" cancelled.`)}
-                            className="px-3 py-1.5 text-xs font-semibold text-slate-500 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                            className="px-3 py-1.5 text-xs font-semibold text-slate-500 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
                           >
                             Cancel
                           </button>
@@ -245,21 +245,21 @@ function NewLogModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl w-full max-w-md animate-fadeIn">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="font-semibold text-slate-900 dark:text-white">New Maintenance Work Log</h3>
-          <button onClick={onClose} className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-md animate-fadeIn">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+          <h3 className="font-semibold text-slate-900">New Maintenance Work Log</h3>
+          <button onClick={onClose} className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
         <form onSubmit={submit} className="px-6 py-5 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Unit <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Unit <span className="text-red-500">*</span></label>
             <select
               required
               value={equipmentId}
               onChange={(e) => setEquipmentId(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             >
               <option value="">Select a unit…</option>
               {eligible.map((e) => (
@@ -270,27 +270,27 @@ function NewLogModal({
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">What needs doing? <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">What needs doing? <span className="text-red-500">*</span></label>
             <input
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Replace XLR connector"
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Details</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Details</label>
             <textarea
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Fault description, parts needed, technician…"
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white resize-none focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 resize-none focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Estimated cost (KSh)</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Estimated cost (KSh)</label>
             <input
               type="number"
               min="0"
@@ -298,14 +298,14 @@ function NewLogModal({
               value={cost}
               onChange={(e) => setCost(e.target.value)}
               placeholder="optional"
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
           <div className="flex gap-3 pt-1">
             <button type="submit" disabled={loading} className="flex-1 py-2.5 text-sm bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white rounded-xl transition-colors font-semibold">
               {loading ? "Opening…" : "Open Work Log"}
             </button>
-            <button type="button" onClick={onClose} className="flex-1 py-2.5 text-sm bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-colors font-medium">
+            <button type="button" onClick={onClose} className="flex-1 py-2.5 text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors font-medium">
               Cancel
             </button>
           </div>
@@ -328,9 +328,9 @@ function CompleteModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl w-full max-w-md animate-fadeIn">
-        <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="font-semibold text-slate-900 dark:text-white">Complete “{log.title}”</h3>
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-md animate-fadeIn">
+        <div className="px-6 py-5 border-b border-slate-100">
+          <h3 className="font-semibold text-slate-900">Complete “{log.title}”</h3>
           <p className="text-xs text-slate-400 mt-1">
             The unit returns to the available pool and its inspection date is updated.
           </p>
@@ -340,7 +340,7 @@ function CompleteModal({
           className="px-6 py-5 space-y-4"
         >
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Final cost (KSh)</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Final cost (KSh)</label>
             <input
               type="number"
               min="0"
@@ -348,24 +348,24 @@ function CompleteModal({
               value={cost}
               onChange={(e) => setCost(e.target.value)}
               placeholder="optional"
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Resolution notes</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Resolution notes</label>
             <textarea
               rows={3}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="What was done?"
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white resize-none focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 resize-none focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
           <div className="flex gap-3 pt-1">
             <button type="submit" disabled={loading} className="flex-1 py-2.5 text-sm bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl transition-colors font-semibold">
               {loading ? "Completing…" : "Mark Completed"}
             </button>
-            <button type="button" onClick={onClose} className="flex-1 py-2.5 text-sm bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-colors font-medium">
+            <button type="button" onClick={onClose} className="flex-1 py-2.5 text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors font-medium">
               Cancel
             </button>
           </div>

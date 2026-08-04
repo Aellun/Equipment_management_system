@@ -106,8 +106,7 @@ def submit_proof(
 ):
     """Runner uploads a completion photo → task moves to proof_submitted.
 
-    This standardises Brons' proof-of-purchase idea into the escrow flow:
-    the customer must see proof before money is released.
+    The customer reviews the proof before the job is marked complete.
     """
     task = db.get(Task, task_id)
     if not task:

@@ -1,15 +1,17 @@
-"""M-Pesa Daraja STK Push + escrow state machine.
+"""M-Pesa Daraja STK Push — direct payment to the admin M-Pesa account.
+
+The STK push bills the customer and settles straight into the business
+shortcode (the admin's M-Pesa paybill/till) — there is no escrow hold.
 
 When MPESA_MOCK=true (default for local/demo) the STK push is simulated: a fake
 CheckoutRequestID is returned and the caller can confirm it via the test
 callback endpoint. Flip MPESA_MOCK=false and provide real Daraja sandbox/prod
 credentials to hit Safaricom for real — no code change needed.
 
-Escrow lifecycle (Payment.escrow_status):
-    pending --(callback success)--> held
-    held    --(customer accepts proof)--> released
-    held/pending --(cancel or dispute resolved for customer)--> refunded
+Payment lifecycle (Payment.payment_status):
+    pending --(callback success)--> paid
     pending --(callback failure)--> failed
+    paid    --(admin manually refunds a dispute)--> refunded
 """
 import base64
 import uuid

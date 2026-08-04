@@ -8,7 +8,7 @@ Formula:
     total = base_price
           + distance_fee  (per-km beyond a free radius)
           + urgency_fee   (surcharge as % of base for express/sameday)
-          + service_fee   (platform fee that funds escrow + support)
+          + service_fee   (platform fee that funds support)
 """
 from dataclasses import dataclass
 

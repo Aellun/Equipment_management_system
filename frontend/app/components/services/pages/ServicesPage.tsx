@@ -40,7 +40,7 @@ export default function ServicesPage({
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold sm:text-3xl">{heading}</h1>
-        <p className="mt-1 text-muted">Transparent prices, shown upfront. Every task is escrow-protected with photo proof.</p>
+        <p className="mt-1 text-muted">Transparent prices, shown upfront. Every task comes with photo proof of completion.</p>
       </div>
 
       <div className="flex max-w-md overflow-hidden rounded-lg border border-line bg-white">

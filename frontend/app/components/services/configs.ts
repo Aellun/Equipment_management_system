@@ -18,7 +18,7 @@ export const SERVICES: { shell: ShellConfig; vertical?: string; landing: Landing
     headline: "Errands & hygiene, handled.",
     headlineAccent: "Pay only when it's done right.",
     intro:
-      "From groceries, deliveries and government queues to sanitary bucket collection, laundry and office cleaning — a verified crew handles it. Transparent pricing, M-Pesa escrow and photo proof on every job.",
+      "From groceries, deliveries and government queues to sanitary bucket collection, laundry and office cleaning — a verified crew handles it. Transparent pricing, direct M-Pesa payment and photo proof on every job.",
     categories: [
       ["shopping-cart", "Everyday Errands", "Groceries, pharmacy, parcels, deliveries"],
       ["landmark", "Government & Banking", "Huduma, NTSA, bank runs, documents"],

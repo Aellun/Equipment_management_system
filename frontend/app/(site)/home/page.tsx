@@ -57,7 +57,7 @@ export default function DyzahHome() {
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-white/80">
             Dyzah brings together shopping, errands, hygiene services and equipment management. Transparent pricing,
-            M-Pesa escrow and proof on every job.
+            direct M-Pesa payments and proof on every job.
           </p>
         </div>
       </section>
@@ -85,7 +85,7 @@ export default function DyzahHome() {
 
         <div className="mt-12 grid gap-4 rounded-2xl bg-white p-6 ring-1 ring-line sm:grid-cols-3">
           {([
-            ["shield-check", "M-Pesa escrow", "Money held safely, released on completion."],
+            ["shield-check", "M-Pesa payments", "Pay directly and securely with one STK push."],
             ["tag", "Transparent pricing", "Itemised quotes before you commit."],
             ["camera", "Proof on every job", "Photo proof and verified providers."],
           ] as const).map(([icon, title, body]) => (

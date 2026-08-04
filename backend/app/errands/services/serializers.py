@@ -59,6 +59,6 @@ def task_to_out(db, task: Task, viewer: User | None = None) -> TaskOut:
         proof_note=task.proof_note,
         runner=runner,
         customer=customer,
-        escrow_status=task.payment.escrow_status.value if task.payment else None,
+        payment_status=task.payment.payment_status.value if task.payment else None,
         created_at=task.created_at,
     )

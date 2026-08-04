@@ -38,8 +38,8 @@ export default async function MaintenancePage() {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Maintenance</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Maintenance</h1>
+        <p className="text-sm text-slate-500 mt-1">
           Work logs for repairs and servicing. Opening a log pulls the unit out of service;
           completing the last open log returns it automatically.
         </p>
@@ -48,14 +48,14 @@ export default async function MaintenancePage() {
       {/* Backlog stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Open", value: open, sub: "awaiting action", tone: open > 0 ? "text-red-600 dark:text-red-400" : "" },
+          { label: "Open", value: open, sub: "awaiting action", tone: open > 0 ? "text-red-600" : "" },
           { label: "In Progress", value: inProgress, sub: "being worked on", tone: "" },
           { label: "Completed", value: completed.length, sub: "all-time repairs", tone: "" },
           { label: "Repair Spend", value: totalCost > 0 ? `KSh ${totalCost.toLocaleString()}` : "—", sub: "recorded costs", tone: "" },
         ].map((c) => (
-          <div key={c.label} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{c.label}</p>
-            <p className={`text-3xl font-bold tracking-tight mt-2 ${c.tone || "text-slate-900 dark:text-white"}`}>{c.value}</p>
+          <div key={c.label} className="bg-white border border-slate-200 rounded-2xl p-5">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{c.label}</p>
+            <p className={`text-3xl font-bold tracking-tight mt-2 ${c.tone || "text-slate-900"}`}>{c.value}</p>
             <p className="text-xs text-slate-400 mt-1">{c.sub}</p>
           </div>
         ))}

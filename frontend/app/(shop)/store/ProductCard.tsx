@@ -10,9 +10,9 @@ export default function ProductCard({ product: p }: { product: Product }) {
   return (
     <Link
       href={`/store/product/${p.slug}`}
-      className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden hover:shadow-lg hover:border-orange-300 dark:hover:border-orange-700 hover:-translate-y-0.5 transition-all duration-200"
+      className="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-orange-300 hover:-translate-y-0.5 transition-all duration-200"
     >
-      <div className="relative aspect-square bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center">
+      <div className="relative aspect-square bg-slate-100 overflow-hidden flex items-center justify-center">
         {p.images[0] ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -39,8 +39,8 @@ export default function ProductCard({ product: p }: { product: Product }) {
         )}
       </div>
       <div className="p-3">
-        <p className="text-[15px] font-bold text-slate-900 dark:text-white leading-snug">{priceLabel(p)}</p>
-        <p className="text-[13px] text-slate-600 dark:text-slate-300 line-clamp-2 mt-1 leading-snug min-h-[2.4em]">
+        <p className="text-[15px] font-bold text-slate-900 leading-snug">{priceLabel(p)}</p>
+        <p className="text-[13px] text-slate-600 line-clamp-2 mt-1 leading-snug min-h-[2.4em]">
           {p.name}
         </p>
         <div className="flex items-center gap-1 mt-1.5 min-h-[16px]">

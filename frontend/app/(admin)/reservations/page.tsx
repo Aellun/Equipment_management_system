@@ -41,8 +41,8 @@ export default async function ReservationsPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Reservations</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Reservations</h1>
+        <p className="text-sm text-slate-500 mt-1">
           Book specific units for clients ahead of time — double bookings are blocked automatically.
         </p>
       </div>
@@ -54,9 +54,9 @@ export default async function ReservationsPage() {
           { label: "Next 7 Days", value: next7, sub: "starting this week" },
           { label: "Fulfilled", value: reservations.filter((r) => r.status === "Fulfilled").length, sub: "honoured all-time" },
         ].map((c) => (
-          <div key={c.label} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{c.label}</p>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">{c.value}</p>
+          <div key={c.label} className="bg-white border border-slate-200 rounded-2xl p-5">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{c.label}</p>
+            <p className="text-3xl font-bold text-slate-900 tracking-tight mt-2">{c.value}</p>
             <p className="text-xs text-slate-400 mt-1">{c.sub}</p>
           </div>
         ))}

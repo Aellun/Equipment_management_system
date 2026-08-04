@@ -17,7 +17,7 @@ class ServiceType(Base):
     slug: Mapped[str] = mapped_column(String(80), unique=True, index=True)
     name: Mapped[str] = mapped_column(String(120))
     # Business line this service belongs to: "errands" | "hygiene" (and future verticals).
-    # The booking/pricing/assignment/escrow engine is shared; a new business is
+    # The booking/pricing/assignment/payment engine is shared; a new business is
     # just a new vertical + catalog rows, no schema change.
     vertical: Mapped[str] = mapped_column(String(40), default="errands", index=True)
     category: Mapped[str] = mapped_column(String(80), index=True)

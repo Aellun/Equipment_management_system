@@ -65,7 +65,7 @@ function SectionHeading({ title, sub, href }: { title: string; sub?: string; hre
   return (
     <div className="flex items-end justify-between mb-4">
       <div>
-        <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">{title}</h2>
+        <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">{title}</h2>
         {sub && <p className="text-xs text-slate-400 mt-0.5">{sub}</p>}
       </div>
       <Link href={href} className="text-sm font-semibold text-orange-600 hover:text-orange-500 flex items-center gap-1 shrink-0">
@@ -106,8 +106,8 @@ export default async function StoreHome() {
       {/* ===== Hero: sidebar + carousel + info rail ===== */}
       <section className="grid lg:grid-cols-[220px_1fr_240px] gap-4 py-4">
         {/* Department sidebar (desktop) */}
-        <aside className="hidden lg:block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-3 overflow-hidden">
-          <p className="px-4 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-800">
+        <aside className="hidden lg:block bg-white border border-slate-200 rounded-xl py-3 overflow-hidden">
+          <p className="px-4 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100">
             Departments
           </p>
           <div className="pt-1">
@@ -115,7 +115,7 @@ export default async function StoreHome() {
               <Link
                 key={d.id}
                 href={`/store/browse?dept=${d.slug}`}
-                className="flex items-center justify-between px-4 py-2 text-[13px] text-slate-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-800 hover:text-orange-600 transition-colors group"
+                className="flex items-center justify-between px-4 py-2 text-[13px] text-slate-700 hover:bg-orange-50 hover:text-orange-600 transition-colors group"
               >
                 <span className="flex items-center gap-2.5 font-medium">
                   {d.icon && <span>{d.icon}</span>}
@@ -126,7 +126,7 @@ export default async function StoreHome() {
             ))}
             <Link
               href="/store/browse"
-              className="flex items-center gap-2.5 px-4 py-2 mt-1 text-[13px] font-semibold text-orange-600 hover:bg-orange-50 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-2.5 px-4 py-2 mt-1 text-[13px] font-semibold text-orange-600 hover:bg-orange-50 transition-colors"
             >
               View all products →
             </Link>
@@ -143,21 +143,21 @@ export default async function StoreHome() {
               title: "Pay on Delivery",
               sub: "Order now, pay when it arrives at your door.",
               icon: "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z",
-              tint: "bg-orange-50 dark:bg-slate-900 border-orange-100 dark:border-slate-800",
+              tint: "bg-orange-50 border-orange-100",
               iconTint: "bg-orange-100 text-orange-600",
             },
             {
               title: "Genuine Guarantee",
               sub: "Every item verified authentic — or your money back.",
               icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
-              tint: "bg-emerald-50 dark:bg-slate-900 border-emerald-100 dark:border-slate-800",
+              tint: "bg-emerald-50 border-emerald-100",
               iconTint: "bg-emerald-100 text-emerald-600",
             },
             {
               title: "Track Every Step",
               sub: "Follow your order from confirmation to delivery.",
               icon: "M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0zM13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8h4l3 3v5a1 1 0 01-1 1h-1",
-              tint: "bg-sky-50 dark:bg-slate-900 border-sky-100 dark:border-slate-800",
+              tint: "bg-sky-50 border-sky-100",
               iconTint: "bg-sky-100 text-sky-600",
             },
           ].map((c) => (
@@ -165,8 +165,8 @@ export default async function StoreHome() {
               <span className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${c.iconTint}`}>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={c.icon} /></svg>
               </span>
-              <p className="text-[13px] font-bold text-slate-900 dark:text-white">{c.title}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">{c.sub}</p>
+              <p className="text-[13px] font-bold text-slate-900">{c.title}</p>
+              <p className="text-xs text-slate-500 mt-0.5 leading-snug">{c.sub}</p>
             </div>
           ))}
         </aside>
@@ -183,9 +183,9 @@ export default async function StoreHome() {
                 <Link
                   key={d.id}
                   href={`/store/browse?dept=${d.slug}`}
-                  className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden hover:border-orange-300 hover:shadow-md transition-all text-center"
+                  className="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-orange-300 hover:shadow-md transition-all text-center"
                 >
-                  <div className="aspect-[4/3] bg-slate-100 dark:bg-slate-800 overflow-hidden flex items-center justify-center">
+                  <div className="aspect-[4/3] bg-slate-100 overflow-hidden flex items-center justify-center">
                     {image ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={imgSrc(image)} alt={d.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -193,7 +193,7 @@ export default async function StoreHome() {
                       <span className="text-3xl">{d.icon ?? "🛍️"}</span>
                     )}
                   </div>
-                  <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 py-2.5 px-1 group-hover:text-orange-600 transition-colors">
+                  <p className="text-xs font-semibold text-slate-700 py-2.5 px-1 group-hover:text-orange-600 transition-colors">
                     {d.icon ? `${d.icon} ` : ""}{d.name}
                   </p>
                 </Link>
@@ -226,14 +226,14 @@ export default async function StoreHome() {
       {/* ===== Category quick links ===== */}
       {categories.length > 0 && (
         <section className="py-6">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5">
-            <h2 className="text-sm font-bold text-slate-900 dark:text-white mb-3">Browse by category</h2>
+          <div className="bg-white border border-slate-200 rounded-xl p-5">
+            <h2 className="text-sm font-bold text-slate-900 mb-3">Browse by category</h2>
             <div className="flex flex-wrap gap-2">
               {categories.map((c) => (
                 <Link
                   key={c.id}
                   href={`/store/browse?cat=${c.slug}`}
-                  className="px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-[13px] font-medium text-slate-600 dark:text-slate-300 hover:border-orange-400 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-slate-800 transition-colors"
+                  className="px-3.5 py-1.5 rounded-full border border-slate-200 text-[13px] font-medium text-slate-600 hover:border-orange-400 hover:text-orange-600 hover:bg-orange-50 transition-colors"
                 >
                   {c.name}
                 </Link>
@@ -264,7 +264,7 @@ export default async function StoreHome() {
 
       {products.length === 0 && (
         <div className="text-center py-24">
-          <p className="font-semibold text-slate-700 dark:text-slate-300">The store is being stocked</p>
+          <p className="font-semibold text-slate-700">The store is being stocked</p>
           <p className="text-sm text-slate-400 mt-1">Check back shortly — great things are coming.</p>
         </div>
       )}

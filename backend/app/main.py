@@ -80,7 +80,7 @@ app.include_router(reviews.router)
 app.include_router(delivery.router)
 app.include_router(returns.router)
 
-# Errands & Hygiene (catalog-driven services; shared booking/escrow engine).
+# Errands & Hygiene (catalog-driven services; shared booking/payment engine).
 # These run on a separate sync engine against the SAME database; FastAPI runs
 # the sync handlers in a threadpool.
 include_errands_routers(app)

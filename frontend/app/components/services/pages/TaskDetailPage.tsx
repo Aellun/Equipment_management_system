@@ -56,9 +56,9 @@ export default function TaskDetailPage({ id }: { id: string }) {
           </div>
           <div className="text-right">
             <StatusBadge status={task.status} />
-            {task.escrow_status && (
+            {task.payment_status && (
               <p className="mt-1 text-xs text-slate-400">
-                escrow: <StatusBadge status={task.escrow_status} />
+                payment: <StatusBadge status={task.payment_status} />
               </p>
             )}
           </div>
@@ -119,10 +119,10 @@ export default function TaskDetailPage({ id }: { id: string }) {
       {isCustomer && task.status === "proof_submitted" && (
         <div className="card border-2 border-brand-200 p-6">
           <h2 className="font-bold">Review the work</h2>
-          <p className="mt-1 text-sm text-slate-500">Happy with the proof above? Approve to release {KES(task.total_price)} from escrow.</p>
+          <p className="mt-1 text-sm text-slate-500">Happy with the proof above? Approve to mark this {KES(task.total_price)} job as completed.</p>
           <div className="mt-4 flex gap-3">
             <button className="btn-primary flex-1" disabled={busy} onClick={() => act(() => tasksApi.accept(task.id))}>
-              <Icon name="check" className="h-4 w-4" /> Approve &amp; release payment
+              <Icon name="check" className="h-4 w-4" /> Approve &amp; complete
             </button>
             <button className="btn-ghost" disabled={busy} onClick={() => act(() => tasksApi.dispute(task.id))}>
               <Icon name="alert-triangle" className="h-4 w-4" /> Raise dispute
@@ -133,7 +133,7 @@ export default function TaskDetailPage({ id }: { id: string }) {
 
       {isCustomer && ["quoted", "paid", "assigned"].includes(task.status) && (
         <button className="btn-ghost w-full" disabled={busy} onClick={() => act(() => tasksApi.cancel(task.id))}>
-          Cancel booking{task.escrow_status === "held" ? " & refund" : ""}
+          Cancel booking
         </button>
       )}
 

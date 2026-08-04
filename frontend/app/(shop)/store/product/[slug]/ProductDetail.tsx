@@ -71,7 +71,7 @@ export default function ProductDetail({ product }: { product: Product }) {
       <div className="grid md:grid-cols-2 gap-8">
         {/* Images */}
         <div>
-          <div className="aspect-square bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex items-center justify-center">
+          <div className="aspect-square bg-white border border-slate-200 rounded-2xl overflow-hidden flex items-center justify-center">
             {product.images[activeImg] ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={imgSrc(product.images[activeImg].url)} alt={product.name} className="w-full h-full object-cover" />
@@ -82,7 +82,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           {product.images.length > 1 && (
             <div className="flex gap-2 mt-3">
               {product.images.map((img, i) => (
-                <button key={img.id} onClick={() => setActiveImg(i)} className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-colors ${i === activeImg ? "border-orange-500" : "border-slate-200 dark:border-slate-800"}`}>
+                <button key={img.id} onClick={() => setActiveImg(i)} className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-colors ${i === activeImg ? "border-orange-500" : "border-slate-200"}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={imgSrc(img.url)} alt="" className="w-full h-full object-cover" />
                 </button>
@@ -94,7 +94,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         {/* Details */}
         <div>
           {product.brand && <p className="text-xs font-semibold uppercase tracking-wide text-orange-500 mb-1">{product.brand}</p>}
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{product.name}</h1>
+          <h1 className="text-2xl font-bold text-slate-900">{product.name}</h1>
 
           {/* Rating summary */}
           {product.review_count > 0 && (
@@ -105,27 +105,27 @@ export default function ProductDetail({ product }: { product: Product }) {
           )}
 
           {variant && (
-            <p className="text-2xl font-bold text-orange-600 dark:text-orange-400 mt-3">
+            <p className="text-2xl font-bold text-orange-600 mt-3">
               KSh {Number(variant.price).toLocaleString()}
             </p>
           )}
 
           {/* Genuine Guarantee trust badge */}
           {product.is_genuine_guaranteed && (
-            <div className="flex items-center gap-2 mt-3 text-sm bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-xl px-3 py-2 w-fit">
+            <div className="flex items-center gap-2 mt-3 text-sm bg-emerald-50 text-emerald-700 rounded-xl px-3 py-2 w-fit">
               <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
               <span className="font-semibold">Genuine Guarantee</span>
-              <span className="text-emerald-600/80 dark:text-emerald-500">— authentic or your money back</span>
+              <span className="text-emerald-600/80">— authentic or your money back</span>
             </div>
           )}
 
           {product.description && (
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-4 leading-relaxed whitespace-pre-line">{product.description}</p>
+            <p className="text-sm text-slate-600 mt-4 leading-relaxed whitespace-pre-line">{product.description}</p>
           )}
 
           {/* Variant picker */}
           <div className="mt-6">
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Options</p>
+            <p className="text-sm font-semibold text-slate-700 mb-2">Options</p>
             <div className="flex flex-wrap gap-2">
               {activeVariants.map((v) => {
                 const selected = v.id === variantId;
@@ -137,10 +137,10 @@ export default function ProductDetail({ product }: { product: Product }) {
                     disabled={oos}
                     className={`px-4 py-2 rounded-xl text-sm font-medium border transition-colors ${
                       selected
-                        ? "border-orange-600 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300"
+                        ? "border-orange-600 bg-orange-50 text-orange-700"
                         : oos
-                        ? "border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-600 line-through cursor-not-allowed"
-                        : "border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-orange-400"
+                        ? "border-slate-200 text-slate-300 line-through cursor-not-allowed"
+                        : "border-slate-300 text-slate-700 hover:border-orange-400"
                     }`}
                   >
                     {v.variant_name}
@@ -158,15 +158,15 @@ export default function ProductDetail({ product }: { product: Product }) {
               </p>
             )}
             <div className="flex items-center gap-3">
-              <div className="flex items-center border border-slate-300 dark:border-slate-700 rounded-xl overflow-hidden">
-                <button onClick={() => setQty((q) => Math.max(1, q - 1))} disabled={!inStock} className="px-3 py-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30">−</button>
+              <div className="flex items-center border border-slate-300 rounded-xl overflow-hidden">
+                <button onClick={() => setQty((q) => Math.max(1, q - 1))} disabled={!inStock} className="px-3 py-2 text-slate-500 hover:bg-slate-100 disabled:opacity-30">−</button>
                 <span className="px-4 py-2 text-sm font-medium min-w-[3rem] text-center">{qty}</span>
-                <button onClick={() => setQty((q) => Math.min(maxQty, q + 1))} disabled={!inStock || qty >= maxQty} className="px-3 py-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30">+</button>
+                <button onClick={() => setQty((q) => Math.min(maxQty, q + 1))} disabled={!inStock || qty >= maxQty} className="px-3 py-2 text-slate-500 hover:bg-slate-100 disabled:opacity-30">+</button>
               </div>
             </div>
 
             <div className="flex gap-3 mt-4">
-              <button onClick={() => handleAdd(false)} disabled={!inStock || adding} className="flex-1 py-3 bg-white dark:bg-slate-900 border-2 border-orange-600 text-orange-600 dark:text-orange-400 font-semibold rounded-xl hover:bg-orange-50 dark:hover:bg-orange-900/20 disabled:opacity-50 transition-colors">
+              <button onClick={() => handleAdd(false)} disabled={!inStock || adding} className="flex-1 py-3 bg-white border-2 border-orange-600 text-orange-600 font-semibold rounded-xl hover:bg-orange-50 disabled:opacity-50 transition-colors">
                 {adding ? "Adding…" : "Add to cart"}
               </button>
               <button onClick={() => handleAdd(true)} disabled={!inStock || adding} className="flex-1 py-3 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-xl disabled:opacity-50 transition-colors">
@@ -176,13 +176,13 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
 
           {variant?.attributes && Object.keys(variant.attributes).length > 0 && (
-            <div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-4">
-              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Specifications</p>
+            <div className="mt-6 border-t border-slate-100 pt-4">
+              <p className="text-sm font-semibold text-slate-700 mb-2">Specifications</p>
               <dl className="grid grid-cols-2 gap-2 text-sm">
                 {Object.entries(variant.attributes).map(([k, v]) => (
-                  <div key={k} className="flex justify-between border-b border-slate-50 dark:border-slate-800/50 py-1">
+                  <div key={k} className="flex justify-between border-b border-slate-50 py-1">
                     <dt className="text-slate-400 capitalize">{k}</dt>
-                    <dd className="text-slate-700 dark:text-slate-300 font-medium">{v}</dd>
+                    <dd className="text-slate-700 font-medium">{v}</dd>
                   </div>
                 ))}
               </dl>
@@ -191,12 +191,12 @@ export default function ProductDetail({ product }: { product: Product }) {
 
           {/* How to use / care guide */}
           {product.usage_guide && (
-            <div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-4">
-              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-1.5">
+            <div className="mt-6 border-t border-slate-100 pt-4">
+              <p className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1.5">
                 <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
                 How to use &amp; care
               </p>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-line">{product.usage_guide}</p>
+              <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{product.usage_guide}</p>
             </div>
           )}
         </div>

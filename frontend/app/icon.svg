@@ -1,0 +1,17 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Dyzah</title>
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff8a3d"/>
+      <stop offset="0.55" stop-color="#ff6a00"/>
+      <stop offset="1" stop-color="#e85f00"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#tile)"/>
+  <!-- spotlight accent: a soft beam from the top, tying to the Dyzah stage-light mark -->
+  <path d="M256 40 L360 150 Q256 190 152 150 Z" fill="#ffffff" opacity="0.16"/>
+  <!-- Dyzah "D" monogram, geometric so it renders identically everywhere -->
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#ffffff"
+        d="M168 136 L296 136 C372 136 416 190 416 258 C416 326 372 384 296 384 L168 384 Z
+           M236 200 L292 200 C340 200 356 230 356 258 C356 286 340 320 292 320 L236 320 Z"/>
+</svg>

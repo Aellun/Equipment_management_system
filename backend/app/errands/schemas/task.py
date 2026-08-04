@@ -68,7 +68,7 @@ class TaskOut(BaseModel):
     proof_note: str
     runner: RunnerBrief | None = None
     customer: CustomerBrief | None = None
-    escrow_status: str | None = None
+    payment_status: str | None = None
     created_at: datetime
 
     class Config:

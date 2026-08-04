@@ -12,10 +12,9 @@ const STATUS_STYLES: Record<string, string> = {
   completed: "bg-leaf-100 text-leaf-700",
   disputed: "bg-red-100 text-red-700",
   cancelled: "bg-slate-200 text-slate-500",
-  held: "bg-gold-100 text-gold-700",
-  released: "bg-leaf-100 text-leaf-700",
   refunded: "bg-slate-200 text-slate-600",
   pending: "bg-slate-100 text-slate-600",
+  failed: "bg-red-100 text-red-700",
 };
 
 export function StatusBadge({ status }: { status: string }) {
@@ -39,7 +38,7 @@ export function PriceBreakdown({ q }: { q: Quote | null }) {
       <Row label="Base price" value={q.base_price} />
       {q.distance_fee > 0 && <Row label="Distance fee" value={q.distance_fee} />}
       {q.urgency_fee > 0 && <Row label="Urgency surcharge" value={q.urgency_fee} />}
-      <Row label="Service fee" value={q.service_fee} hint="escrow + support" />
+      <Row label="Service fee" value={q.service_fee} hint="platform + support" />
       <div className="mt-2 flex items-center justify-between border-t border-slate-200 pt-3">
         <span className="font-semibold">Total to pay now</span>
         <span className="text-lg font-bold text-brand-600">{KES(q.total_price)}</span>

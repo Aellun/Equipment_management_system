@@ -6,7 +6,7 @@ from app.errands.core.config import settings
 from app.errands.core.db import get_db
 from app.errands.core.deps import get_current_user
 from app.errands.core.tasks import notify
-from app.errands.models.payment import EscrowStatus, Payment
+from app.errands.models.payment import Payment, PaymentStatus
 from app.errands.models.task import Task, TaskStatus
 from app.errands.models.user import User, UserRole
 from app.errands.schemas.task import TaskOut
@@ -24,7 +24,7 @@ def pay_task(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Trigger STK push to fund escrow for a quoted task."""
+    """Trigger a direct STK push: the customer pays the admin M-Pesa account."""
     task = db.get(Task, task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -44,7 +44,7 @@ def pay_task(
     payment = task.payment or Payment(task_id=task.id, amount=task.total_price, phone=phone)
     payment.checkout_request_id = result["checkout_request_id"]
     payment.merchant_request_id = result["merchant_request_id"]
-    payment.escrow_status = EscrowStatus.pending
+    payment.payment_status = PaymentStatus.pending
     db.add(payment)
     db.commit()
 
@@ -58,7 +58,7 @@ def pay_task(
 
 @router.post("/mpesa/callback")
 async def mpesa_callback(request: Request, db: Session = Depends(get_db)):
-    """Daraja calls this on payment result. Funds escrow + auto-assigns runner."""
+    """Daraja calls this on payment result. Marks the task paid + auto-assigns a runner."""
     body = await request.json()
     parsed = mpesa.parse_callback(body)
     _settle(db, parsed["checkout_request_id"], parsed["success"], parsed.get("mpesa_receipt"))
@@ -93,17 +93,17 @@ def _settle(db: Session, checkout_id: str | None, success: bool, mpesa_receipt: 
     task = db.get(Task, payment.task_id)
 
     if not success:
-        payment.escrow_status = EscrowStatus.failed
+        payment.payment_status = PaymentStatus.failed
         db.commit()
         return task
 
-    payment.escrow_status = EscrowStatus.held
+    payment.payment_status = PaymentStatus.paid
     payment.mpesa_receipt = mpesa_receipt
     if task and task.status == TaskStatus.quoted:
         task.status = TaskStatus.paid
     db.commit()
 
-    # Assign a runner now that escrow is funded — only in auto mode.
+    # Assign a runner now that payment is confirmed — only in auto mode.
     if task:
         if get_settings(db).auto_assign:
             runner = assign_task(db, task)

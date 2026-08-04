@@ -32,9 +32,9 @@ const PAGES: ResultItem[] = [
 ];
 
 const statusBadge: Record<string, string> = {
-  Available: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
-  Out: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
-  Maintenance: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
+  Available: "bg-emerald-100 text-emerald-700",
+  Out: "bg-amber-100 text-amber-700",
+  Maintenance: "bg-red-100 text-red-700",
 };
 
 export default function GlobalSearch() {
@@ -148,9 +148,9 @@ export default function GlobalSearch() {
   return (
     <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[12vh] px-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
-      <div className="relative w-full max-w-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden animate-fadeIn">
+      <div className="relative w-full max-w-xl bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden animate-fadeIn">
         {/* Input */}
-        <div className="flex items-center gap-3 px-4 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center gap-3 px-4 border-b border-slate-100">
           <svg className="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           <input
             ref={inputRef}
@@ -162,9 +162,9 @@ export default function GlobalSearch() {
               if (e.key === "Enter" && results[selected]) go(results[selected]);
             }}
             placeholder="Search equipment, clients, products, pages…"
-            className="flex-1 py-3.5 text-sm bg-transparent text-slate-900 dark:text-white focus:outline-none"
+            className="flex-1 py-3.5 text-sm bg-transparent text-slate-900 focus:outline-none"
           />
-          <kbd className="hidden sm:block text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-1.5 py-0.5">ESC</kbd>
+          <kbd className="hidden sm:block text-[10px] font-semibold text-slate-400 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5">ESC</kbd>
         </div>
 
         {/* Results */}
@@ -183,20 +183,20 @@ export default function GlobalSearch() {
                   <button
                     onClick={() => go(r)}
                     onMouseEnter={() => setSelected(i)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${i === selected ? "bg-brand-50 dark:bg-slate-800" : ""}`}
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${i === selected ? "bg-brand-50" : ""}`}
                   >
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium truncate ${i === selected ? "text-brand-700 dark:text-brand-300" : "text-slate-700 dark:text-slate-200"}`}>
+                      <p className={`text-sm font-medium truncate ${i === selected ? "text-brand-700" : "text-slate-700"}`}>
                         {r.title}
                       </p>
                       {r.subtitle && <p className="text-xs text-slate-400 truncate">{r.subtitle}</p>}
                     </div>
                     {r.badge && (
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${statusBadge[r.badge] ?? "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"}`}>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${statusBadge[r.badge] ?? "bg-slate-100 text-slate-500"}`}>
                         {r.badge}
                       </span>
                     )}
-                    <svg className={`w-3.5 h-3.5 shrink-0 ${i === selected ? "text-brand-400" : "text-slate-300 dark:text-slate-600"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    <svg className={`w-3.5 h-3.5 shrink-0 ${i === selected ? "text-brand-400" : "text-slate-300"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                   </button>
                 </div>
               );
@@ -204,7 +204,7 @@ export default function GlobalSearch() {
           )}
         </div>
 
-        <div className="px-4 py-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-3 text-[10px] text-slate-400">
+        <div className="px-4 py-2 border-t border-slate-100 flex items-center gap-3 text-[10px] text-slate-400">
           <span><kbd className="font-semibold">↑↓</kbd> navigate</span>
           <span><kbd className="font-semibold">↵</kbd> open</span>
           <span className="ml-auto">Ctrl+K to toggle</span>

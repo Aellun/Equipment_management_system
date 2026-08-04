@@ -9,11 +9,11 @@ from app.errands.core.db import Base
 
 class TaskStatus(str, enum.Enum):
     quoted = "quoted"            # quote generated, awaiting payment
-    paid = "paid"               # escrow funded, awaiting assignment
+    paid = "paid"               # M-Pesa payment received, awaiting assignment
     assigned = "assigned"       # runner assigned
     in_progress = "in_progress"
     proof_submitted = "proof_submitted"
-    completed = "completed"     # customer accepted, escrow released
+    completed = "completed"     # customer accepted the proof
     disputed = "disputed"
     cancelled = "cancelled"
 

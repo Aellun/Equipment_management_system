@@ -27,8 +27,8 @@ function QtyStepper({
     <div
       className={`inline-flex items-center rounded-xl border transition-colors ${
         value > 0
-          ? "border-brand-300 dark:border-brand-700 bg-brand-50 dark:bg-brand-900/20"
-          : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
+          ? "border-brand-300 bg-brand-50"
+          : "border-slate-200 bg-slate-50"
       }`}
       onClick={(e) => e.stopPropagation()}
     >
@@ -37,11 +37,11 @@ function QtyStepper({
         aria-label="Remove one"
         disabled={value === 0}
         onClick={() => onChange(Math.max(0, value - 1))}
-        className="w-8 h-8 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:text-brand-600 disabled:opacity-30 disabled:cursor-not-allowed text-base font-bold"
+        className="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-brand-600 disabled:opacity-30 disabled:cursor-not-allowed text-base font-bold"
       >
         −
       </button>
-      <span className={`w-8 text-center text-sm font-bold tabular-nums ${value > 0 ? "text-brand-700 dark:text-brand-300" : "text-slate-400"}`}>
+      <span className={`w-8 text-center text-sm font-bold tabular-nums ${value > 0 ? "text-brand-700" : "text-slate-400"}`}>
         {value}
       </span>
       <button
@@ -49,7 +49,7 @@ function QtyStepper({
         aria-label="Add one"
         disabled={value >= max}
         onClick={() => onChange(Math.min(max, value + 1))}
-        className="w-8 h-8 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:text-brand-600 disabled:opacity-30 disabled:cursor-not-allowed text-base font-bold"
+        className="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-brand-600 disabled:opacity-30 disabled:cursor-not-allowed text-base font-bold"
       >
         +
       </button>
@@ -124,22 +124,22 @@ export default function CheckoutBrowser({
 
   if (equipment.length === 0) {
     return (
-      <div className="text-center py-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
-        <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3">
+      <div className="text-center py-14 bg-white border border-slate-200 rounded-2xl">
+        <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
           <svg className="w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
           </svg>
         </div>
-        <p className="font-semibold text-slate-700 dark:text-slate-300 text-sm">No available equipment</p>
-        <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">All items are checked out or in maintenance.</p>
+        <p className="font-semibold text-slate-700 text-sm">No available equipment</p>
+        <p className="text-sm text-slate-400 mt-1">All items are checked out or in maintenance.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
+    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
       {/* Filters */}
-      <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-2">
+      <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1 min-w-0">
           <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -149,13 +149,13 @@ export default function CheckoutBrowser({
             placeholder="Search items, categories or serials…"
             value={query}
             onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
           />
         </div>
         <select
           value={catFilter}
           onChange={(e) => { setCatFilter(e.target.value); setPage(1); }}
-          className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 sm:w-44 transition-all"
+          className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 sm:w-44 transition-all"
         >
           <option value="">All categories</option>
           {categories.map((c) => (
@@ -168,17 +168,17 @@ export default function CheckoutBrowser({
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[480px]">
           <thead>
-            <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
-              <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Item</th>
-              <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden md:table-cell">Category</th>
-              <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">In Stock</th>
-              <th className="px-4 py-3.5 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Quantity to Check Out</th>
+            <tr className="border-b border-slate-100 bg-slate-50/70">
+              <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Item</th>
+              <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider hidden md:table-cell">Category</th>
+              <th className="px-4 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">In Stock</th>
+              <th className="px-4 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Quantity to Check Out</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+          <tbody className="divide-y divide-slate-100">
             {pageItems.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-4 py-10 text-center text-slate-400 dark:text-slate-600">
+                <td colSpan={4} className="px-4 py-10 text-center text-slate-400">
                   No items match your search.
                 </td>
               </tr>
@@ -191,30 +191,30 @@ export default function CheckoutBrowser({
                     onClick={() => setQty(g.key, qty > 0 ? 0 : 1)}
                     className={`cursor-pointer transition-colors ${
                       qty > 0
-                        ? "bg-brand-50/60 dark:bg-brand-900/10 hover:bg-brand-50 dark:hover:bg-brand-900/20"
-                        : "hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                        ? "bg-brand-50/60 hover:bg-brand-50"
+                        : "hover:bg-slate-50"
                     }`}
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-brand-50 dark:bg-brand-900/20 border border-brand-100 dark:border-brand-900/40 flex items-center justify-center shrink-0">
-                          <svg className="w-5 h-5 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div className="w-9 h-9 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center shrink-0">
+                          <svg className="w-5 h-5 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                           </svg>
                         </div>
                         <div className="min-w-0">
-                          <p className="font-semibold text-slate-900 dark:text-white truncate">{g.name}</p>
+                          <p className="font-semibold text-slate-900 truncate">{g.name}</p>
                           <p className="text-xs text-slate-400 md:hidden">{g.category}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-3 hidden md:table-cell">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
                         {g.category}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
                         {g.units.length} available
                       </span>
                     </td>
@@ -239,19 +239,19 @@ export default function CheckoutBrowser({
 
       {/* Selection summary bar */}
       {totalUnits > 0 && (
-        <div className="border-t border-brand-200 dark:border-brand-800/60 bg-brand-50 dark:bg-brand-950/50 px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
+        <div className="border-t border-brand-200 bg-brand-50 px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
           <div className="flex items-center gap-3 min-w-0">
             <span className="inline-flex items-center justify-center min-w-[1.75rem] h-7 px-1.5 rounded-full bg-brand-600 text-white text-xs font-bold shrink-0">
               {totalUnits}
             </span>
-            <p className="text-sm text-brand-700 dark:text-brand-300 font-semibold truncate">
+            <p className="text-sm text-brand-700 font-semibold truncate">
               {picked.map((p) => `${p.group.name} × ${p.qty}`).join(" · ")}
             </p>
           </div>
           <div className="flex gap-2 shrink-0">
             <button
               onClick={clearSelection}
-              className="px-3 py-2 text-xs text-brand-600 dark:text-brand-400 hover:bg-brand-100 dark:hover:bg-brand-900/40 rounded-lg transition-colors font-medium"
+              className="px-3 py-2 text-xs text-brand-600 hover:bg-brand-100 rounded-lg transition-colors font-medium"
             >
               Clear
             </button>
@@ -350,16 +350,16 @@ function CheckoutModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-t-2xl sm:rounded-2xl shadow-xl w-full sm:max-w-md max-h-[90vh] flex flex-col animate-slideInUp sm:animate-fadeIn">
+      <div className="bg-white border border-slate-200 rounded-t-2xl sm:rounded-2xl shadow-xl w-full sm:max-w-md max-h-[90vh] flex flex-col animate-slideInUp sm:animate-fadeIn">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
           <div>
-            <h3 className="font-semibold text-slate-900 dark:text-white">Confirm Checkout</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <h3 className="font-semibold text-slate-900">Confirm Checkout</h3>
+            <p className="text-xs text-slate-500 mt-0.5">
               {totalUnits} unit{totalUnits !== 1 ? "s" : ""} · Staff: <span className="font-medium">{staffName}</span>
             </p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <button onClick={onClose} className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -369,14 +369,14 @@ function CheckoutModal({
         {/* Scrollable body */}
         <div className="overflow-y-auto flex-1">
           {/* Grouped item summary */}
-          <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+          <div className="px-6 py-4 border-b border-slate-100">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Items</p>
-            <div className="bg-slate-50 dark:bg-slate-800 rounded-xl divide-y divide-slate-200/70 dark:divide-slate-700/70 max-h-44 overflow-y-auto">
+            <div className="bg-slate-50 rounded-xl divide-y divide-slate-200/70 max-h-44 overflow-y-auto">
               {picked.map(({ group, qty }) => (
                 <div key={group.key} className="px-3 py-2.5">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-semibold text-slate-800 dark:text-white truncate">{group.name}</span>
-                    <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 text-xs font-bold">
+                    <span className="text-sm font-semibold text-slate-800 truncate">{group.name}</span>
+                    <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full bg-brand-100 text-brand-700 text-xs font-bold">
                       × {qty}
                     </span>
                   </div>
@@ -393,14 +393,14 @@ function CheckoutModal({
 
           <form onSubmit={submit} className="px-6 py-5 space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">
                 Client <span className="text-red-500">*</span>
               </label>
               <select
                 required
                 value={clientId}
                 onChange={(e) => setClientId(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
               >
                 <option value="">Select a client…</option>
                 {clients.map((c) => (
@@ -409,7 +409,7 @@ function CheckoutModal({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">
                 Due Date <span className="text-red-500">*</span>
               </label>
               <input
@@ -418,7 +418,7 @@ function CheckoutModal({
                 min={minDate}
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
               />
             </div>
 
@@ -433,7 +433,7 @@ function CheckoutModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-2.5 text-sm bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-colors font-medium"
+                className="flex-1 py-2.5 text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors font-medium"
               >
                 Cancel
               </button>

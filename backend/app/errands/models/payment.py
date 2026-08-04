@@ -7,12 +7,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.errands.core.db import Base
 
 
-class EscrowStatus(str, enum.Enum):
+class PaymentStatus(str, enum.Enum):
     pending = "pending"     # STK push sent, awaiting callback
-    held = "held"           # funds confirmed, held in escrow
-    released = "released"   # released to runner/platform on completion
-    refunded = "refunded"   # refunded to customer (cancel/dispute)
+    paid = "paid"           # payment received directly by the admin M-Pesa account
     failed = "failed"       # payment failed
+    refunded = "refunded"   # admin manually refunded the customer (recorded for bookkeeping)
 
 
 def _now() -> datetime:
@@ -31,8 +30,8 @@ class Payment(Base):
     merchant_request_id: Mapped[str | None] = mapped_column(String(80), nullable=True)
     mpesa_receipt: Mapped[str | None] = mapped_column(String(40), nullable=True)
 
-    escrow_status: Mapped[EscrowStatus] = mapped_column(
-        Enum(EscrowStatus, name="errand_escrow_status"), default=EscrowStatus.pending
+    payment_status: Mapped[PaymentStatus] = mapped_column(
+        Enum(PaymentStatus, name="errand_payment_status"), default=PaymentStatus.pending
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
     updated_at: Mapped[datetime] = mapped_column(

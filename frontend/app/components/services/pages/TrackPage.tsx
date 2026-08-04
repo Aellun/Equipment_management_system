@@ -7,7 +7,7 @@ import { Icon } from "../Icon";
 
 const TIMELINE: [string, string][] = [
   ["quoted", "Booked"],
-  ["paid", "Paid (escrow held)"],
+  ["paid", "Paid via M-Pesa"],
   ["assigned", "Crew assigned"],
   ["in_progress", "In progress"],
   ["proof_submitted", "Proof submitted"],

@@ -26,13 +26,26 @@ def init_errands_db() -> None:
     additive = [
         "ALTER TABLE errand_tasks ADD COLUMN IF NOT EXISTS contact_phone VARCHAR(20) NOT NULL DEFAULT ''",
         "ALTER TABLE errand_service_types ADD COLUMN IF NOT EXISTS vertical VARCHAR(40) NOT NULL DEFAULT 'errands'",
+        # Escrow → direct payment migration: payments now settle straight to the
+        # admin M-Pesa account, so the old escrow state machine collapses into a
+        # simple payment status.
+        "DO $$ BEGIN CREATE TYPE errand_payment_status AS ENUM ('pending','paid','failed','refunded'); EXCEPTION WHEN duplicate_object THEN NULL; END $$",
+        "ALTER TABLE errand_payments ADD COLUMN IF NOT EXISTS payment_status errand_payment_status NOT NULL DEFAULT 'pending'",
+        "UPDATE errand_payments SET payment_status = CASE"
+        " WHEN escrow_status::text IN ('held','released') THEN 'paid'::errand_payment_status"
+        " WHEN escrow_status::text = 'failed' THEN 'failed'::errand_payment_status"
+        " WHEN escrow_status::text = 'refunded' THEN 'refunded'::errand_payment_status"
+        " ELSE 'pending'::errand_payment_status END",
+        "ALTER TABLE errand_payments DROP COLUMN IF EXISTS escrow_status",
     ]
-    with engine.begin() as conn:
-        for stmt in additive:
-            try:
+    # One transaction per statement: a failed statement (e.g. the backfill once
+    # the legacy column is gone) must not poison the ones after it.
+    for stmt in additive:
+        try:
+            with engine.begin() as conn:
                 conn.execute(text(stmt))
-            except Exception:  # pragma: no cover — dialects without IF NOT EXISTS
-                pass
+        except Exception:  # pragma: no cover — already applied / dialect quirk
+            pass
     os.makedirs(ERRANDS_MEDIA_DIR, exist_ok=True)
 
 

@@ -45,7 +45,7 @@ CATALOG = [
 
 # ── Dyzah Hygiene catalog (vertical="hygiene") ───────────────────
 # Sanitary collection for schools/offices, laundry, and related hygiene
-# services. Same booking/escrow engine, just a different vertical.
+# services. Same booking/payment engine, just a different vertical.
 # slug, name, category, icon, base_price, price_unit, est_min, goods_separate, active, sort
 HYGIENE_CATALOG = [
     # ── Sanitary collection ───────────────────────────────────
@@ -103,7 +103,7 @@ def seed_services(db) -> None:
 def _describe_hygiene(name: str, category: str) -> str:
     if category == "Subscriptions":
         return "Coming soon — bundled monthly hygiene plans for schools, offices and SMEs."
-    return f"{name} — scheduled pickup/service by a verified Dyzah Hygiene crew, with proof and M-Pesa escrow."
+    return f"{name} — scheduled pickup/service by a verified Dyzah Hygiene crew, with photo proof and secure M-Pesa payment."
 
 
 def _describe(name: str, category: str) -> str:
@@ -113,7 +113,7 @@ def _describe(name: str, category: str) -> str:
         return "Coming soon — professional CV writing and job application support."
     if category == "Corporate":
         return "Coming soon — monthly retainer errands for offices and SMEs."
-    return f"{name} handled by a verified runner with photo proof and M-Pesa escrow."
+    return f"{name} handled by a verified runner with photo proof and secure M-Pesa payment."
 
 
 def _ensure_user(db, *, email, name, phone, password, role) -> User:

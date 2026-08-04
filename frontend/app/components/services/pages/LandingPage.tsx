@@ -14,17 +14,17 @@ export interface LandingContent {
 }
 
 const DIFFERENTIATORS: [string, string, string][] = [
-  ["shield-check", "M-Pesa escrow", "Your money is held safely and only released after you confirm the job is done."],
+  ["shield-check", "Direct M-Pesa payment", "Pay securely with one STK push straight from your phone — no cards, no hassle."],
   ["tag", "Transparent pricing", "See the full, itemised price before you book — no surprise charges, ever."],
-  ["camera", "Photo proof", "Every job is completed with a photo and note before you release payment."],
+  ["camera", "Photo proof", "Every job is completed with a photo and note for you to review."],
   ["badge-check", "Verified crew", "Every runner/crew is ID-verified and rated by real customers."],
 ];
 
 const STEPS: [string, string][] = [
   ["Pick a service", "Choose what you need from the catalog."],
   ["Get an instant quote", "Transparent price shown before you commit."],
-  ["Pay to M-Pesa escrow", "Funds held securely, not released yet."],
-  ["Crew completes + proof", "Approve the photo proof, escrow releases."],
+  ["Pay via M-Pesa", "One STK push to your phone — enter your PIN and you\u2019re done."],
+  ["Crew completes + proof", "Review the photo proof and approve the job."],
 ];
 
 export default function LandingPage({ content }: { content: LandingContent }) {

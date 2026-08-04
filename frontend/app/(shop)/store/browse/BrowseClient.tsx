@@ -91,7 +91,7 @@ export default function BrowseClient({
         <div className="space-y-0.5">
           <button
             onClick={() => { setDept(""); setCat(""); }}
-            className={`block w-full text-left px-2.5 py-1.5 rounded-lg text-[13px] transition-colors ${!dept ? "bg-orange-50 dark:bg-slate-800 text-orange-700 dark:text-orange-400 font-semibold" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"}`}
+            className={`block w-full text-left px-2.5 py-1.5 rounded-lg text-[13px] transition-colors ${!dept ? "bg-orange-50 text-orange-700 font-semibold" : "text-slate-600 hover:bg-slate-50"}`}
           >
             All departments
           </button>
@@ -99,7 +99,7 @@ export default function BrowseClient({
             <button
               key={d.id}
               onClick={() => { setDept(d.slug); setCat(""); }}
-              className={`block w-full text-left px-2.5 py-1.5 rounded-lg text-[13px] transition-colors ${dept === d.slug ? "bg-orange-50 dark:bg-slate-800 text-orange-700 dark:text-orange-400 font-semibold" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"}`}
+              className={`block w-full text-left px-2.5 py-1.5 rounded-lg text-[13px] transition-colors ${dept === d.slug ? "bg-orange-50 text-orange-700 font-semibold" : "text-slate-600 hover:bg-slate-50"}`}
             >
               {d.icon ? `${d.icon} ` : ""}{d.name}
             </button>
@@ -114,7 +114,7 @@ export default function BrowseClient({
           <div className="space-y-0.5 max-h-64 overflow-y-auto pr-1">
             <button
               onClick={() => setCat("")}
-              className={`block w-full text-left px-2.5 py-1.5 rounded-lg text-[13px] transition-colors ${!cat ? "bg-orange-50 dark:bg-slate-800 text-orange-700 dark:text-orange-400 font-semibold" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"}`}
+              className={`block w-full text-left px-2.5 py-1.5 rounded-lg text-[13px] transition-colors ${!cat ? "bg-orange-50 text-orange-700 font-semibold" : "text-slate-600 hover:bg-slate-50"}`}
             >
               All categories
             </button>
@@ -122,7 +122,7 @@ export default function BrowseClient({
               <button
                 key={c.id}
                 onClick={() => setCat(c.slug)}
-                className={`block w-full text-left px-2.5 py-1.5 rounded-lg text-[13px] transition-colors ${cat === c.slug ? "bg-orange-50 dark:bg-slate-800 text-orange-700 dark:text-orange-400 font-semibold" : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"}`}
+                className={`block w-full text-left px-2.5 py-1.5 rounded-lg text-[13px] transition-colors ${cat === c.slug ? "bg-orange-50 text-orange-700 font-semibold" : "text-slate-600 hover:bg-slate-50"}`}
               >
                 {c.name}
               </button>
@@ -140,12 +140,12 @@ export default function BrowseClient({
           value={maxPrice}
           onChange={(e) => setMaxPrice(e.target.value)}
           placeholder="e.g. 5000"
-          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
         />
       </div>
 
       {/* Stock */}
-      <label className="flex items-center gap-2 text-[13px] font-medium text-slate-600 dark:text-slate-300 cursor-pointer">
+      <label className="flex items-center gap-2 text-[13px] font-medium text-slate-600 cursor-pointer">
         <input
           type="checkbox"
           checked={inStockOnly}
@@ -164,7 +164,7 @@ export default function BrowseClient({
         <p className="text-xs text-slate-400">
           Store {activeDeptName ? `› ${activeDeptName}` : ""} {activeCatName ? `› ${activeCatName}` : ""}
         </p>
-        <h1 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight mt-1">
+        <h1 className="text-xl font-extrabold text-slate-900 tracking-tight mt-1">
           {query ? `Results for “${query}”` : activeCatName ?? activeDeptName ?? "All Products"}
         </h1>
       </div>
@@ -172,7 +172,7 @@ export default function BrowseClient({
       <div className="flex gap-5">
         {/* Sidebar (desktop) */}
         <aside className="hidden lg:block w-56 shrink-0">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 sticky top-36">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 sticky top-36">
             {filterPanel}
           </div>
         </aside>
@@ -187,12 +187,12 @@ export default function BrowseClient({
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Filter these results…"
-                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                className="w-full bg-white border border-slate-200 rounded-full pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
               />
             </div>
             <button
               onClick={() => setFiltersOpen(true)}
-              className="lg:hidden inline-flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full text-sm font-medium text-slate-600 dark:text-slate-300"
+              className="lg:hidden inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-slate-200 rounded-full text-sm font-medium text-slate-600"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
               Filters
@@ -200,7 +200,7 @@ export default function BrowseClient({
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortKey)}
-              className="ml-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-3.5 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 focus:outline-none focus:border-orange-500 cursor-pointer"
+              className="ml-auto bg-white border border-slate-200 rounded-full px-3.5 py-2 text-sm font-medium text-slate-600 focus:outline-none focus:border-orange-500 cursor-pointer"
             >
               {SORTS.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
             </select>
@@ -209,8 +209,8 @@ export default function BrowseClient({
           <p className="text-xs text-slate-400 mb-3">{filtered.length} product{filtered.length !== 1 ? "s" : ""} found</p>
 
           {filtered.length === 0 ? (
-            <div className="text-center py-24 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
-              <p className="font-semibold text-slate-700 dark:text-slate-300">No products match your filters</p>
+            <div className="text-center py-24 bg-white border border-slate-200 rounded-xl">
+              <p className="font-semibold text-slate-700">No products match your filters</p>
               <p className="text-sm text-slate-400 mt-1">Try clearing the search or choosing another category</p>
               <button
                 onClick={() => { setQuery(""); setDept(""); setCat(""); setMaxPrice(""); setInStockOnly(false); }}
@@ -231,9 +231,9 @@ export default function BrowseClient({
       {filtersOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setFiltersOpen(false)} />
-          <div className="relative ml-auto w-80 max-w-[85vw] h-full bg-white dark:bg-slate-900 shadow-xl overflow-y-auto animate-slideIn">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800 sticky top-0 bg-white dark:bg-slate-900">
-              <p className="font-bold text-slate-900 dark:text-white">Filters</p>
+          <div className="relative ml-auto w-80 max-w-[85vw] h-full bg-white shadow-xl overflow-y-auto animate-slideIn">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 sticky top-0 bg-white">
+              <p className="font-bold text-slate-900">Filters</p>
               <button onClick={() => setFiltersOpen(false)} className="p-2 text-slate-400 hover:text-slate-600">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>

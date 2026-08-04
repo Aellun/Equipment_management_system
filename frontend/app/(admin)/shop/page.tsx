@@ -38,13 +38,13 @@ function StatCard({
   return (
     <Link
       href={href}
-      className={`bg-white dark:bg-slate-900 border rounded-2xl p-5 block hover:shadow-md transition-all ${alert ? "border-amber-300 dark:border-amber-800" : "border-slate-200 dark:border-slate-800 hover:border-brand-300 dark:hover:border-brand-700"}`}
+      className={`bg-white border rounded-2xl p-5 block hover:shadow-md transition-all ${alert ? "border-amber-300" : "border-slate-200 hover:border-brand-300"}`}
     >
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{label}</p>
+        <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{label}</p>
         <span className={`w-2.5 h-2.5 rounded-full ${accent}`} />
       </div>
-      <p className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-3">{value}</p>
+      <p className="text-3xl font-bold text-slate-900 tracking-tight mt-3">{value}</p>
       {sublabel && <p className="text-xs text-slate-400 mt-1">{sublabel}</p>}
     </Link>
   );
@@ -86,20 +86,20 @@ export default async function StoreOverviewPage() {
     .slice(0, 6);
 
   const statusBadge: Record<string, string> = {
-    Pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400",
-    Confirmed: "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-400",
-    Processing: "bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-400",
-    Shipped: "bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-400",
-    Delivered: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
-    Cancelled: "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
+    Pending: "bg-amber-100 text-amber-700",
+    Confirmed: "bg-sky-100 text-sky-700",
+    Processing: "bg-brand-100 text-brand-700",
+    Shipped: "bg-brand-100 text-brand-700",
+    Delivered: "bg-emerald-100 text-emerald-700",
+    Cancelled: "bg-slate-100 text-slate-500",
   };
 
   return (
     <div className="max-w-6xl mx-auto space-y-7">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Store Overview</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Store Overview</h1>
+          <p className="text-sm text-slate-500 mt-1">
             Everything that needs your attention, at a glance
           </p>
         </div>
@@ -107,7 +107,7 @@ export default async function StoreOverviewPage() {
           href="/store"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity"
         >
           View storefront
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
@@ -116,11 +116,11 @@ export default async function StoreOverviewPage() {
 
       {/* Needs attention */}
       {(pendingOrders > 0 || pendingReturns > 0 || lowStock.length > 0) && (
-        <div className="flex items-center gap-3 px-4 py-3.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/40 rounded-2xl">
-          <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center shrink-0">
-            <svg className="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+        <div className="flex items-center gap-3 px-4 py-3.5 bg-amber-50 border border-amber-200 rounded-2xl">
+          <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0">
+            <svg className="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
           </div>
-          <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
+          <p className="text-sm font-medium text-amber-800">
             {[
               pendingOrders > 0 ? `${pendingOrders} order${pendingOrders !== 1 ? "s" : ""} awaiting confirmation` : null,
               pendingReturns > 0 ? `${pendingReturns} return request${pendingReturns !== 1 ? "s" : ""} to review` : null,
@@ -146,22 +146,22 @@ export default async function StoreOverviewPage() {
 
       <div className="grid lg:grid-cols-2 gap-5 items-start">
         {/* Low stock */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Low Stock (≤ {LOW_STOCK_AT})</p>
+        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+            <p className="text-sm font-semibold text-slate-700">Low Stock (≤ {LOW_STOCK_AT})</p>
             <Link href="/shop/products" className="text-xs font-semibold text-brand-600 hover:text-brand-500">Manage products →</Link>
           </div>
           {lowStock.length === 0 ? (
             <p className="text-sm text-slate-400 text-center py-10">All variants are sufficiently stocked 🎉</p>
           ) : (
-            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            <div className="divide-y divide-slate-100">
               {lowStock.slice(0, 8).map(({ product, variant }) => (
                 <div key={variant.id} className="flex items-center justify-between px-5 py-3">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{product.name}</p>
+                    <p className="text-sm font-medium text-slate-800 truncate">{product.name}</p>
                     <p className="text-xs text-slate-400 truncate">{variant.variant_name} · {variant.sku}</p>
                   </div>
-                  <span className={`shrink-0 ml-3 text-xs font-bold px-2.5 py-1 rounded-full ${variant.stock_qty === 0 ? "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400" : "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400"}`}>
+                  <span className={`shrink-0 ml-3 text-xs font-bold px-2.5 py-1 rounded-full ${variant.stock_qty === 0 ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>
                     {variant.stock_qty === 0 ? "Out of stock" : `${variant.stock_qty} left`}
                   </span>
                 </div>
@@ -174,19 +174,19 @@ export default async function StoreOverviewPage() {
         </div>
 
         {/* Recent orders */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Recent Orders</p>
+        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+            <p className="text-sm font-semibold text-slate-700">Recent Orders</p>
             <Link href="/shop/orders" className="text-xs font-semibold text-brand-600 hover:text-brand-500">All orders →</Link>
           </div>
           {recentOrders.length === 0 ? (
             <p className="text-sm text-slate-400 text-center py-10">No orders yet</p>
           ) : (
-            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            <div className="divide-y divide-slate-100">
               {recentOrders.map((o) => (
                 <div key={o.id} className="flex items-center justify-between px-5 py-3">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{o.order_number}</p>
+                    <p className="text-sm font-medium text-slate-800">{o.order_number}</p>
                     <p className="text-xs text-slate-400 truncate">
                       {o.contact_name} · {new Date(o.created_at).toLocaleDateString()} · KSh {Number(o.total).toLocaleString()}
                     </p>
@@ -209,8 +209,8 @@ export default async function StoreOverviewPage() {
           { label: "Categories", sub: "Show / hide categories", href: "/shop/categories" },
           { label: "Delivery zones", sub: "Fees & coverage", href: "/shop/delivery" },
         ].map((a) => (
-          <Link key={a.href + a.label} href={a.href} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 hover:border-brand-300 dark:hover:border-brand-700 hover:shadow-sm transition-all">
-            <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{a.label}</p>
+          <Link key={a.href + a.label} href={a.href} className="bg-white border border-slate-200 rounded-2xl p-4 hover:border-brand-300 hover:shadow-sm transition-all">
+            <p className="text-sm font-semibold text-slate-800">{a.label}</p>
             <p className="text-xs text-slate-400 mt-0.5">{a.sub}</p>
           </Link>
         ))}

@@ -169,7 +169,7 @@ export default function ServicesShell({ config, children }: { config: ShellConfi
             <div className="flex flex-wrap gap-x-6 gap-y-2">
               {([
                 ["badge-check", "Verified crew"],
-                ["shield-check", "M-Pesa escrow"],
+                ["shield-check", "M-Pesa payments"],
                 ["camera", "Photo proof"],
                 ["message-circle", "Updates"],
               ] as const).map(([icon, label]) => (

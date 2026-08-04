@@ -77,17 +77,17 @@ export default function AddEquipmentForm({
 
       {open && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-t-2xl sm:rounded-2xl shadow-xl w-full sm:max-w-md animate-slideInUp sm:animate-fadeIn max-h-[90vh] sm:max-h-[80vh] flex flex-col">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-slate-800">
+          <div className="bg-white border border-slate-200 rounded-t-2xl sm:rounded-2xl shadow-xl w-full sm:max-w-md animate-slideInUp sm:animate-fadeIn max-h-[90vh] sm:max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
               <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white">Add Equipment</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                <h3 className="font-semibold text-slate-900">Add Equipment</h3>
+                <p className="text-xs text-slate-500 mt-0.5">
                   Set quantity to add multiple units at once
                 </p>
               </div>
               <button
                 onClick={resetAndClose}
-                className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -98,7 +98,7 @@ export default function AddEquipmentForm({
             <form onSubmit={submit} className="flex-1 overflow-y-auto">
               <div className="px-6 py-5 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Item Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -106,12 +106,12 @@ export default function AddEquipmentForm({
                     placeholder="e.g. Shure SM58 Microphone"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Category <span className="text-red-500">*</span>
                   </label>
                   {categories.length > 0 ? (
@@ -119,7 +119,7 @@ export default function AddEquipmentForm({
                       required
                       value={form.category}
                       onChange={(e) => setForm({ ...form, category: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
                     >
                       <option value="">Select a category…</option>
                       {categories.map((c) => (
@@ -132,20 +132,20 @@ export default function AddEquipmentForm({
                       placeholder="No categories yet — go to Categories first"
                       value={form.category}
                       onChange={(e) => setForm({ ...form, category: e.target.value })}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
                     />
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Quantity <span className="text-red-500">*</span>
                   </label>
                   <div className="flex items-center gap-3">
                     <button
                       type="button"
                       onClick={() => setForm((f) => ({ ...f, quantity: Math.max(1, f.quantity - 1) }))}
-                      className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-xl font-bold flex items-center justify-center transition-colors"
+                      className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xl font-bold flex items-center justify-center transition-colors"
                     >
                       −
                     </button>
@@ -156,27 +156,27 @@ export default function AddEquipmentForm({
                       required
                       value={form.quantity}
                       onChange={(e) => setForm({ ...form, quantity: Math.max(1, parseInt(e.target.value) || 1) })}
-                      className="w-20 text-center bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                      className="w-20 text-center bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
                     />
                     <button
                       type="button"
                       onClick={() => setForm((f) => ({ ...f, quantity: Math.min(200, f.quantity + 1) }))}
-                      className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-xl font-bold flex items-center justify-center transition-colors"
+                      className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xl font-bold flex items-center justify-center transition-colors"
                     >
                       +
                     </button>
-                    <span className="text-xs text-slate-400 dark:text-slate-500">
+                    <span className="text-xs text-slate-400">
                       {form.quantity === 1 ? "item" : "items"} will be created
                     </span>
                   </div>
                 </div>
 
                 {/* Asset register (optional) */}
-                <div className="border-t border-slate-100 dark:border-slate-800 pt-3">
+                <div className="border-t border-slate-100 pt-3">
                   <button
                     type="button"
                     onClick={() => setShowAsset((s) => !s)}
-                    className="flex items-center gap-2 text-sm font-medium text-brand-600 dark:text-brand-400 hover:text-brand-500"
+                    className="flex items-center gap-2 text-sm font-medium text-brand-600 hover:text-brand-500"
                   >
                     <svg className={`w-3.5 h-3.5 transition-transform ${showAsset ? "rotate-90" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
                     Asset details (location, purchase info) — optional
@@ -185,46 +185,46 @@ export default function AddEquipmentForm({
                     <div className="mt-3 space-y-3">
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Storage location</label>
+                          <label className="block text-xs font-medium text-slate-500 mb-1">Storage location</label>
                           <input
                             value={asset.location}
                             onChange={(e) => setAsset({ ...asset, location: e.target.value })}
                             placeholder="e.g. Store Room B, Shelf 3"
-                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                            className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Purchase date</label>
+                          <label className="block text-xs font-medium text-slate-500 mb-1">Purchase date</label>
                           <input
                             type="date"
                             value={asset.purchase_date}
                             onChange={(e) => setAsset({ ...asset, purchase_date: e.target.value })}
-                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                            className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
                           />
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Supplier</label>
+                          <label className="block text-xs font-medium text-slate-500 mb-1">Supplier</label>
                           <input
                             value={asset.supplier}
                             onChange={(e) => setAsset({ ...asset, supplier: e.target.value })}
                             placeholder="e.g. SoundHub Ltd"
-                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                            className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Warranty until</label>
+                          <label className="block text-xs font-medium text-slate-500 mb-1">Warranty until</label>
                           <input
                             type="date"
                             value={asset.warranty_expiry}
                             onChange={(e) => setAsset({ ...asset, warranty_expiry: e.target.value })}
-                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                            className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Purchase cost per unit (KSh)</label>
+                        <label className="block text-xs font-medium text-slate-500 mb-1">Purchase cost per unit (KSh)</label>
                         <input
                           type="number"
                           min="0"
@@ -232,17 +232,17 @@ export default function AddEquipmentForm({
                           value={asset.purchase_cost}
                           onChange={(e) => setAsset({ ...asset, purchase_cost: e.target.value })}
                           placeholder="e.g. 12500"
-                          className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                          className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Notes</label>
+                        <label className="block text-xs font-medium text-slate-500 mb-1">Notes</label>
                         <textarea
                           rows={2}
                           value={asset.notes}
                           onChange={(e) => setAsset({ ...asset, notes: e.target.value })}
                           placeholder="Supplier, warranty, condition remarks…"
-                          className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white resize-none focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                          className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 resize-none focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
                         />
                       </div>
                     </div>
@@ -250,7 +250,7 @@ export default function AddEquipmentForm({
                 </div>
               </div>
 
-              <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 rounded-b-2xl">
+              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 rounded-b-2xl">
                 <div className="flex gap-3">
                   <button
                     type="submit"
@@ -262,7 +262,7 @@ export default function AddEquipmentForm({
                   <button
                     type="button"
                     onClick={resetAndClose}
-                    className="flex-1 py-2.5 text-sm bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-colors font-medium"
+                    className="flex-1 py-2.5 text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors font-medium"
                   >
                     Cancel
                   </button>
