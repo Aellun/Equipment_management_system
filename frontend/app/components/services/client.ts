@@ -137,6 +137,17 @@ export interface SvcUser {
   email: string;
   phone: string;
   role: "customer" | "runner" | "admin";
+  avatar_url?: string;
+}
+
+/** A social sign-in option. `configured` is false until the deployment has
+ *  that provider's client id and secret — the button then shows as unavailable
+ *  rather than sending the customer off to an error page. */
+export interface AuthProvider {
+  key: string;
+  label: string;
+  brand: string;
+  configured: boolean;
 }
 
 // ── Auth ─────────────────────────────────────────────────────────
@@ -146,7 +157,18 @@ export const authApi = {
   register: (data: Record<string, unknown>) =>
     request<{ access_token: string; user: SvcUser }>("/errands/auth/register", { method: "POST", body: data }),
   me: () => request<SvcUser>("/errands/auth/me", { auth: true }),
+  providers: () => request<AuthProvider[]>("/errands/auth/providers"),
 };
+
+/**
+ * Where the browser goes to hand off to Google/Facebook/etc.
+ * `next` is where to land afterwards; `popup` asks the callback page to post
+ * the token back to the opener instead of navigating.
+ */
+export function oauthStartUrl(provider: string, next: string, popup: boolean): string {
+  const qs = new URLSearchParams({ next, popup: popup ? "true" : "false" });
+  return `${API}/errands/auth/oauth/${provider}/start?${qs}`;
+}
 
 // ── Services ─────────────────────────────────────────────────────
 export const servicesApi = {

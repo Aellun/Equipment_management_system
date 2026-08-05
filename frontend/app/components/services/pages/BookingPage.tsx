@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { servicesApi, tasksApi, paymentsApi, type Service, type Quote, type Task } from "../client";
+import { servicesApi, tasksApi, paymentsApi, type Service, type Quote, type Task, type SvcUser } from "../client";
 import { useServicesAuth } from "../ServicesAuthProvider";
 import { Icon, serviceIconName } from "../Icon";
 import { PriceBreakdown, Spinner } from "../ui";
 import LocationInput, { routeDistanceKm, type PlacePick } from "../LocationInput";
+import AuthModal from "../AuthModal";
 
 const URGENCIES: [string, string, string][] = [
   ["standard", "Standard", "Within the day"],
@@ -15,17 +16,22 @@ const URGENCIES: [string, string, string][] = [
 ];
 
 export default function BookingPage({ vertical, basePath, serviceId }: { vertical?: string; basePath: string; serviceId: string }) {
-  const { user } = useServicesAuth();
+  const { user, logout } = useServicesAuth();
   const router = useRouter();
 
   const [service, setService] = useState<Service | null>(null);
   const [form, setForm] = useState({ pickup_location: "", dropoff_location: "", urgency: "standard", notes: "", phone: "" });
   const [pickup, setPickup] = useState<PlacePick | null>(null);
   const [dropoff, setDropoff] = useState<PlacePick | null>(null);
-  const [distanceKm, setDistanceKm] = useState(0);
-  const [distanceAuto, setDistanceAuto] = useState(false);
-  const [manualDistance, setManualDistance] = useState(false);
+  /** The route estimate, once both locations are picked. It is the floor the
+   *  customer may add to but never cut below — the runner still drives it. */
+  const [autoKm, setAutoKm] = useState<number | null>(null);
+  /** Extra km the customer adds on top of the estimate (detours, extra stops). */
+  const [extraKm, setExtraKm] = useState(0);
+  const [adjusting, setAdjusting] = useState(false);
   const [calculating, setCalculating] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [wrongRole, setWrongRole] = useState(false);
   const [quote, setQuote] = useState<Quote | null>(null);
   const [step, setStep] = useState<"form" | "pay">("form");
   const [task, setTask] = useState<Task | null>(null);
@@ -44,11 +50,12 @@ export default function BookingPage({ vertical, basePath, serviceId }: { vertica
   }, [user]);
 
   // Uber-style: once both locations are picked, the road distance between
-  // them is worked out automatically and drives the quote.
+  // them is worked out automatically and drives the quote. It always re-runs
+  // when a location changes — a stale (cheaper) estimate must never survive a
+  // change of address.
   useEffect(() => {
-    if (manualDistance) return;
     if (!pickup || !dropoff) {
-      setDistanceAuto(false);
+      setAutoKm(null);
       return;
     }
     let cancelled = false;
@@ -56,14 +63,18 @@ export default function BookingPage({ vertical, basePath, serviceId }: { vertica
     routeDistanceKm(pickup, dropoff)
       .then((km) => {
         if (cancelled) return;
-        setDistanceKm(Math.round(km * 10) / 10);
-        setDistanceAuto(true);
+        setAutoKm(Math.round(km * 10) / 10);
       })
       .finally(() => !cancelled && setCalculating(false));
     return () => {
       cancelled = true;
     };
-  }, [pickup, dropoff, manualDistance]);
+  }, [pickup, dropoff]);
+
+  // The charged distance: the route estimate (the floor) plus whatever the
+  // customer chose to add. With no estimate yet, it is whatever they set.
+  const floorKm = autoKm ?? 0;
+  const distanceKm = Math.round((floorKm + extraKm) * 10) / 10;
 
   useEffect(() => {
     if (!service) return;
@@ -78,14 +89,16 @@ export default function BookingPage({ vertical, basePath, serviceId }: { vertica
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [k]: e.target.value });
 
-  const book = async () => {
+  const book = async (asUser: SvcUser | null = user) => {
     setError("");
-    if (!user) {
-      router.push(`${basePath}/login?from=${encodeURIComponent(`${basePath}/book/${serviceId}`)}`);
+    setWrongRole(false);
+    if (!asUser) {
+      setAuthOpen(true);
       return;
     }
-    if (user.role !== "customer") {
-      setError("Only customer accounts can book.");
+    if (asUser.role !== "customer") {
+      setWrongRole(true);
+      setError("Only customer accounts can book. Runner and admin logins place no orders.");
       return;
     }
     setBusy(true);
@@ -152,7 +165,32 @@ export default function BookingPage({ vertical, basePath, serviceId }: { vertica
           </div>
         </div>
 
-        {error && <div className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+        {error && (
+          <div className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+            <p>{error}</p>
+            {/* Signed in as the wrong kind of account: offer the fix right
+                here rather than sending them off to find the login page. */}
+            {wrongRole && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  className="btn-primary px-4 py-2 text-sm"
+                  onClick={() => {
+                    logout();
+                    setError("");
+                    setWrongRole(false);
+                    setAuthOpen(true);
+                  }}
+                >
+                  <Icon name="user" className="h-4 w-4" /> Log in as a customer
+                </button>
+                <span className="self-center text-xs text-red-600/80">
+                  You&rsquo;re signed in as {user?.role}. Your booking details stay as they are.
+                </span>
+              </div>
+            )}
+          </div>
+        )}
 
         {step === "form" && (
           <div className="mt-6 space-y-4">
@@ -177,19 +215,26 @@ export default function BookingPage({ vertical, basePath, serviceId }: { vertica
               />
             </div>
 
-            {/* Distance: auto-calculated from the two picked locations */}
+            {/* Distance: auto-calculated from the two picked locations. The
+                estimate is a floor — extra stops can only push it up, because
+                the runner still covers the whole route either way. */}
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2 text-sm">
                   <Icon name="map-pin" className="h-4 w-4 text-brand-500" />
                   {calculating ? (
                     <span className="text-slate-500">Calculating distance…</span>
-                  ) : distanceAuto && !manualDistance ? (
+                  ) : autoKm !== null ? (
                     <span className="font-semibold text-ink">
-                      ≈ {distanceKm} km <span className="font-normal text-slate-500">· auto-calculated route</span>
+                      {extraKm > 0 ? `${distanceKm} km` : `≈ ${distanceKm} km`}{" "}
+                      <span className="font-normal text-slate-500">
+                        {extraKm > 0 ? `· ${autoKm} km route + ${Math.round(extraKm * 10) / 10} km added` : "· auto-calculated route"}
+                      </span>
                     </span>
-                  ) : manualDistance ? (
-                    <span className="font-semibold text-ink">{distanceKm} km <span className="font-normal text-slate-500">· manual</span></span>
+                  ) : extraKm > 0 ? (
+                    <span className="font-semibold text-ink">
+                      {distanceKm} km <span className="font-normal text-slate-500">· estimated by you</span>
+                    </span>
                   ) : (
                     <span className="text-slate-500">Pick both locations to auto-calculate the distance</span>
                   )}
@@ -197,12 +242,13 @@ export default function BookingPage({ vertical, basePath, serviceId }: { vertica
                 <button
                   type="button"
                   className="text-xs font-medium text-link hover:underline"
-                  onClick={() => setManualDistance((v) => !v)}
+                  onClick={() => setAdjusting((v) => !v)}
                 >
-                  {manualDistance ? "Use auto distance" : "Enter manually"}
+                  {adjusting ? "Done" : autoKm !== null ? "Add distance" : "Enter distance"}
                 </button>
               </div>
-              {manualDistance && (
+
+              {adjusting && (
                 <div className="mt-3">
                   <input
                     type="range"
@@ -210,12 +256,30 @@ export default function BookingPage({ vertical, basePath, serviceId }: { vertica
                     max={40}
                     step={0.5}
                     className="w-full accent-brand-500"
-                    value={distanceKm}
-                    onChange={(e) => setDistanceKm(Number(e.target.value))}
+                    value={extraKm}
+                    onChange={(e) => setExtraKm(Number(e.target.value))}
+                    aria-label={autoKm !== null ? "Extra distance beyond the route estimate" : "Distance"}
                   />
+                  <div className="flex items-center justify-between text-xs text-slate-500">
+                    <span>
+                      {autoKm !== null
+                        ? `+${Math.round(extraKm * 10) / 10} km on top of the ${autoKm} km route`
+                        : `${Math.round(extraKm * 10) / 10} km`}
+                    </span>
+                    {extraKm > 0 && (
+                      <button type="button" className="font-medium text-link hover:underline" onClick={() => setExtraKm(0)}>
+                        {autoKm !== null ? "Reset to route estimate" : "Clear"}
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
-              <p className="mt-1.5 text-xs text-slate-400">First 3 km included free.</p>
+
+              <p className="mt-1.5 text-xs text-slate-400">
+                First 3 km included free.
+                {autoKm !== null &&
+                  " The measured route is the minimum — add km for extra stops or detours, but it can't be set lower."}
+              </p>
             </div>
 
             <div>
@@ -247,7 +311,16 @@ export default function BookingPage({ vertical, basePath, serviceId }: { vertica
 
             <PriceBreakdown q={quote} />
 
-            <button className="btn-primary w-full" disabled={busy} onClick={book}>
+            {!user && (
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-brand-50 px-4 py-3 text-sm text-brand-800">
+                <span>You&rsquo;ll need an account to confirm — it takes a moment and you stay on this page.</span>
+                <button type="button" className="font-semibold text-brand-700 underline" onClick={() => setAuthOpen(true)}>
+                  Log in or sign up
+                </button>
+              </div>
+            )}
+
+            <button className="btn-primary w-full" disabled={busy} onClick={() => book()}>
               {busy ? "Please wait…" : "Continue to payment"}
             </button>
           </div>
@@ -287,6 +360,22 @@ export default function BookingPage({ vertical, basePath, serviceId }: { vertica
           </div>
         )}
       </div>
+
+      {/* Sign-in happens over the form, never instead of it — the errand the
+          customer just filled in survives the whole detour. */}
+      <AuthModal
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        next={`${basePath}/book/${serviceId}`}
+        title="One step left — sign in"
+        subtitle="Your errand details are saved. Log in or create an account and we'll carry straight on to payment."
+        onSignedIn={(signedIn) => {
+          setAuthOpen(false);
+          if (signedIn.phone && !form.phone) setForm((f) => ({ ...f, phone: signedIn.phone }));
+          // Straight through to the booking they were already making.
+          void book(signedIn);
+        }}
+      />
     </div>
   );
 }

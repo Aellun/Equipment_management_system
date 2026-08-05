@@ -31,9 +31,24 @@ class UserOut(BaseModel):
     email: EmailStr
     phone: str
     role: UserRole
+    avatar_url: str = ""
 
     class Config:
         from_attributes = True
+
+
+class ProviderOut(BaseModel):
+    """A social sign-in option, and whether this deployment can actually use it.
+
+    Every provider is listed so the sign-in screens show the full set; the
+    frontend marks the ones without credentials as unavailable rather than
+    letting a customer dead-end at the provider.
+    """
+
+    key: str
+    label: str
+    brand: str
+    configured: bool
 
 
 TokenResponse.model_rebuild()

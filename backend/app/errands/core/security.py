@@ -13,7 +13,14 @@ def hash_password(password: str) -> str:
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    # Social-only accounts carry no password hash: nothing can verify against
+    # them, and an unparseable hash must read as "wrong password", not a 500.
+    if not hashed:
+        return False
+    try:
+        return pwd_context.verify(plain, hashed)
+    except ValueError:
+        return False
 
 
 def create_access_token(subject: str, role: str) -> str:

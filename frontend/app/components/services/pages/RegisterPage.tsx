@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useServicesAuth } from "../ServicesAuthProvider";
+import SocialAuth from "../SocialAuth";
 import { Icon } from "../Icon";
 
 export default function RegisterPage({ basePath, label }: { basePath: string; label: string }) {
@@ -87,6 +88,16 @@ export default function RegisterPage({ basePath, label }: { basePath: string; la
 
         {form.role === "runner" && (
           <p className="mt-3 text-xs text-slate-500">Runner/crew accounts are ID-verified by our team before being assigned tasks.</p>
+        )}
+
+        {/* Social sign-up creates a customer account; runners keep the form so
+            the vetting details (suburb, skills) are captured up front. */}
+        {form.role === "customer" && (
+          <SocialAuth
+            next={`${basePath}/account`}
+            label="Or sign up with"
+            onSignedIn={() => router.push(`${basePath}/dashboard`)}
+          />
         )}
 
         <p className="mt-4 text-center text-sm text-slate-500">

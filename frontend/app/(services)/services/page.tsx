@@ -1,6 +1,5 @@
-import LandingPage from "@/app/components/services/pages/LandingPage";
-import { SERVICES } from "@/app/components/services/configs";
+import ErrandsLanding from "@/app/components/services/ErrandsLanding";
 
 export default function Page() {
-  return <LandingPage content={SERVICES.landing} />;
+  return <ErrandsLanding />;
 }

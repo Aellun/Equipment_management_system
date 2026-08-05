@@ -46,10 +46,10 @@ function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left panel — branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-slate-950 relative overflow-hidden flex-col items-center justify-center p-12">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-brand-600 via-brand-500 to-accent-600 relative overflow-hidden flex-col items-center justify-center p-12">
         {/* Ambient glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-500/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-brand-400/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Floating icons in background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -62,7 +62,7 @@ function LoginPage() {
           ].map((s, i) => {
             const { size, rotate, ...pos } = s;
             return (
-              <div key={i} className="absolute text-brand-400" style={{ ...pos, width: size, height: size, transform: `rotate(${rotate}deg)` }}>
+              <div key={i} className="absolute text-white" style={{ ...pos, width: size, height: size, transform: `rotate(${rotate}deg)` }}>
                 <SpotlightIcon className="w-full h-full" />
               </div>
             );
@@ -72,14 +72,14 @@ function LoginPage() {
         {/* Content */}
         <div className="relative z-10 text-center">
           <div className="flex items-center justify-center mb-8">
-            <div className="w-20 h-20 bg-brand-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-brand-900/60">
+            <div className="w-20 h-20 bg-white/15 border border-white/25 rounded-3xl flex items-center justify-center shadow-2xl shadow-black/20 backdrop-blur-sm">
               <SpotlightIcon className="w-10 h-10 text-white" />
             </div>
           </div>
           <h1 className="text-4xl font-bold text-white tracking-tight mb-3">Dyzah</h1>
-          <p className="text-brand-300 text-lg font-medium mb-6">Admin Console</p>
-          <p className="text-slate-500 text-sm max-w-xs mx-auto leading-relaxed">
-            Track your AV gear, manage loans, and keep your inventory performance-ready.
+          <p className="text-white/85 text-lg font-medium mb-6">Admin Console</p>
+          <p className="text-white/70 text-sm max-w-xs mx-auto leading-relaxed">
+            One console for Events, Store, Errands and Hygiene — inventory, orders, bookings and crews.
           </p>
 
           {/* Stats row */}
@@ -90,8 +90,8 @@ function LoginPage() {
               { label: "Mobile-ready" },
             ].map((s) => (
               <div key={s.label} className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-brand-500" />
-                <span className="text-xs text-slate-500">{s.label}</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-white/70" />
+                <span className="text-xs text-white/75">{s.label}</span>
               </div>
             ))}
           </div>

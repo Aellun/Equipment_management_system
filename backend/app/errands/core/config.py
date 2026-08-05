@@ -31,6 +31,22 @@ class Settings(BaseSettings):
     MPESA_CALLBACK_URL: str = "http://localhost/api/errands/payments/mpesa/callback"
     MPESA_MOCK: bool = True
 
+    # Social login (OAuth 2.0). A provider only appears on the sign-in screens
+    # once both its id and secret are set — see core/oauth.py.
+    # Redirect URI to register with each provider:
+    #   {public origin}/api/errands/auth/oauth/{provider}/callback
+    # Leave OAUTH_PUBLIC_BASE_URL blank to derive the origin from the request
+    # (fine behind nginx); set it explicitly in production.
+    OAUTH_PUBLIC_BASE_URL: str = ""
+    OAUTH_GOOGLE_CLIENT_ID: str = ""
+    OAUTH_GOOGLE_CLIENT_SECRET: str = ""
+    OAUTH_FACEBOOK_CLIENT_ID: str = ""
+    OAUTH_FACEBOOK_CLIENT_SECRET: str = ""
+    OAUTH_GITHUB_CLIENT_ID: str = ""
+    OAUTH_GITHUB_CLIENT_SECRET: str = ""
+    OAUTH_MICROSOFT_CLIENT_ID: str = ""
+    OAUTH_MICROSOFT_CLIENT_SECRET: str = ""
+
     # Seed
     SEED_ADMIN_EMAIL: str = "errands-admin@dyzah.co.ke"
     SEED_ADMIN_PASSWORD: str = "admin1234"

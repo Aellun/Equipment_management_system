@@ -6,6 +6,10 @@ os.environ.setdefault("ERRANDS_MEDIA_DIR", "/tmp/dyzah_media_test")
 # DATABASE_URL. This dummy URL is never connected (the async engine is lazy and
 # get_db is overridden with SQLite below).
 os.environ.setdefault("DATABASE_URL", "postgresql+asyncpg://x:x@localhost/x")
+# TestClient calls the app directly, so no request carries the header nginx
+# injects. Left on, every POST in the suite would 403 at the gateway guard
+# instead of reaching the route under test.
+os.environ["GATEWAY_ENFORCE"] = "false"
 
 import pytest
 from fastapi.testclient import TestClient

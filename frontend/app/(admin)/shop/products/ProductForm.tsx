@@ -439,7 +439,7 @@ export default function ProductForm({
                   <input type="number" min="0" value={defaultStock} onChange={(e) => setDefaultStock(e.target.value)} placeholder="10" className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm" />
                 </div>
                 <div className="col-span-4">
-                  <button type="button" onClick={generateVariants} className="w-full py-2 bg-slate-900 text-white text-sm font-semibold rounded-lg hover:opacity-90">
+                  <button type="button" onClick={generateVariants} className="w-full py-2 bg-brand-500 text-white text-sm font-semibold rounded-lg hover:bg-brand-600">
                     Generate variants
                   </button>
                 </div>

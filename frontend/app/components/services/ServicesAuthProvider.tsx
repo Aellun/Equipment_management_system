@@ -8,6 +8,8 @@ interface SvcAuthCtx {
   loading: boolean;
   login: (email: string, password: string) => Promise<SvcUser>;
   register: (payload: Record<string, unknown>) => Promise<SvcUser>;
+  /** Adopt a token minted elsewhere (social sign-in) and load its user. */
+  adoptToken: (token: string) => Promise<SvcUser>;
   logout: () => void;
 }
 
@@ -16,6 +18,7 @@ const Ctx = createContext<SvcAuthCtx>({
   loading: true,
   login: async () => ({} as SvcUser),
   register: async () => ({} as SvcUser),
+  adoptToken: async () => ({} as SvcUser),
   logout: () => {},
 });
 
@@ -53,10 +56,24 @@ export default function ServicesAuthProvider({ children }: { children: React.Rea
     return data.user;
   };
 
+  const adoptToken = async (token: string) => {
+    setToken(token);
+    try {
+      const me = await authApi.me();
+      setUser(me);
+      return me;
+    } catch (e) {
+      clearToken();
+      throw e;
+    }
+  };
+
   const logout = () => {
     clearToken();
     setUser(null);
   };
 
-  return <Ctx.Provider value={{ user, loading, login, register, logout }}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider value={{ user, loading, login, register, adoptToken, logout }}>{children}</Ctx.Provider>
+  );
 }

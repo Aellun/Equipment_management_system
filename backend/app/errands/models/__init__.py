@@ -1,4 +1,5 @@
 from app.errands.models.user import User, RunnerProfile, UserRole, VerificationStatus
+from app.errands.models.oauth_account import OAuthAccount
 from app.errands.models.service import QuoteMode, ServiceType
 from app.errands.models.task import Frequency, Task, TaskStatus, Urgency
 from app.errands.models.payment import Payment, PaymentStatus
@@ -8,6 +9,7 @@ from app.errands.models.hygiene_enquiry import EnquiryKind, EnquiryStatus, Hygie
 
 __all__ = [
     "User",
+    "OAuthAccount",
     "RunnerProfile",
     "UserRole",
     "VerificationStatus",

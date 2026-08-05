@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { runnerApi, tasksApi, mediaUrl, KES, type Task } from "../client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { runnerApi, tasksApi, mediaUrl, KES, type Task, type SvcUser } from "../client";
+import { useServicesAuth } from "../ServicesAuthProvider";
 import { Empty, Spinner, StatusBadge } from "../ui";
 import { Icon } from "../Icon";
 
@@ -179,11 +182,74 @@ function RunnerTask({ task, reload }: { task: Task; reload: () => void }) {
   );
 }
 
+/** Recruiting entry shown to anyone who isn't a signed-in runner, so the
+ *  "Become a runner" link never lands on runner-only APIs (which 403). */
+function BecomeRunner({ base, user }: { base: string; user: SvcUser | null }) {
+  const PERKS: [string, string, string][] = [
+    ["map-pin", "Jobs near you", "See errands in your area and claim the ones that fit your day."],
+    ["smartphone", "Weekly M-Pesa payouts", "Get paid straight to your phone for every job you finish."],
+    ["star", "Build your rating", "Great work earns reviews that get you more jobs."],
+    ["shield-check", "Verified & trusted", "ID-verified crews customers feel safe handing errands to."],
+  ];
+  return (
+    <div className="mx-auto max-w-3xl">
+      <section className="relative overflow-hidden rounded-2xl bg-squid px-6 py-10 text-white md:px-10 md:py-12">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-brand-500/25 blur-3xl" />
+        <div className="relative">
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand-300 ring-1 ring-white/15">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-400" /> Earn with Dyzah
+          </span>
+          <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight md:text-4xl">Become a Dyzah runner.</h1>
+          <p className="mt-3 max-w-lg text-white/70">
+            Turn your free time into income. Run errands for busy Nairobians and the diaspora on your own
+            schedule — and get paid by M-Pesa for every job you complete.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href={`${base}/register`} className="rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-600 hover:no-underline">
+              {user ? "Register a runner account" : "Create a runner account"}
+            </Link>
+            {!user && (
+              <Link href={`${base}/login`} className="rounded-lg bg-white/10 px-5 py-2.5 text-sm font-semibold text-white ring-1 ring-white/25 hover:bg-white/20 hover:no-underline">
+                I already have one
+              </Link>
+            )}
+          </div>
+          {user && (
+            <p className="mt-3 text-xs text-white/55">
+              You&rsquo;re signed in as a {user.role}. Runner accounts are separate — register one to start earning.
+            </p>
+          )}
+        </div>
+      </section>
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        {PERKS.map(([icon, title, body]) => (
+          <div key={title} className="flex gap-3 rounded-2xl border border-line bg-white p-5">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600">
+              <Icon name={icon} className="h-5 w-5" />
+            </span>
+            <div>
+              <p className="font-semibold text-ink">{title}</p>
+              <p className="mt-1 text-sm text-muted">{body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function RunnerPage() {
+  const { user, loading: authLoading } = useServicesAuth();
+  const pathname = usePathname();
+  const base = pathname.startsWith("/hygiene") ? "/hygiene" : "/services";
+  const isRunner = user?.role === "runner";
+
   const [profile, setProfile] = useState<Profile | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [pool, setPool] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [errored, setErrored] = useState(false);
 
   const load = () =>
     Promise.all([runnerApi.profile(), tasksApi.mine(), runnerApi.availableTasks()]).then(([p, t, a]) => {
@@ -193,11 +259,27 @@ export default function RunnerPage() {
     });
 
   useEffect(() => {
-    load().finally(() => setLoading(false));
+    if (!isRunner) {
+      setLoading(false);
+      return;
+    }
+    load()
+      .catch(() => setErrored(true))
+      .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isRunner]);
 
-  if (loading || !profile) return <Spinner />;
+  // Resolve auth first, then gate: non-runners get the recruiting page instead
+  // of firing runner-only endpoints that would 403.
+  if (authLoading) return <Spinner />;
+  if (!isRunner) return <BecomeRunner base={base} user={user} />;
+  if (loading) return <Spinner />;
+  if (errored || !profile)
+    return (
+      <div className="mx-auto max-w-md">
+        <Empty title="Couldn't load your runner dashboard">Please refresh to try again.</Empty>
+      </div>
+    );
 
   const toggleAvail = async () => {
     await runnerApi.setAvailability(!profile.is_available);

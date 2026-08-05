@@ -63,6 +63,11 @@ def init_errands_db() -> None:
         "ALTER TABLE errand_hygiene_enquiries ADD COLUMN IF NOT EXISTS site_type VARCHAR(80) NOT NULL DEFAULT ''",
         "ALTER TABLE errand_hygiene_enquiries ADD COLUMN IF NOT EXISTS site_size VARCHAR(80) NOT NULL DEFAULT ''",
         "ALTER TABLE errand_hygiene_enquiries ADD COLUMN IF NOT EXISTS locations VARCHAR(40) NOT NULL DEFAULT ''",
+        # ── Social login ─────────────────────────────────────────────
+        # Accounts created through Google/Facebook/etc. have no password, so
+        # the hash column must tolerate an empty value on existing databases.
+        "ALTER TABLE errand_users ADD COLUMN IF NOT EXISTS avatar_url VARCHAR(500) NOT NULL DEFAULT ''",
+        "ALTER TABLE errand_users ALTER COLUMN hashed_password SET DEFAULT ''",
     ]
     # One transaction per statement: a failed statement (e.g. the backfill once
     # the legacy column is gone) must not poison the ones after it.

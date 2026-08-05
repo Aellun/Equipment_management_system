@@ -30,13 +30,19 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(120))
     email: Mapped[str] = mapped_column(String(160), unique=True, index=True)
     phone: Mapped[str] = mapped_column(String(20), index=True)
-    hashed_password: Mapped[str] = mapped_column(String(255))
+    # Blank for social-only accounts — those sign in through a provider and
+    # have no password to verify (see core/security.verify_password).
+    hashed_password: Mapped[str] = mapped_column(String(255), default="")
     role: Mapped[UserRole] = mapped_column(Enum(UserRole, name="errand_user_role"), default=UserRole.customer)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    avatar_url: Mapped[str] = mapped_column(String(500), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
     runner_profile: Mapped["RunnerProfile | None"] = relationship(
         back_populates="user", uselist=False
+    )
+    oauth_accounts: Mapped[list["OAuthAccount"]] = relationship(  # noqa: F821
+        back_populates="user", cascade="all, delete-orphan"
     )
 
 

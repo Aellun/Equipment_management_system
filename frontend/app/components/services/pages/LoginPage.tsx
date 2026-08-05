@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useServicesAuth } from "../ServicesAuthProvider";
+import SocialAuth from "../SocialAuth";
 
 const DEMOS: [string, string, string][] = [
   ["Customer", "customer@demo.co.ke", "demo1234"],
@@ -15,7 +16,8 @@ export default function LoginPage({ basePath }: { basePath: string }) {
   const router = useRouter();
   const params = useSearchParams();
   const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
+  // A failed social sign-in bounces back here with its reason in ?error=.
+  const [error, setError] = useState(params.get("error") ?? "");
   const [busy, setBusy] = useState(false);
 
   const dest = (role: string) => (role === "runner" ? `${basePath}/runner` : `${basePath}/dashboard`);
@@ -53,6 +55,11 @@ export default function LoginPage({ basePath }: { basePath: string }) {
           </div>
           <button className="btn-primary w-full" disabled={busy}>{busy ? "Logging in…" : "Log in"}</button>
         </form>
+
+        <SocialAuth
+          next={params.get("from") || `${basePath}/account`}
+          onSignedIn={(user) => router.push(params.get("from") || dest(user.role))}
+        />
 
         <p className="mt-4 text-center text-sm text-slate-500">
           New here? <Link href={`${basePath}/register`} className="font-semibold text-brand-600">Create an account</Link>
