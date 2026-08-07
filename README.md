@@ -77,8 +77,12 @@ event-equipment-tracking/
 │   ├── Dockerfile
 │   └── next.config.mjs
 ├── nginx/
-│   └── nginx.conf
+│   └── default.conf.template     # envsubst'd at container start (GATEWAY_SECRET)
+├── tools/
+│   └── graphify.py               # code-graph builder + query CLI
+├── .graph/                       # generated code graph (GRAPH.md, MODULES.md, graph.json)
 ├── docker-compose.yml
+├── .env.example                  # copy to .env and fill in
 ├── CLAUDE.md                     # Project rules & guidelines
 └── README.md                     # This file
 ```

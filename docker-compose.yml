@@ -18,7 +18,7 @@ x-backend-env: &backend-env
   CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost,http://localhost:3000}
   # Set true once served over HTTPS so auth cookies are marked Secure.
   COOKIE_SECURE: ${COOKIE_SECURE:-false}
-  # Must match the X-Gateway-Secret nginx injects (see nginx/nginx.conf).
+  # Must match the X-Gateway-Secret nginx injects (see nginx/default.conf.template).
   GATEWAY_SECRET: ${GATEWAY_SECRET:-dyzah-gateway-secret-change-me}
   # Require mutations (POST/PUT/PATCH/DELETE) to arrive through nginx.
   GATEWAY_ENFORCE: ${GATEWAY_ENFORCE:-true}
@@ -123,8 +123,15 @@ services:
     image: nginx:alpine
     ports:
       - "80:80"
+    environment:
+      # envsubst fills ${GATEWAY_SECRET} in the template at container start, so
+      # the header nginx injects always matches the backend's expectation.
+      GATEWAY_SECRET: ${GATEWAY_SECRET:-dyzah-gateway-secret-change-me}
+      # Substitute ONLY this variable — nginx's own $host/$remote_addr/etc.
+      # must survive envsubst untouched.
+      NGINX_ENVSUBST_FILTER: "^GATEWAY_SECRET$$"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
     depends_on:
       - frontend
       - backend

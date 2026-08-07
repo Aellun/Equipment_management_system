@@ -22,7 +22,7 @@ export default function RegisterPage({ basePath, label }: { basePath: string; la
     setError("");
     try {
       const user = await register(form);
-      router.push(user.role === "runner" ? `${basePath}/runner` : `${basePath}/dashboard`);
+      router.push(user.role === "runner" ? `${basePath}/runner` : `${basePath}/account`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Registration failed.");
     } finally {
@@ -96,7 +96,7 @@ export default function RegisterPage({ basePath, label }: { basePath: string; la
           <SocialAuth
             next={`${basePath}/account`}
             label="Or sign up with"
-            onSignedIn={() => router.push(`${basePath}/dashboard`)}
+            onSignedIn={() => router.push(`${basePath}/account`)}
           />
         )}
 

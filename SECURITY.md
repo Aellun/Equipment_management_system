@@ -57,7 +57,10 @@ the login screen.
 
 ## Production checklist
 
-- Change `SECRET_KEY`, `GATEWAY_SECRET`, and the seeded admin password.
+- Change `SECRET_KEY`, `GATEWAY_SECRET`, and the seeded admin password. Set both
+  secrets in `.env` (gitignored) — nginx picks `GATEWAY_SECRET` up through
+  `nginx/default.conf.template`, which is envsubst'd at container start, so the
+  gateway header and the backend's expectation stay in step automatically.
 - Set `COOKIE_SECURE=true` behind HTTPS.
 - Set `CORS_ORIGINS` to your real domain(s).
 

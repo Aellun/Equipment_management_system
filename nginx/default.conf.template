@@ -13,9 +13,12 @@ limit_req_zone $binary_remote_addr zone=staff_login:10m rate=5r/m;
 limit_req_zone $binary_remote_addr zone=customer_login:10m rate=20r/m;
 
 # Shared secret injected on every upstream request so the backend can tell
-# gateway traffic from direct hits. MUST match the backend's GATEWAY_SECRET.
+# gateway traffic from direct hits. MUST match the backend's GATEWAY_SECRET —
+# which is why this file is a template: the nginx image's entrypoint runs
+# envsubst over it at startup and fills ${GATEWAY_SECRET} from the environment,
+# so the real secret lives in .env and never in git.
 # proxy_set_header overwrites any client-supplied copy (inject + strip).
-map $host $gateway_secret { default "dyzah-gateway-secret-change-me"; }
+map $host $gateway_secret { default "${GATEWAY_SECRET}"; }
 
 server {
     listen 80;

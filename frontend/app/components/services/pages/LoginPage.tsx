@@ -20,7 +20,9 @@ export default function LoginPage({ basePath }: { basePath: string }) {
   const [error, setError] = useState(params.get("error") ?? "");
   const [busy, setBusy] = useState(false);
 
-  const dest = (role: string) => (role === "runner" ? `${basePath}/runner` : `${basePath}/dashboard`);
+  // Customers land on /account (ErrandsAccount under /services, HygieneAccount
+  // under /hygiene); there is no /dashboard route on either vertical.
+  const dest = (role: string) => (role === "runner" ? `${basePath}/runner` : `${basePath}/account`);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
